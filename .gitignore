@@ -1,0 +1,26 @@
+# 构建产物
+/build/
+/dist/
+*.test
+coverage.out
+coverage.html
+
+# 更新签名私钥：绝不能提交
+/.update-keys/
+*.p12
+*.mobileprovision
+*.key
+
+# 本地环境与日志
+.env
+.env.*
+*.log
+NM_FRAMES/
+
+# 编辑器与系统文件
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

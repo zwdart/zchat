@@ -1,0 +1,26 @@
+{
+  "name": "zchat",
+  "identifier": "xin.dart.zchat",
+  "slug": "zchat",
+  "version": "0.1.0",
+  "copyright": "Copyright © 2026 zdart",
+  "publisher": "zdart",
+  "icon": "resources/icon.png",
+  "out": "build",
+  "updates": {
+    "publicKey": "os3uMgmGHhbJZ1q7V9+iZTAhl6RHfP6Gvci9ibRCb1E=",
+    "github": "zwdart/zchat"
+  },
+  "macos": {
+    "minimumSystemVersion": "12.0"
+  },
+  "windows": {
+    "displayName": "zchat"
+  },
+  "linux": {
+    "comment": "局域网聊天工具，支持文字、图片、文件与目录共享",
+    "categories": ["Network", "Chat", "InstantMessaging"],
+    "webview": false,
+    "command": "zchat"
+  }
+}

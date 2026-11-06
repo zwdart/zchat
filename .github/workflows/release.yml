@@ -1,0 +1,81 @@
+# 推送 v* tag 时构建 macOS、Windows 和 Linux 的安装包与更新，
+# 上传到该 tag 的草稿 Release；确认无误后手动发布，已安装的旧版本
+# 才会更新过去。
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write # 草稿 Release 及上传
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # mygo build 上传到 mygo.json 版本对应的 Release，因此 tag 必须与版本一致。
+      - name: Check the version
+        run: test "$GITHUB_REF_NAME" = "v$(jq -r .version mygo.json)"
+
+      # mygo build 把 CHANGELOG.md 中本版本的小节写进更新清单，应用内的
+      # 更新窗口会显示它；Release 页面也使用同一段文字，而不是 PR 列表。
+      - name: Take the notes from the changelog
+        run: |
+          awk -v heading="## ${GITHUB_REF_NAME#v}" '
+            /^## / { inside = ($0 == heading); next }
+            inside
+          ' CHANGELOG.md | sed '/./,$!d' > "$RUNNER_TEMP/notes.md"
+          test -s "$RUNNER_TEMP/notes.md"
+          cat "$RUNNER_TEMP/notes.md"
+
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+              --draft --verify-tag --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md"
+          fi
+
+  build:
+    needs: draft-release
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 没有 Developer ID 时用临时签名（-sign -），用户下载后可能需要在
+          # 系统设置里手动放行。配置证书和公证后见 docs/RELEASE.md。
+          - { name: macOS, os: macos-latest, platform: "darwin/arm64,darwin/amd64", extra: "-sign -" }
+          - { name: Windows, os: ubuntu-latest, platform: "windows/amd64,windows/arm64", extra: "" }
+          - { name: Linux, os: ubuntu-latest, platform: "linux/amd64,linux/arm64", extra: "" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install NSIS, for the Windows installers
+        if: matrix.name == 'Windows'
+        run: sudo apt-get update && sudo apt-get install -y nsis
+
+      - name: Test
+        run: |
+          go test ./internal/...
+          go vet ./...
+          go tool mygo vet
+
+      - name: Build and upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
+        run: |
+          go tool mygo build \
+            -platform "${{ matrix.platform }}" \
+            ${{ matrix.extra }} \
+            -upload
