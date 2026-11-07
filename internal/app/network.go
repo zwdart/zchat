@@ -19,8 +19,9 @@ func (a *app) startNetwork() {
 	p.Status = a.settings.Status
 	a.profile.Status = p.Status
 	n := lan.New(lan.Options{
-		Profile: p,
-		Port:    a.settings.Port,
+		Profile:      p,
+		Port:         a.settings.Port,
+		TransferPort: a.transferPort(),
 		// Discovery off still leaves manual connections and file sharing.
 		DisableDiscovery: !a.settings.Discovery,
 		OnPeer: func(peer model.Peer) {
@@ -49,7 +50,7 @@ func (a *app) startNetwork() {
 	})
 	a.node = n
 	if err := n.Start(); err != nil {
-		a.setToast("无法监听端口：" + err.Error())
+		a.setToast(tr("无法监听端口：") + err.Error())
 	}
 }
 
@@ -59,6 +60,7 @@ func (a *app) restartNetwork() {
 		a.node.Stop()
 		a.node = nil
 	}
+	a.restartTransfer()
 	a.startNetwork()
 }
 
@@ -175,15 +177,18 @@ func (a *app) peerName(id string) string {
 		return a.profile.Name
 	}
 	if p := a.peers[id]; p != nil {
-		return p.Title()
+		return tr(p.Title())
 	}
-	return "未知设备"
+	return tr("未知设备")
 }
 
 func (a *app) receiveMessage(from string, m model.Message) {
 	m.Mine = false
-	if m.ID == "" || m.SenderID == "" {
+	if m.SenderID == "" {
 		m.SenderID = from
+	}
+	if m.ID == "" {
+		m.ID = model.NewID("m")
 	}
 	from = m.SenderID
 	p := a.peers[from]
@@ -217,7 +222,7 @@ func (a *app) receiveMessage(from string, m model.Message) {
 		m.Kind = model.KindText
 	}
 	if m.SenderName == "" {
-		m.SenderName = p.Title()
+		m.SenderName = tr(p.Title())
 	}
 	if m.SentAt.IsZero() {
 		m.SentAt = time.Now()
@@ -335,6 +340,7 @@ func (a *app) receiveRecall(from string, r proto.Recall) {
 				return
 			}
 			msgs[i].Recalled = true
+			a.forgetMessageFiles([]model.Message{msgs[i]})
 			a.saveMessages(convID)
 			if a.active == convID {
 				a.redraw()
@@ -486,10 +492,11 @@ func (a *app) recallMessage(convID, msgID string) {
 			continue
 		}
 		if time.Since(msgs[i].SentAt) > 2*time.Minute {
-			a.setToast("超过 2 分钟的消息不能撤回")
+			a.setToast(tr("超过 2 分钟的消息不能撤回"))
 			return
 		}
 		msgs[i].Recalled = true
+		a.forgetMessageFiles([]model.Message{msgs[i]})
 		a.saveMessages(convID)
 		f := proto.NewFrame(a.profile.ID, proto.TypeRecall, proto.Recall{MessageID: msgID})
 		switch c.Kind {
@@ -511,6 +518,7 @@ func (a *app) deleteMessage(convID, msgID string) {
 	msgs := a.msgs[convID]
 	for i := range msgs {
 		if msgs[i].ID == msgID {
+			a.forgetMessageFiles([]model.Message{msgs[i]})
 			a.msgs[convID] = append(msgs[:i], msgs[i+1:]...)
 			a.saveMessages(convID)
 			a.redraw()
@@ -523,11 +531,36 @@ func (a *app) clearHistory(convID string) {
 	if a.msgs[convID] == nil {
 		return
 	}
+	a.forgetMessageFiles(a.msgs[convID])
 	a.msgs[convID] = nil
 	a.saveMessages(convID)
 	if a.store != nil {
 		_ = a.store.DeleteConversation(convID)
 	}
+	a.refreshDBStats()
+	a.redraw()
+}
+
+// clearAllHistory empties every conversation's messages while keeping the
+// conversations themselves.
+func (a *app) clearAllHistory() {
+	for _, msgs := range a.msgs {
+		a.forgetMessageFiles(msgs)
+	}
+	for id := range a.msgs {
+		a.msgs[id] = nil
+	}
+	for _, conv := range a.convs {
+		conv.Unread = 0
+	}
+	if a.store != nil {
+		_ = a.store.ClearMessages()
+	}
+	a.rows = nil
+	a.updateBadge()
+	a.refreshDBStats()
+	a.scheduleSave()
+	a.setToast(tr("聊天记录已清空"))
 	a.redraw()
 }
 
@@ -536,6 +569,7 @@ func (a *app) deleteConversation(convID string) {
 		a.leaveGroup(c)
 		return
 	}
+	a.forgetMessageFiles(a.msgs[convID])
 	delete(a.convs, convID)
 	delete(a.msgs, convID)
 	if a.active == convID {
@@ -544,6 +578,7 @@ func (a *app) deleteConversation(convID string) {
 	if a.store != nil {
 		_ = a.store.DeleteConversation(convID)
 	}
+	a.refreshDBStats()
 	a.scheduleSave()
 	a.redraw()
 }
@@ -553,7 +588,7 @@ func (a *app) notifyMessage(c *model.Conversation, m model.Message) {
 		return
 	}
 	title := a.peerName(m.SenderID)
-	body := m.Preview()
+	body := messagePreview(&m)
 	if c.Kind == model.KindGroup {
 		title = a.convTitle(c) + " · " + title
 	}

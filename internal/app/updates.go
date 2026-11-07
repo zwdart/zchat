@@ -20,7 +20,9 @@ var (
 // and then once a day, and offers it in an update window of native UI, in
 // Chinese. It must run before App.Run.
 func (a *app) useUpdater() {
-	mygo.Use(native.New(updater.Options{Language: "zh-Hans"}))
+	// Leaving Language empty makes the updater follow App.SetLocale, so
+	// switching the app language also updates its native windows.
+	mygo.Use(native.New(updater.Options{}))
 	updater.OnChange(func() {
 		if a.settingsWin != nil {
 			a.settingsWin.Invalidate()

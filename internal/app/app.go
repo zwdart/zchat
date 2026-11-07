@@ -11,11 +11,13 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 
+	"xin.dart.zchat/internal/i18n"
 	"xin.dart.zchat/internal/lan"
 	"xin.dart.zchat/internal/model"
 	"xin.dart.zchat/internal/proto"
 	"xin.dart.zchat/internal/share"
 	"xin.dart.zchat/internal/store"
+	"xin.dart.zchat/internal/transfer"
 )
 
 type pageKind int
@@ -33,10 +35,24 @@ type typingState struct {
 
 // transferState is a file download's progress, shown under its message.
 type transferState struct {
-	Done    int64
-	Total   int64
-	Err     string
-	Working bool
+	Done      int64
+	Total     int64
+	Err       string
+	Working   bool
+	Transport string // "TCP" or "HTTP"
+}
+
+// sendState is the sender's view of a file transfer, keyed by message ID.
+type sendState struct {
+	Sent      int64
+	Total     int64
+	Speed     float64
+	Err       string
+	Working   bool
+	Done      bool
+	Transport string // "TCP" or "HTTP"
+	lastAt    time.Time
+	lastSent  int64
 }
 
 // app is the state both windows show. It is read and changed on the main
@@ -49,6 +65,7 @@ type app struct {
 
 	settings settings
 	store    *store.Store
+	dbStats  store.Stats
 	profile  model.Profile
 	peers    map[string]*model.Peer
 	convs    map[string]*model.Conversation
@@ -81,15 +98,21 @@ type app struct {
 	aliasPeer string
 	aliasName string
 
-	profileName string
-	profileSig  string
-	portEdit    float64
-	shareEdit   float64
+	userInfoOpen bool
+	userInfoID   string
 
-	node     *lan.Node
-	share    *share.Server
-	shareQR  *ui.Bitmap
-	qrForURL string
+	profileName  string
+	profileSig   string
+	portEdit     float64
+	transferEdit float64
+	shareEdit    float64
+
+	node          *lan.Node
+	share         *share.Server
+	transfer      *transfer.Server
+	shareQR       *ui.Bitmap
+	qrForURL      string
+	shareExplicit bool
 
 	pal          palette
 	avatars      map[string]*ui.Bitmap
@@ -97,8 +120,10 @@ type app struct {
 	imageFail    map[string]bool
 	imageLoading map[string]bool
 
-	typing    map[string]typingState
-	transfers map[string]*transferState
+	typing       map[string]typingState
+	transfers    map[string]*transferState
+	sends        map[string]*sendState
+	sendTokenMsg map[string]string
 
 	toast      string
 	lastTyping time.Time
@@ -157,6 +182,10 @@ func (a *app) showMain() {
 	a.win.Show()
 	a.win.Focus()
 	mygo.App.Focus()
+	// A window hidden to the tray may come back with an empty surface on
+	// some platforms. Redraw the current state so the conversation shows
+	// without waiting for the next message.
+	a.redraw()
 }
 
 // Run runs the app until it quits.
@@ -164,6 +193,7 @@ func Run() error {
 	if !mygo.App.RequestSingleInstanceLock() {
 		return nil
 	}
+	setupDataDir()
 	a := &app{
 		peers:          map[string]*model.Peer{},
 		convs:          map[string]*model.Conversation{},
@@ -175,6 +205,8 @@ func Run() error {
 		imageLoading:   map[string]bool{},
 		typing:         map[string]typingState{},
 		transfers:      map[string]*transferState{},
+		sends:          map[string]*sendState{},
+		sendTokenMsg:   map[string]string{},
 		notifs:         map[string]*mygo.Notification{},
 		groupPicked:    map[string]bool{},
 		groupAddPicked: map[string]bool{},
@@ -196,12 +228,17 @@ func Run() error {
 	})
 	mygo.App.WhenReady(func() {
 		a.settings = loadSettings()
+		i18n.Set(a.settings.Language)
+		setLocale()
 		a.settings.applyAppearance()
 		a.version = mygo.App.Version()
 		a.openStore()
 		a.loadData()
+		a.rebuildSendTokens()
 		a.share = share.New(filepath.Join(a.store.Dir(), "transfers.json"))
+		a.share.SetProgress(a.onShareProgress)
 		lan.SetVersion(a.version)
+		a.startTransfer()
 
 		a.win = mygo.NewWindow(mygo.WindowOptions{
 			Title:                "zchat",
@@ -226,6 +263,8 @@ func Run() error {
 		a.win.OnFocus(func() {
 			a.post(func() { a.markActiveRead() })
 		})
+		a.win.OnShow(func() { a.redraw() })
+		a.win.OnRestore(func() { a.redraw() })
 		a.win.OnClose(func(e *mygo.CloseEvent) {
 			if a.quitting {
 				return
@@ -237,7 +276,7 @@ func Run() error {
 			}
 			mygo.App.Quit()
 		})
-		if a.settings.ShareOnStart && a.settings.ShareDir != "" {
+		if a.settings.ShareOnStart && (a.settings.ShareDir != "" || a.settings.UploadDir != "") {
 			a.startShare(false)
 		}
 		a.updateBadge()
@@ -248,12 +287,16 @@ func Run() error {
 		a.settings.Status = a.profile.Status
 		_ = a.settings.save()
 		a.saveAll()
+		if a.store != nil {
+			_ = a.store.Close()
+		}
 		if a.node != nil {
 			a.node.Stop()
 		}
 		if a.share != nil {
 			a.share.Stop()
 		}
+		a.stopTransfer()
 		for _, n := range a.notifs {
 			n.Close()
 		}
@@ -276,8 +319,20 @@ func (a *app) openStore() {
 	}
 	a.store, err = store.Open(dir)
 	if err != nil {
-		mygo.Dialog.Error("zchat", "无法打开数据目录："+err.Error())
+		mygo.Dialog.Error("zchat", tr("无法打开数据目录：")+err.Error())
+		return
 	}
+	a.refreshDBStats()
+}
+
+// refreshDBStats keeps the size and counts the settings page shows current
+// without querying the database on every frame.
+func (a *app) refreshDBStats() {
+	if a.store == nil {
+		a.dbStats = store.Stats{}
+		return
+	}
+	a.dbStats = a.store.Stats()
 }
 
 func (a *app) loadData() {
@@ -286,13 +341,13 @@ func (a *app) loadData() {
 	}
 	st, err := a.store.Load()
 	if err != nil {
-		mygo.Dialog.Error("zchat", "无法读取数据："+err.Error())
+		mygo.Dialog.Error("zchat", tr("无法读取数据：")+err.Error())
 	}
 	a.profile = st.Profile
 	if a.profile.ID == "" {
 		name, _ := os.Hostname()
 		if strings.TrimSpace(name) == "" || name == "localhost" {
-			name = "我的 zchat"
+			name = tr("我的 zchat")
 		}
 		a.profile = model.Profile{ID: model.NewID("u"), Name: name, Status: a.settings.Status}
 	}
@@ -300,7 +355,7 @@ func (a *app) loadData() {
 		a.profile.Status = a.settings.Status
 	}
 	if a.profile.Name == "" {
-		a.profile.Name = "我的 zchat"
+		a.profile.Name = tr("我的 zchat")
 	}
 	a.settings.Status = a.profile.Status
 	for id, p := range st.Peers {
@@ -394,6 +449,9 @@ func (a *app) saveMessages(convID string) {
 	time.AfterFunc(300*time.Millisecond, func() {
 		mygo.RunOnMain(func() {
 			a.saveDue[convID] = false
+			if a.quitting {
+				return
+			}
 			if a.store != nil {
 				_ = a.store.SaveMessages(convID, a.msgs[convID])
 			}
@@ -430,12 +488,12 @@ func (a *app) convTitle(c *model.Conversation) string {
 		if c.Title != "" {
 			return c.Title
 		}
-		return "群聊"
+		return tr("群聊")
 	}
 	if p := a.peers[c.PeerID]; p != nil {
-		return p.Title()
+		return tr(p.Title())
 	}
-	return "未知设备"
+	return tr("未知设备")
 }
 
 func (a *app) convPeer(c *model.Conversation) *model.Peer {
@@ -544,7 +602,7 @@ func (a *app) updateBadge() {
 		// The tooltip is the only badge many Linux panels show.
 		tip := "zchat"
 		if total > 0 {
-			tip = "zchat · " + itoa(total) + " 条未读"
+			tip = "zchat · " + itoa(total) + tr(" 条未读")
 		}
 		a.tray.SetToolTip(tip)
 	}

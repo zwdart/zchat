@@ -14,6 +14,7 @@ func (a *app) dialogs(c *ui.Context) {
 	a.groupInfoDialog(c)
 	a.groupAddDialog(c)
 	a.aliasDialog(c)
+	a.userInfoDialog(c)
 	a.confirmDialog(c)
 }
 
@@ -36,23 +37,23 @@ func (a *app) newGroupDialog(c *ui.Context) {
 	p := a.pal
 	ui.DialogBase(c.Key("new-group"), &a.newGroupOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 460)
-		ui.Text(c, "新建群聊").FontSize(18).FontWeight(700)
-		ui.Text(c, "群聊只在加入的成员之间发送，消息会分别送达每台在线设备。").FontSize(12).TextColor(p.muted).LineHeight(1.45)
-		name := ui.TextInput(c.Key("group-name"), &a.groupName).Label("群聊名称").Placeholder("例如：三号会议室").AutoFocus()
+		ui.Text(c, tr("新建群聊")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("群聊只在加入的成员之间发送，消息会分别送达每台在线设备。")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
+		name := ui.TextInput(c.Key("group-name"), &a.groupName).Label(tr("群聊名称")).Placeholder(tr("例如：三号会议室")).AutoFocus()
 		if name.Submitted() {
 			a.submitNewGroup()
 		}
 		ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
-			ui.Text(c, "选择成员").FontSize(12).FontWeight(650).TextColor(p.muted)
-			ui.Text(c, itoa(len(a.groupPicked))+" 人").FontSize(11).TextColor(p.faint)
+			ui.Text(c, tr("选择成员")).FontSize(12).FontWeight(650).TextColor(p.muted)
+			ui.Text(c, itoa(len(a.groupPicked))+tr(" 人")).FontSize(11).TextColor(p.faint)
 			ui.Spacer(c)
 			if len(a.sortedPeers()) > 0 {
-				if ui.Button(c.Key("pick-all"), "全选").Clicked() {
+				if ui.Button(c.Key("pick-all"), tr("全选")).Clicked() {
 					for _, peer := range a.sortedPeers() {
 						a.groupPicked[peer.ID] = true
 					}
 				}
-				if ui.Button(c.Key("pick-none"), "全不选").Clicked() {
+				if ui.Button(c.Key("pick-none"), tr("全不选")).Clicked() {
 					a.groupPicked = map[string]bool{}
 				}
 			}
@@ -60,7 +61,7 @@ func (a *app) newGroupDialog(c *ui.Context) {
 		peers := a.sortedPeers()
 		if len(peers) == 0 {
 			ui.Row(c).Padding(14).Radius(12).Background(p.panel).Center().Children(func() {
-				ui.Text(c, "没有发现其他设备，也可以先创建一个只有自己的群聊。").FontSize(12).TextColor(p.muted).TextAlign(ui.Center)
+				ui.Text(c, tr("没有发现其他设备，也可以先创建一个只有自己的群聊。")).FontSize(12).TextColor(p.muted).TextAlign(ui.Center)
 			})
 		} else {
 			ui.Scroll(c).MaxHeight(280).Gap(2).Children(func() {
@@ -70,10 +71,10 @@ func (a *app) newGroupDialog(c *ui.Context) {
 			})
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			if pillButtonKey(c, "cancel", nil, "取消", p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.newGroupOpen = false
 			}
-			ok := pillButtonKey(c, "create", nil, "创建", p.accent, p.onAcc)
+			ok := pillButtonKey(c, "create", nil, tr("创建"), p.accent, p.onAcc)
 			if strings.TrimSpace(a.groupName) == "" {
 				ok.Disabled(true).Opacity(0.5)
 			}
@@ -102,17 +103,17 @@ func (a *app) submitNewGroup() {
 func (a *app) pickerRow(c *ui.Context, peer *model.Peer, picked map[string]bool) {
 	p := a.pal
 	on := picked[peer.ID]
-	row := ui.ButtonBase(c).Key("pick-"+peer.ID).Padding(8, 8).Radius(10).Gap(10).AlignItems(ui.Center).FocusRing(false).Label(peer.Title())
+	row := ui.ButtonBase(c).Key("pick-"+peer.ID).Padding(8, 8).Radius(10).Gap(10).AlignItems(ui.Center).FocusRing(false).Label(tr(peer.Title()))
 	if on {
 		row.Background(p.accent.Alpha(0.1))
 	} else if row.Hovered() {
 		row.Background(p.hover)
 	}
 	row.Children(func() {
-		ui.Avatar(c, peer.Title(), a.avatarBitmap(peer.Avatar)).Size(32, 32)
+		ui.Avatar(c, tr(peer.Title()), a.avatarBitmap(peer.Avatar)).Size(32, 32)
 		ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(2).Children(func() {
-			ui.Text(c, peer.Title()).FontSize(13).FontWeight(600).SingleLine()
-			ui.Text(c, peer.Status.Label()+" · "+peerAddr(peer)).FontSize(10.5).TextColor(p.muted).SingleLine()
+			ui.Text(c, tr(peer.Title())).FontSize(13).FontWeight(600).SingleLine()
+			ui.Text(c, presenceLabel(peer.Status)+" · "+peerAddr(peer)).FontSize(10.5).TextColor(p.muted).SingleLine()
 		})
 		check := ui.Box(c).Size(20, 20).Radius(999).Center().Border(1.5, p.hair)
 		if on {
@@ -131,17 +132,17 @@ func (a *app) manualDialog(c *ui.Context) {
 	p := a.pal
 	ui.DialogBase(c.Key("manual-peer"), &a.manualOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 420)
-		ui.Text(c, "通过 IP 连接").FontSize(18).FontWeight(700)
-		ui.Text(c, "自动发现被网络屏蔽时，输入对方的 IP 地址或 IP:端口。").FontSize(12).TextColor(p.muted).LineHeight(1.45)
-		in := ui.TextInput(c.Key("manual-addr"), &a.manualAddr).Label("IP 地址").Placeholder("192.168.1.8 或 192.168.1.8:47824").AutoFocus()
+		ui.Text(c, tr("通过 IP 连接")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("自动发现被网络屏蔽时，输入对方的 IP 地址或 IP:端口。")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
+		in := ui.TextInput(c.Key("manual-addr"), &a.manualAddr).Label(tr("IP 地址")).Placeholder(tr("192.168.1.8 或 192.168.1.8:42224")).AutoFocus()
 		if in.Submitted() {
 			a.connectManual()
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			if pillButtonKey(c, "cancel", nil, "取消", p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.manualOpen = false
 			}
-			ok := pillButtonKey(c, "connect", nil, "连接", p.accent, p.onAcc)
+			ok := pillButtonKey(c, "connect", nil, tr("连接"), p.accent, p.onAcc)
 			if strings.TrimSpace(a.manualAddr) == "" {
 				ok.Disabled(true).Opacity(0.5)
 			}
@@ -158,17 +159,17 @@ func (a *app) connectManual() {
 		return
 	}
 	a.manualOpen = false
-	a.setToast("正在连接 " + addr + "…")
+	a.setToast(tr("正在连接 ") + addr + "…")
 	go func() {
 		peer, err := a.node.ConnectAddress(addr)
 		a.post(func() {
 			if err != nil {
-				a.setToast("无法连接：" + err.Error())
+				a.setToast(tr("无法连接：") + err.Error())
 				return
 			}
 			peer.Manual = true
 			a.applyPeer(peer)
-			a.setToast("已连接 " + peer.Title())
+			a.setToast(tr("已连接 ") + tr(peer.Title()))
 			a.openPeer(&peer)
 		})
 	}()
@@ -196,13 +197,13 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 		ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 			a.groupAvatar(c, conv, 44)
 			ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(3).Children(func() {
-				ui.Text(c, "群聊信息").FontSize(18).FontWeight(700)
-				ui.Text(c, itoa(len(conv.Members))+" 位成员 · 群主 "+a.peerName(conv.Owner)).FontSize(11.5).TextColor(p.muted)
+				ui.Text(c, tr("群聊信息")).FontSize(18).FontWeight(700)
+				ui.Text(c, itoa(len(conv.Members))+tr(" 位成员 · 群主 ")+a.peerName(conv.Owner)).FontSize(11.5).TextColor(p.muted)
 			})
 		})
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-			in := ui.TextInput(c.Key("group-name"), &a.groupRename).Label("群聊名称").Placeholder("群聊名称").Grow(1)
-			save := ui.PrimaryButton(c.Key("group-rename"), "保存")
+			in := ui.TextInput(c.Key("group-name"), &a.groupRename).Label(tr("群聊名称")).Placeholder(tr("群聊名称")).Grow(1)
+			save := ui.PrimaryButton(c.Key("group-rename"), tr("保存"))
 			if strings.TrimSpace(a.groupRename) == "" || strings.TrimSpace(a.groupRename) == conv.Title {
 				save.Disabled(true).Opacity(0.5)
 			}
@@ -211,9 +212,9 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 			}
 		})
 		ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
-			ui.Text(c, "成员").FontSize(12).FontWeight(650).TextColor(p.muted)
+			ui.Text(c, tr("成员")).FontSize(12).FontWeight(650).TextColor(p.muted)
 			ui.Spacer(c)
-			if pillButtonKey(c, "add-members", iconPlus, "添加成员", p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "add-members", iconPlus, tr("添加成员"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.openGroupAdd(conv)
 			}
 		})
@@ -221,26 +222,26 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 			for _, member := range a.groupMembers(conv) {
 				member := member
 				ui.Row(c).Padding(8, 8).Radius(10).Gap(10).AlignItems(ui.Center).Children(func() {
-					ui.Avatar(c, member.Title(), a.avatarBitmap(member.Avatar)).Size(32, 32)
+					ui.Avatar(c, tr(member.Title()), a.avatarBitmap(member.Avatar)).Size(32, 32)
 					ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(2).Children(func() {
 						ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
-							ui.Text(c, member.Title()).FontSize(13).FontWeight(600).SingleLine()
+							ui.Text(c, tr(member.Title())).FontSize(13).FontWeight(600).SingleLine()
 							if member.ID == a.profile.ID {
-								ui.Text(c, "我").FontSize(9.5).TextColor(p.accent).Padding(1, 5).Radius(999).Background(p.accent.Alpha(0.12))
+								ui.Text(c, tr("我")).FontSize(9.5).TextColor(p.accent).Padding(1, 5).Radius(999).Background(p.accent.Alpha(0.12))
 							}
 							if member.ID == conv.Owner {
-								ui.Text(c, "群主").FontSize(9.5).TextColor(p.faint).Padding(1, 5).Radius(999).Border(1, p.hair)
+								ui.Text(c, tr("群主")).FontSize(9.5).TextColor(p.faint).Padding(1, 5).Radius(999).Border(1, p.hair)
 							}
 						})
 						ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
 							dot(c, member.Status, 6)
-							ui.Text(c, member.Status.Label()).FontSize(10.5).TextColor(p.muted)
+							ui.Text(c, presenceLabel(member.Status)).FontSize(10.5).TextColor(p.muted)
 						})
 					})
 					if conv.Owner == a.profile.ID && member.ID != a.profile.ID {
-						if b := iconButton(c, iconX, 13, p.faint, "移出群聊"); b.Clicked() {
+						if b := iconButton(c, iconX, 13, p.faint, tr("移出群聊")); b.Clicked() {
 							id := member.ID
-							a.confirm("移出成员", "确定把「"+member.Title()+"」移出群聊吗？", func() {
+							a.confirm(tr("移出成员"), tr("确定把「")+tr(member.Title())+tr("」移出群聊吗？"), func() {
 								a.removeGroupMember(conv, id)
 							})
 						}
@@ -249,13 +250,13 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 			}
 		})
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			action := "退出群聊"
+			label, prefix, dissolve := tr("退出群聊"), tr("确定退出群聊「"), false
 			if conv.Owner == a.profile.ID && len(conv.Members) > 1 {
-				action = "解散群聊"
+				label, prefix, dissolve = tr("解散群聊"), tr("确定解散群聊「"), true
 			}
-			if pillButtonKey(c, "leave", iconLeave, action, p.hover.Over(p.bg), p.text).Clicked() {
-				a.confirm(action, "确定"+action+"「"+conv.Title+"」吗？", func() {
-					if action == "解散群聊" {
+			if pillButtonKey(c, "leave", iconLeave, label, p.hover.Over(p.bg), p.text).Clicked() {
+				a.confirm(label, prefix+conv.Title+tr("」吗？"), func() {
+					if dissolve {
 						a.disbandGroup(conv)
 					} else {
 						a.leaveGroup(conv)
@@ -263,7 +264,7 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 					a.groupInfoOpen = false
 				})
 			}
-			if pillButtonKey(c, "done", nil, "完成", p.accent, p.onAcc).Clicked() {
+			if pillButtonKey(c, "done", nil, tr("完成"), p.accent, p.onAcc).Clicked() {
 				a.groupInfoOpen = false
 			}
 		})
@@ -299,11 +300,11 @@ func (a *app) groupAddDialog(c *ui.Context) {
 	}
 	ui.DialogBase(c.Key("group-add"), &a.groupAddOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 440)
-		ui.Text(c, "添加成员").FontSize(18).FontWeight(700)
-		ui.Text(c, "邀请后会把自己的群聊信息发送给新成员。").FontSize(12).TextColor(p.muted)
+		ui.Text(c, tr("添加成员")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("邀请后会把自己的群聊信息发送给新成员。")).FontSize(12).TextColor(p.muted)
 		if len(candidates) == 0 {
 			ui.Row(c).Padding(16).Radius(12).Background(p.panel).Center().Children(func() {
-				ui.Text(c, "没有可以邀请的设备。").FontSize(12).TextColor(p.muted)
+				ui.Text(c, tr("没有可以邀请的设备。")).FontSize(12).TextColor(p.muted)
 			})
 		} else {
 			ui.Scroll(c).MaxHeight(300).Gap(2).Children(func() {
@@ -313,10 +314,10 @@ func (a *app) groupAddDialog(c *ui.Context) {
 			})
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			if pillButtonKey(c, "cancel", nil, "取消", p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.groupAddOpen = false
 			}
-			ok := pillButtonKey(c, "add", nil, "添加", p.accent, p.onAcc)
+			ok := pillButtonKey(c, "add", nil, tr("添加"), p.accent, p.onAcc)
 			if len(a.groupAddPicked) == 0 {
 				ok.Disabled(true).Opacity(0.5)
 			}
@@ -353,25 +354,25 @@ func (a *app) aliasDialog(c *ui.Context) {
 	}
 	ui.DialogBase(c.Key("alias"), &a.aliasOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 400)
-		ui.Text(c, "设置备注").FontSize(18).FontWeight(700)
-		ui.Text(c, "备注只保存在这台设备上，会替换设备原来的名称。").FontSize(12).TextColor(p.muted).LineHeight(1.45)
-		in := ui.TextInput(c.Key("alias-name"), &a.aliasName).Label("备注").Placeholder(peer.Name).AutoFocus()
+		ui.Text(c, tr("设置备注")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("备注只保存在这台设备上，会替换设备原来的名称。")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
+		in := ui.TextInput(c.Key("alias-name"), &a.aliasName).Label(tr("备注")).Placeholder(peer.Name).AutoFocus()
 		if in.Submitted() {
 			a.submitAlias(peer)
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
 			if peer.Alias != "" {
-				if pillButtonKey(c, "clear-alias", nil, "清除备注", p.hover.Over(p.bg), p.text).Clicked() {
+				if pillButtonKey(c, "clear-alias", nil, tr("清除备注"), p.hover.Over(p.bg), p.text).Clicked() {
 					peer.Alias = ""
 					a.aliasOpen = false
 					a.scheduleSave()
 					a.redraw()
 				}
 			}
-			if pillButtonKey(c, "cancel", nil, "取消", p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.aliasOpen = false
 			}
-			if pillButtonKey(c, "save-alias", nil, "保存", p.accent, p.onAcc).Clicked() {
+			if pillButtonKey(c, "save-alias", nil, tr("保存"), p.accent, p.onAcc).Clicked() {
 				a.submitAlias(peer)
 			}
 		})
@@ -386,7 +387,7 @@ func (a *app) submitAlias(peer *model.Peer) {
 	peer.Alias = name
 	a.aliasOpen = false
 	a.scheduleSave()
-	a.setToast("备注已保存")
+	a.setToast(tr("备注已保存"))
 	a.redraw()
 }
 
@@ -397,11 +398,11 @@ func (a *app) confirmDialog(c *ui.Context) {
 		ui.Text(c, a.confirmTitle).FontSize(17).FontWeight(700)
 		ui.Text(c, a.confirmText).FontSize(12.5).TextColor(p.muted).LineHeight(1.5)
 		ui.Row(c).Gap(10).Justify(ui.End).Margin(4, 0, 0, 0).Children(func() {
-			if pillButtonKey(c, "cancel", nil, "取消", p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.confirmOpen = false
 				a.confirmAction = nil
 			}
-			if pillButtonKey(c, "ok", nil, "确定", p.accent, p.onAcc).Clicked() {
+			if pillButtonKey(c, "ok", nil, tr("确定"), p.accent, p.onAcc).Clicked() {
 				action := a.confirmAction
 				a.confirmOpen = false
 				a.confirmAction = nil

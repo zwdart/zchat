@@ -15,14 +15,15 @@ import (
 
 	"golang.org/x/net/ipv4"
 
+	"xin.dart.zchat/internal/i18n"
 	"xin.dart.zchat/internal/model"
 	"xin.dart.zchat/internal/netutil"
 	"xin.dart.zchat/internal/proto"
 )
 
 const (
-	defaultPort      = 47824
-	defaultDiscovery = 47823
+	defaultPort      = 42224
+	defaultDiscovery = 42223
 	announceEvery    = 4 * time.Second
 	peerTimeout      = 16 * time.Second
 	dialEvery        = 5 * time.Second
@@ -33,9 +34,12 @@ const (
 // Options configures a Node.
 type Options struct {
 	Profile model.Profile
-	// Port is the TCP port. Zero means 47824.
+	// Port is the TCP port. Zero means 42224.
 	Port int
-	// DiscoveryPort is the UDP port. Zero means 47823.
+	// TransferPort is the TCP port files are fetched from. Zero means the
+	// peer advertised no socket transfer service.
+	TransferPort int
+	// DiscoveryPort is the UDP port. Zero means 42223.
 	DiscoveryPort int
 	// DisableDiscovery keeps the TCP listener and manual connections but
 	// sends and listens to no discovery packets.
@@ -270,7 +274,7 @@ func (n *Node) broadcast(f proto.Frame) {
 	}
 }
 
-// ConnectAddress dials a peer by address, such as 192.168.1.8:47824, for
+// ConnectAddress dials a peer by address, such as 192.168.1.8:42224, for
 // when discovery is blocked.
 func (n *Node) ConnectAddress(addr string) (model.Peer, error) {
 	if !strings.Contains(addr, ":") {
@@ -287,7 +291,7 @@ func (n *Node) ConnectAddress(addr string) (model.Peer, error) {
 	}
 	if peer.ID == n.Self().ID {
 		conn.Close()
-		return model.Peer{}, errors.New("zchat: 不能连接自己")
+		return model.Peer{}, errors.New(i18n.T("zchat: 不能连接自己"))
 	}
 	n.register(conn, br, peer, true)
 	return peer, nil
@@ -338,7 +342,9 @@ func (n *Node) handshake(conn net.Conn, outbound bool) (model.Peer, *bufio.Reade
 	self := n.Self()
 	port := n.Port()
 	ip := netutil.PrimaryIP()
-	hello := proto.NewFrame(self.ID, proto.TypeHello, proto.Hello{Peer: self.Peer(ip, port)})
+	peer := self.Peer(ip, port)
+	peer.TransferPort = n.opts.TransferPort
+	hello := proto.NewFrame(self.ID, proto.TypeHello, proto.Hello{Peer: peer})
 	if outbound {
 		if err := proto.WriteFrame(conn, hello); err != nil {
 			return model.Peer{}, nil, err
@@ -640,6 +646,7 @@ func (n *Node) applyAnnouncement(a announcement, src net.IP) {
 	ps.peer.Signature = a.Signature
 	ps.peer.Status = status
 	ps.peer.Port = a.Port
+	ps.peer.TransferPort = a.TransferPort
 	ps.peer.Version = a.Version
 	ps.peer.Platform = a.Platform
 	ps.peer.LastSeen = time.Now()
@@ -665,18 +672,19 @@ func (n *Node) announce(kind string, status model.Presence) {
 		status = self.Status
 	}
 	a := announcement{
-		App:       appTag,
-		V:         proto.Version,
-		Kind:      kind,
-		ID:        self.ID,
-		Instance:  n.instance,
-		Name:      self.Name,
-		Signature: self.Signature,
-		Status:    string(status),
-		Version:   version,
-		Platform:  runtime.GOOS + "/" + runtime.GOARCH,
-		Port:      n.Port(),
-		TS:        time.Now().UnixMilli(),
+		App:          appTag,
+		V:            proto.Version,
+		Kind:         kind,
+		ID:           self.ID,
+		Instance:     n.instance,
+		Name:         self.Name,
+		Signature:    self.Signature,
+		Status:       string(status),
+		Version:      version,
+		Platform:     runtime.GOOS + "/" + runtime.GOARCH,
+		Port:         n.Port(),
+		TransferPort: n.opts.TransferPort,
+		TS:           time.Now().UnixMilli(),
 	}
 	b, err := a.encode()
 	if err != nil {

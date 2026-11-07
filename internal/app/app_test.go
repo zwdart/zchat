@@ -49,6 +49,21 @@ func TestRebuildRowsFiltersAndGroups(t *testing.T) {
 	}
 }
 
+// The HTTP fallback token is the path segment after /t/, not the file name.
+func TestShareToken(t *testing.T) {
+	cases := map[string]string{
+		"http://192.168.1.2:42230/t/abc123/report.pdf":     "abc123",
+		"http://192.168.1.2:42230/t/abc123/report.pdf?x=1": "abc123",
+		"http://192.168.1.2:42230/":                        "",
+		"":                                                 "",
+	}
+	for raw, want := range cases {
+		if got := shareToken(raw); got != want {
+			t.Errorf("shareToken(%q) = %q, want %q", raw, got, want)
+		}
+	}
+}
+
 // A direct conversation is keyed by the peer, and opening it again keeps
 // the same conversation.
 func TestEnsureDirect(t *testing.T) {

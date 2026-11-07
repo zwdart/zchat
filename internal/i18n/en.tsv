@@ -1,0 +1,412 @@
+# English translations keyed by the Chinese source string.
+# Use \n for a line break inside a key or value.
+ · 已下载	 · Downloaded
+ · 最后在线 	 · Last seen 
+ · 端口 	 · Port 
+ · 自动发现已关闭	 · Auto-discovery off
+ 个会话 · 	conversations · 
+ 人	 people
+ 人在线	 online
+ 位成员	 members
+ 位成员 · 	 members · 
+ 位成员 · 群主 	 members · Owner 
+ 台设备	 devices
+ 在线	Online
+ 已被占用，改用 	 is busy; using 
+ 条未读	 unread
+ 条消息	 messages
+ 条结果	 results
+ 正在输入…	typing…
+ 被移出了群聊	 was removed from the group
+ 退出了群聊	 left the group
+ 邀请你加入群聊	 invited you to a group
+%d年%d月%d日	%d/%d/%d
+%d月%d日	%d/%d
+192.168.1.8 或 192.168.1.8:42224	192.168.1.8 or 192.168.1.8:42224
+1月2日	Jan 2
+HTTP 服务端口，默认 42230	HTTP service port, default 42230
+IP 地址	IP address
+SQLite 数据库	SQLite database
+TCP 端口，默认 42224；修改后重启网络生效	TCP port, default 42224; restart the network after changing it
+[图片]	[Image]
+[图片] 	[Image] 
+[文件]	[File]
+[文件] 	[File] 
+zchat 设置	zchat Settings
+zchat 项目主页	zchat project page
+」吗？	"?
+」吗？聊天记录会保留。	"? Chat history will be kept.
+」已解散	" was dissolved
+」移出群聊吗？	" from the group?
+一句介绍，显示在设备卡片里	A short bio shown on your device card
+下载	Download
+下载失败：	Download failed: 
+下载目录	Downloads
+下载目录已更新	Download folder updated
+个人资料	Profile
+主题	Theme
+今天	Today
+从 GitHub Releases 获取更新	Get updates from GitHub Releases
+从设备列表移除	Remove from device list
+会话	Chats
+你	You
+你创建了群聊「	You created group "
+你加入了群聊「	You joined group "
+你已被移出群聊「	You were removed from group "
+使用	Use
+例如：三号会议室	e.g. Meeting Room 3
+保存	Save
+保存文件	Save file
+保存资料	Save profile
+停止共享	Stop sharing
+先打开一个聊天	Open a chat first
+全不选	Select none
+全选	Select all
+全部显示	Show All
+共享	Share
+共享中	Sharing
+共享未开启	Sharing is off
+共享目录	Shared folder
+共享目录不存在	Shared folder does not exist
+共享目录已更新	Shared folder updated
+共享目录是只读的，访客不能上传或修改文件。\n\n消息里的文件通过一次性地址发送，收件人下载后才能保存到本地。\n\n关闭 zchat 后链接会失效。	The shared folder is read-only; visitors cannot upload or modify files.\n\nFiles in messages are sent through one-time links and saved locally after the recipient downloads them.\n\nLinks stop working when zchat closes.
+共享端口	Share port
+关于	About
+关于 zchat	About zchat
+关闭	Close
+关闭搜索	Close search
+关闭窗口后继续接收消息，可从菜单栏或通知区重新打开	Keep receiving messages after closing the window; reopen from the menu bar or notification area
+关闭窗口时留在托盘	Keep running in the tray when the window closes
+其他设备在局域网里看到的名字	The name other devices see on the LAN
+创建	Create
+删除	Delete
+删除会话	Delete chat
+删除当前会话	Delete current chat
+删除所有会话的消息，保留会话、资料和离线队列	Delete messages in all chats, keeping chats, profile, and offline queue
+删除聊天记录后回收磁盘空间，记录很多时可能需要几秒	Reclaim disk space after deleting chat history; this can take a few seconds with many records
+刷新	Refresh
+前置全部窗口	Bring All to Front
+剪切	Cut
+剪贴板里没有图片	No image in the clipboard
+发消息	Message
+发现设备	Discover
+发送	Send
+发送共享链接	Send share link
+发送剪贴板图片	Send clipboard image
+发送图片	Send image
+发送失败	Send failed
+发送中断：	Send interrupted: 
+等待对方接收	Waiting for the other side
+发送中	Sending
+发送文件	Send file
+发送文件…	Send file…
+发送消息	Send message
+发送链接	Send link
+取消	Cancel
+另存为…	Save As…
+只会删除这台设备上的记录。	Only records on this device will be deleted.
+只读访问	Read-only access
+可以在文件管理器里备份 zchat.db	You can back up zchat.db in your file manager
+可选	Optional
+同一局域网里运行 zchat 的设备会自动出现	Devices running zchat on the same LAN appear automatically
+名称	Name
+启动时自动共享	Share automatically on startup
+图片	Images
+在「文件共享」页面开启后，访客可以浏览这个目录	Enable it on the File sharing page so visitors can browse this folder
+在同一局域网的浏览器打开	Open in a browser on the same LAN
+在后台下载新版本，下次打开时生效	Download new versions in the background; they apply on the next launch
+在局域网里用浏览器打开，就能下载共享目录里的文件	Open it in a browser on the LAN to download files from the shared folder
+在手机上打开	Open on phone
+在文件夹中显示	Show in folder
+在线	Online
+在线 	Online 
+在线状态会广播给已连接的设备	Your status is broadcast to connected devices
+地址未知	Address unknown
+备注	Alias
+备注只保存在这台设备上，会替换设备原来的名称。	Aliases are stored only on this device and replace the device's name.
+备注已保存	Alias saved
+复制	Copy
+复制 IP 地址	Copy IP address
+复制下载链接	Copy download link
+复制文本	Copy text
+复制签名	Copy bio
+外观	Appearance
+多人正在输入…	Several people are typing…
+头像	Avatar
+如果无法访问，请检查系统防火墙是否允许 zchat 接收入站连接，并确认访问设备和本机在同一个网段。	If you cannot connect, allow zchat to receive incoming connections in your firewall and make sure the visiting device is on the same subnet.
+完成	Done
+小提示	Tip
+局域网内点对点发送 · 文件通过 TCP 直连传输	Peer-to-peer on your LAN · Files transfer directly over TCP
+局域网聊天 · 不经过服务器	LAN chat · No server involved
+局域网聊天使用说明	LAN chat guide
+局域网聊天，不经过服务器	LAN chat without a server
+已保存到 	Saved to 
+已停止	Stopped
+已发送	Sent
+已复制	Copied
+已复制 	Copied 
+已复制下载链接	Download link copied
+已复制签名	Bio copied
+已复制链接	Link copied
+已清除共享目录	Shared folder cleared
+已读	Read
+已连接 	Connected to 
+已退出群聊「	You left group "
+已送达	Delivered
+帮助	Help
+开启	On
+开启共享	Start sharing
+开启后，本机会在局域网提供一个只读的网页，手机和其他电脑都能访问。	When enabled, this device serves a read-only page on the LAN that phones and other computers can open.
+当前版本 	Current version 
+忙碌	Busy
+成员	Members
+我	Me
+我在 zchat 共享了一个目录：	I shared a folder with zchat: 
+我的 zchat	My zchat
+我：	Me: 
+手动	Manual
+打开	Open
+打开 zchat	Open zchat
+打开 zchat 后自动开启上一个共享目录	Reopen the last shared folder when zchat starts
+打开共享	Open sharing
+打开数据库位置	Open database location
+打开网页即可浏览	Open the page to browse
+把这些地址告诉无法自动发现的设备	Give these addresses to devices that cannot auto-discover
+拷贝	Copy
+搜索会话	Search chats
+搜索会话或消息	Search chats or messages
+搜索聊天记录	Search chat history
+撤回	Unsend
+撤回了一条消息	 unsent a message
+撤销	Undo
+收到图片后自动缓存到本机，打开聊天即可查看	Cache received images locally; open the chat to view them
+数据库已整理	Database compacted
+数据目录	Data folder
+整理	Compact
+整理失败：	Compaction failed: 
+整理数据库	Compact database
+文件	Files
+文件不存在或已被移动	File is missing or was moved
+文件传输服务未启动，无法发送图片	File transfer service is not running; cannot send image
+文件传输服务未启动，无法发送文件	File transfer service is not running; cannot send file
+文件传输端口	File transfer port
+文件传输端口 	File transfer port 
+文件共享	File sharing
+文件共享…	File sharing…
+文件共享已开启	File sharing is on
+文件共享还没有开启	File sharing is off
+文件大小不一致：收到 %d，预期 %d	Size mismatch: received %d, expected %d
+文件通过本机 HTTP 服务发送，不经过任何服务器。	Files are sent through this device's HTTP service, without any server.
+新增了 	added 
+新建群聊	New group
+新建群聊…	New group…
+新消息通知	Message notifications
+无法下载：发送方离线，或不支持文件传输	Cannot download: sender is offline or does not support file transfer
+无法保存到 %s：%v	Could not save to %s: %v
+无法保存粘贴的图片	Could not save the pasted image
+无法创建下载目录 %s：%v	Could not create download folder %s: %v
+无法创建下载目录：	Could not create download folder: 
+无法创建缓存目录 %s：%v	Could not create cache folder %s: %v
+无法启动文件传输服务：	Could not start file transfer service: 
+无法开启文件共享：	Could not start file sharing: 
+无法打开数据目录：	Could not open data folder: 
+无法打开文件：	Could not open file: 
+无法打开链接：	Could not open link: 
+无法监听端口：	Could not listen on port: 
+无法读取图片：	Could not read image: 
+无法读取数据：	Could not read data: 
+无法连接：	Could not connect: 
+昨天	Yesterday
+更多	More
+更新	Update
+最小化	Minimize
+服务	Services
+未命名群聊	Unnamed group
+未知成员	Unknown member
+未知设备	Unknown device
+未连接局域网	Not connected to a LAN
+本机	This device
+本机地址	Local address
+检查更新	Check for Updates
+检查更新…	Check for Updates…
+正在下载…	Downloading…
+正在连接 	Connecting to 
+正在重新搜索局域网设备	Searching the LAN again
+每天检查一次是否有新版本	Check for updates once a day
+没有发现其他设备，也可以先创建一个只有自己的群聊。	No other devices found. You can create a group with just yourself first.
+没有可以邀请的设备。	No devices available to invite.
+没有可发送的文件	No files to send
+没有找到可用的局域网地址。	No usable LAN address found.
+浅色	Light
+消息	Messages
+消息免打扰	Mute chat
+消息已撤回	Message unsent
+深色	Dark
+添加	Add
+添加成员	Add members
+添加成员…	Add members…
+清空…	Clear…
+清空全部聊天记录	Clear all chat history
+清空聊天记录	Clear chat history
+清除	Clear
+清除备注	Clear alias
+点击下载图片	Click to download image
+状态	Status
+用相机或浏览器扫描二维码，就能浏览共享目录。	Scan the QR code with a camera or browser to browse the shared folder.
+监听端口	Listen port
+确定	OK
+确定删除「	Delete "
+确定把「	Remove "
+确定移除「	Remove "
+离开	Away
+离线	Offline
+移出成员	Remove member
+移出群聊	Remove from group
+移除	Remove
+移除设备	Remove device
+窗口	Window
+窗口不在前台时显示系统通知	Show system notifications when the window is in the background
+端口 	Port 
+签名	Bio
+粘贴	Paste
+编辑	Edit
+缩放	Zoom
+网络	Network
+网络已重启	Network restarted
+网络设置	Network settings
+置顶会话	Pin chat
+群主	Owner
+群聊	Group
+群聊「	Group "
+群聊信息	Group info
+群聊只在加入的成员之间发送，消息会分别送达每台在线设备。	Groups send only to joined members; messages reach each online device separately.
+群聊名称	Group name
+群聊改名为「	Group renamed to "
+聊天	Chat
+聊天记录	Chat history
+聊天记录已清空	Chat history cleared
+聊天附件通过这个 TCP 端口直连传输，默认 42225	Chat attachments transfer directly over this TCP port; default 42225
+自动下载图片	Auto-download images
+自动下载并安装	Download and install automatically
+自动发现被网络屏蔽时，输入对方的 IP 地址或 IP:端口。	If discovery is blocked by the network, enter the other device's IP address or IP:port.
+自动发现设备	Discover devices automatically
+自动检查更新	Check for updates automatically
+解散	Dissolve
+解散群聊	Dissolve group
+让端口、文件传输或发现设置立即生效	Apply port, file transfer, or discovery changes now
+记录按会话和时间建立索引，保存在数据目录的 zchat.db 中	Records are indexed by chat and time in zchat.db in the data folder
+设备	Devices
+设置	Settings
+设置…	Settings…
+设置备注	Set alias
+设置备注…	Set alias…
+访问地址	Access address
+请勿打扰	Do Not Disturb
+请确认对方也打开了 zchat，并且两台设备在同一个 Wi-Fi 或局域网内。\n如果网络屏蔽了广播，可以用 IP 地址直接连接。	Make sure the other device also has zchat open and both are on the same Wi-Fi or LAN.\nIf the network blocks broadcasts, connect directly by IP address.
+资料、聊天记录和文件缓存都保存在这里	Your profile, chat history, and file cache are stored here
+资料已保存	Profile saved
+超过 2 分钟的消息不能撤回	Messages older than 2 minutes cannot be unsent
+跟随系统	Use system setting
+跟随系统，或固定浅色、深色	Follow the system, or fix light or dark mode
+输入消息，Enter 发送，Shift+Enter 换行	Type a message; Enter sends, Shift+Enter adds a new line
+运行中	Running
+还没有会话\n在「发现设备」里找人聊聊	No chats yet\nFind someone in Discover to start chatting
+还没有发现设备	No devices found yet
+还没有消息	No messages yet
+还没有选择目录，附件仍然可以发送	No folder selected; attachments can still be sent
+这些设置只影响这台设备。	These settings only affect this device.
+这会删除这台设备上所有会话的消息，且无法恢复。	This deletes messages in every chat on this device. It cannot be undone.
+连接	Connect
+连接已断开	Connection lost
+对方已取消	The other side cancelled
+退出	Quit 
+退出 zchat	Quit zchat
+退出群聊	Leave group
+退出群聊…	Leave group…
+选择	Select
+选择…	Select…
+选择一张图片，会缩放到小尺寸后保存在本机	Choose an image; it is scaled down and stored on this device
+选择下载目录	Choose download folder
+选择共享目录	Choose shared folder
+选择头像	Choose avatar
+选择成员	Select members
+选择目录…	Choose folder…
+通知	Notifications
+通过 IP 连接	Connect by IP
+通过 IP 连接…	Connect by IP…
+通过 UDP 组播和广播在局域网里寻找其他 zchat	Find other zchat devices on the LAN using UDP multicast and broadcast
+邀请后会把自己的群聊信息发送给新成员。	Inviting someone sends them this group's details.
+重做	Redo
+重启网络	Restart network
+重新启动网络	Restart network
+重新搜索	Search again
+隐藏	Hide 
+隐藏其他	Hide Others
+隐身	Invisible
+项目主页	Project page
+；上次检查：	; last checked: 
+语言	Language
+界面语言，切换后立即生效	Interface language; changes apply immediately
+简体中文	Simplified Chinese
+」	"
+、	, 
+确定退出群聊「	Leave group "
+确定解散群聊「	Dissolve group "
+用户 ID	User ID
+未启用	Off
+版本	Version
+平台	Platform
+最后在线	Last seen
+编辑资料	Edit profile
+查看资料	View profile
+：	: 
+请求格式错误	Bad request
+文件不存在或发送方已重启	File is gone or the sender restarted
+文件已被移动或删除	File was moved or deleted
+续传位置无效	Invalid resume position
+无法读取文件	Could not read file
+无法定位文件	Could not seek in file
+无法传输文件	Could not transfer file
+zchat: 不能连接自己	zchat: cannot connect to yourself
+2006年1月2日	Jan 2, 2006
+共享目录通过本机 HTTP 服务提供，不经过任何服务器。	The shared folder is served over this device's HTTP service, without any server.
+共享目录是只读的，访客不能上传或修改文件。\n\n聊天附件通过独立的 TCP 端口直连发送，不依赖这个共享目录。\n\n关闭 zchat 后共享链接会失效。	The shared folder is read-only; visitors cannot upload or modify files.\n\nChat attachments are sent directly over a separate TCP port and do not depend on this shared folder.\n\nSharing links stop working when zchat closes.
+文件已不存在	File is gone
+在共享目录中搜索	Search in shared folder
+搜索	Search
+返回上一级	Back
+这个目录是空的	This folder is empty
+由 zchat 在局域网共享 · 只读	Shared by zchat on the LAN · Read-only
+zchat 文件共享	zchat File Sharing
+这个服务正在运行，但还没有选择共享目录。	This service is running, but no shared folder has been selected.
+无效的路径	Invalid path
+无法读取目录	Could not read folder
+文件夹	Folder
+%d 个文件	%d files
+搜索 “%s” · %d 个结果	Search “%s” · %d results
+上传目录	Upload folder
+上传目录不存在	Upload folder does not exist
+上传目录已更新	Upload folder updated
+已清除上传目录	Upload folder cleared
+选择上传目录	Choose upload folder
+浏览与上传	Browse and upload
+未开启上传	Uploads off
+允许访客上传	Visitors can upload
+开启共享后生效	Takes effect when sharing starts
+同一局域网内知道地址的访客都可以上传	Anyone on the LAN with the address can upload
+还没有选择上传目录，访客只能浏览和下载	No upload folder selected; visitors can only browse and download
+在局域网里用浏览器打开，就能浏览共享目录并上传文件	Open it in a browser on the LAN to browse the shared folder and upload files
+开启后，本机会在局域网提供文件网页，手机和其他电脑都能访问。	When enabled, this device serves a file page on the LAN that phones and other computers can open.
+共享目录和上传目录通过本机 HTTP 服务提供，不经过任何服务器。	The shared and upload folders are served over this device's HTTP service, without any server.
+共享目录只读；访客上传的文件会保存到「上传目录」，不会修改共享目录。\n\n聊天附件通过独立的 TCP 端口直连发送，不依赖这个共享目录。\n\n关闭 zchat 后共享链接会失效。	The shared folder is read-only; files visitors upload go to the upload folder and do not modify it.\n\nChat attachments are sent directly over a separate TCP port and do not depend on this shared folder.\n\nSharing links stop working when zchat closes.
+打开网页即可浏览或上传	Open the page to browse or upload
+在「文件共享」页面开启后，访客可以通过网页上传文件到这个目录	After sharing is enabled on the File Sharing page, visitors can upload files to this folder from the web page
+共享目录未设置，但可以上传文件	No shared folder is set, but files can still be uploaded.
+选择文件后上传到共享者的上传目录	Choose files to upload to the sharer's upload folder
+上传	Upload
+已上传 %d 个文件	Uploaded %d file(s)
+文件过大	File too large
+无法保存文件	Could not save the file
+没有选择文件	No files selected
+由 zchat 在局域网共享	Shared by zchat on the LAN
+由 zchat 在局域网共享 · 可上传	Shared by zchat on the LAN · Uploads allowed

@@ -156,10 +156,10 @@ func typingLabel(names []string) string {
 	case 0:
 		return ""
 	case 1:
-		return names[0] + " 正在输入…"
+		return names[0] + tr(" 正在输入…")
 	case 2:
-		return names[0] + "、" + names[1] + " 正在输入…"
+		return names[0] + tr("、") + names[1] + tr(" 正在输入…")
 	default:
-		return "多人正在输入…"
+		return tr("多人正在输入…")
 	}
 }

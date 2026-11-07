@@ -24,18 +24,19 @@ const (
 // announcement is the small UDP packet peers exchange. It carries no
 // avatar: the TCP hello does, once, so the heartbeat stays tiny.
 type announcement struct {
-	App       string `json:"app"`
-	V         int    `json:"v"`
-	Kind      string `json:"kind"`
-	ID        string `json:"id"`
-	Instance  string `json:"instance,omitempty"`
-	Name      string `json:"name"`
-	Signature string `json:"signature,omitempty"`
-	Status    string `json:"status"`
-	Version   string `json:"version,omitempty"`
-	Platform  string `json:"platform,omitempty"`
-	Port      int    `json:"port"`
-	TS        int64  `json:"ts"`
+	App          string `json:"app"`
+	V            int    `json:"v"`
+	Kind         string `json:"kind"`
+	ID           string `json:"id"`
+	Instance     string `json:"instance,omitempty"`
+	Name         string `json:"name"`
+	Signature    string `json:"signature,omitempty"`
+	Status       string `json:"status"`
+	Version      string `json:"version,omitempty"`
+	Platform     string `json:"platform,omitempty"`
+	Port         int    `json:"port"`
+	TransferPort int    `json:"transferPort,omitempty"`
+	TS           int64  `json:"ts"`
 }
 
 func (a announcement) encode() ([]byte, error) {

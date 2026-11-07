@@ -36,7 +36,7 @@ var PresenceOptions = []struct {
 	{Invisible, "隐身"},
 }
 
-// Label names a presence in Chinese.
+// Label is the source label; the UI translates it for display.
 func (p Presence) Label() string {
 	for _, o := range PresenceOptions {
 		if o.Value == p {
@@ -56,17 +56,18 @@ func (p Presence) Available() bool {
 
 // Peer is another zchat app on the LAN, as far as this one knows it.
 type Peer struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Signature string    `json:"signature,omitempty"`
-	Avatar    string    `json:"avatar,omitempty"` // PNG, base64
-	Status    Presence  `json:"status"`
-	IP        string    `json:"ip,omitempty"`
-	Port      int       `json:"port,omitempty"`
-	Version   string    `json:"version,omitempty"`
-	Platform  string    `json:"platform,omitempty"`
-	LastSeen  time.Time `json:"lastSeen"`
-	Connected bool      `json:"-"`
+	ID           string    `json:"id"`
+	Name         string    `json:"name"`
+	Signature    string    `json:"signature,omitempty"`
+	Avatar       string    `json:"avatar,omitempty"` // PNG, base64
+	Status       Presence  `json:"status"`
+	IP           string    `json:"ip,omitempty"`
+	Port         int       `json:"port,omitempty"`
+	TransferPort int       `json:"transferPort,omitempty"`
+	Version      string    `json:"version,omitempty"`
+	Platform     string    `json:"platform,omitempty"`
+	LastSeen     time.Time `json:"lastSeen"`
+	Connected    bool      `json:"-"`
 
 	// Alias is a local remark that replaces Name in the UI.
 	Alias string `json:"alias,omitempty"`
@@ -95,6 +96,15 @@ func (p Peer) Addr() string {
 		return p.IP
 	}
 	return fmt.Sprintf("%s:%d", p.IP, p.Port)
+}
+
+// TransferAddr is where to fetch files the peer offers, or "" when the
+// peer predates socket transfers.
+func (p Peer) TransferAddr() string {
+	if p.IP == "" || p.TransferPort == 0 {
+		return ""
+	}
+	return fmt.Sprintf("%s:%d", p.IP, p.TransferPort)
 }
 
 // Profile is the user's own identity, kept in the data directory and
@@ -208,6 +218,7 @@ type File struct {
 	Size   int64  `json:"size"`
 	MIME   string `json:"mime,omitempty"`
 	URL    string `json:"url,omitempty"`
+	Token  string `json:"token,omitempty"`
 	Path   string `json:"path,omitempty"`
 	Width  int    `json:"width,omitempty"`
 	Height int    `json:"height,omitempty"`

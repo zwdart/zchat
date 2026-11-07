@@ -28,7 +28,7 @@ func (a *app) groupForConv(c *model.Conversation) model.Group {
 func (a *app) createGroup(name string, picked []string) *model.Conversation {
 	name = strings.TrimSpace(name)
 	if name == "" {
-		name = "未命名群聊"
+		name = tr("未命名群聊")
 	}
 	members := []string{a.profile.ID}
 	seen := map[string]bool{a.profile.ID: true}
@@ -52,7 +52,7 @@ func (a *app) createGroup(name string, picked []string) *model.Conversation {
 	c.UpdatedAt = now
 	a.convs[c.ID] = c
 	a.msgs[c.ID] = nil
-	a.appendSystem(c, "你创建了群聊「"+name+"」")
+	a.appendSystem(c, tr("你创建了群聊「")+name+tr("」"))
 	a.sendGroupAction(g, proto.GroupInvite, "")
 	a.scheduleSave()
 	a.openConv(c.ID)
@@ -89,9 +89,10 @@ func (a *app) receiveGroup(from string, action proto.GroupAction) {
 			}
 			if a.store != nil {
 				_ = a.store.DeleteConversation(g.ID)
+				a.refreshDBStats()
 			}
 			a.scheduleSave()
-			a.setToast("群聊「" + c.Title + "」已解散")
+			a.setToast(tr("群聊「") + c.Title + tr("」已解散"))
 		}
 	}
 }
@@ -106,14 +107,14 @@ func (a *app) receiveInvite(from string, g model.Group, intro string) {
 	}
 	c := g.Conversation()
 	if c.Title == "" {
-		c.Title = "群聊"
+		c.Title = tr("群聊")
 	}
 	c.UpdatedAt = time.Now()
 	a.convs[c.ID] = c
 	a.msgs[c.ID] = nil
-	text := a.peerName(from) + " 邀请你加入群聊"
+	text := a.peerName(from) + tr(" 邀请你加入群聊")
 	if intro != "" {
-		text += "：" + intro
+		text += tr("：") + intro
 	}
 	a.appendSystem(c, text)
 	c.Unread = 1
@@ -132,7 +133,7 @@ func (a *app) receiveGroupUpdate(from string, g model.Group) {
 		c = g.Conversation()
 		a.convs[g.ID] = c
 		a.msgs[g.ID] = nil
-		a.appendSystem(c, "你加入了群聊「"+c.Title+"」")
+		a.appendSystem(c, tr("你加入了群聊「")+c.Title+tr("」"))
 	} else {
 		if !g.HasMember(a.profile.ID) {
 			delete(a.convs, g.ID)
@@ -142,8 +143,9 @@ func (a *app) receiveGroupUpdate(from string, g model.Group) {
 			}
 			if a.store != nil {
 				_ = a.store.DeleteConversation(g.ID)
+				a.refreshDBStats()
 			}
-			a.setToast("你已被移出群聊「" + c.Title + "」")
+			a.setToast(tr("你已被移出群聊「") + c.Title + tr("」"))
 			a.scheduleSave()
 			return
 		}
@@ -172,7 +174,7 @@ func (a *app) receiveGroupLeave(g model.Group, from string) {
 	}
 	c.Members = members
 	c.UpdatedAt = time.Now()
-	a.appendSystem(c, a.peerName(from)+" 退出了群聊")
+	a.appendSystem(c, a.peerName(from)+tr(" 退出了群聊"))
 	a.scheduleSave()
 	a.redraw()
 }
@@ -190,7 +192,7 @@ func (a *app) notifyGroupInvite(c *model.Conversation, from string) {
 	}
 	n := mygo.NewNotification(mygo.NotificationOptions{
 		ID:    "chat:" + c.ID,
-		Title: a.peerName(from) + " 邀请你加入群聊",
+		Title: a.peerName(from) + tr(" 邀请你加入群聊"),
 		Body:  c.Title,
 		Group: c.ID,
 	})
@@ -208,7 +210,7 @@ func (a *app) renameGroup(c *model.Conversation, name string) {
 	}
 	c.Title = name
 	c.UpdatedAt = time.Now()
-	a.appendSystem(c, "群聊改名为「"+name+"」")
+	a.appendSystem(c, tr("群聊改名为「")+name+tr("」"))
 	a.sendGroupAction(a.groupForConv(c), proto.GroupUpdate, "")
 	a.scheduleSave()
 	a.redraw()
@@ -235,7 +237,7 @@ func (a *app) addGroupMembers(c *model.Conversation, ids []string) {
 		return
 	}
 	c.UpdatedAt = time.Now()
-	a.appendSystem(c, "新增了 "+itoa(added)+" 位成员")
+	a.appendSystem(c, tr("新增了 ")+itoa(added)+tr(" 位成员"))
 	a.sendGroupAction(a.groupForConv(c), proto.GroupUpdate, "")
 	a.scheduleSave()
 	a.redraw()
@@ -253,7 +255,7 @@ func (a *app) removeGroupMember(c *model.Conversation, id string) {
 	}
 	c.Members = members
 	c.UpdatedAt = time.Now()
-	a.appendSystem(c, a.peerName(id)+" 被移出了群聊")
+	a.appendSystem(c, a.peerName(id)+tr(" 被移出了群聊"))
 	a.sendGroupAction(a.groupForConv(c), proto.GroupUpdate, "")
 	a.scheduleSave()
 	a.redraw()
@@ -270,6 +272,7 @@ func (a *app) leaveGroup(c *model.Conversation) {
 			a.deliver(id, f)
 		}
 	}
+	a.forgetMessageFiles(a.msgs[c.ID])
 	delete(a.convs, c.ID)
 	delete(a.msgs, c.ID)
 	if a.active == c.ID {
@@ -277,9 +280,10 @@ func (a *app) leaveGroup(c *model.Conversation) {
 	}
 	if a.store != nil {
 		_ = a.store.DeleteConversation(c.ID)
+		a.refreshDBStats()
 	}
 	a.scheduleSave()
-	a.setToast("已退出群聊「" + c.Title + "」")
+	a.setToast(tr("已退出群聊「") + c.Title + tr("」"))
 }
 
 func (a *app) disbandGroup(c *model.Conversation) {
@@ -293,6 +297,7 @@ func (a *app) disbandGroup(c *model.Conversation) {
 			a.deliver(id, f)
 		}
 	}
+	a.forgetMessageFiles(a.msgs[c.ID])
 	delete(a.convs, c.ID)
 	delete(a.msgs, c.ID)
 	if a.active == c.ID {
@@ -300,9 +305,10 @@ func (a *app) disbandGroup(c *model.Conversation) {
 	}
 	if a.store != nil {
 		_ = a.store.DeleteConversation(c.ID)
+		a.refreshDBStats()
 	}
 	a.scheduleSave()
-	a.setToast("群聊「" + c.Title + "」已解散")
+	a.setToast(tr("群聊「") + c.Title + tr("」已解散"))
 }
 
 func (a *app) appendSystem(c *model.Conversation, text string) {
@@ -337,7 +343,7 @@ func (a *app) groupMembers(c *model.Conversation) []model.Peer {
 			out = append(out, *p)
 			continue
 		}
-		out = append(out, model.Peer{ID: id, Name: "未知成员", Status: model.Offline})
+		out = append(out, model.Peer{ID: id, Name: tr("未知成员"), Status: model.Offline})
 	}
 	return out
 }

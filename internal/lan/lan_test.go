@@ -31,11 +31,13 @@ func TestConnectAddressRegisters(t *testing.T) {
 	a := New(Options{
 		Profile:          model.Profile{ID: "u_a", Name: "A", Status: model.Online},
 		Port:             portA,
+		TransferPort:     43000,
 		DisableDiscovery: true,
 	})
 	b := New(Options{
 		Profile:          model.Profile{ID: "u_b", Name: "B", Status: model.Online},
 		Port:             portB,
+		TransferPort:     43001,
 		DisableDiscovery: true,
 		OnConnect:        func(p model.Peer) { bConnected <- p },
 		OnFrame:          func(_ string, f proto.Frame) { frames <- f },
@@ -53,7 +55,7 @@ func TestConnectAddressRegisters(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if peer.ID != "u_b" {
+	if peer.ID != "u_b" || peer.TransferPort != 43001 {
 		t.Fatalf("peer = %+v", peer)
 	}
 	if !a.Connected(peer.ID) {
@@ -61,7 +63,7 @@ func TestConnectAddressRegisters(t *testing.T) {
 	}
 	select {
 	case p := <-bConnected:
-		if p.ID != "u_a" {
+		if p.ID != "u_a" || p.TransferPort != 43000 {
 			t.Fatalf("incoming peer = %+v", p)
 		}
 	case <-time.After(3 * time.Second):
@@ -91,11 +93,11 @@ func TestApplyAnnouncement(t *testing.T) {
 	n := New(Options{Profile: model.Profile{ID: "u_me", Name: "Me"}, DisableDiscovery: true})
 	n.applyAnnouncement(announcement{
 		App: appTag, V: proto.Version, Kind: announceHello, ID: "u_hidden",
-		Name: "Hidden", Status: string(model.Invisible), Port: 47824,
+		Name: "Hidden", Status: string(model.Invisible), Port: 42224,
 	}, net.ParseIP("192.168.1.9"))
 	n.applyAnnouncement(announcement{
 		App: appTag, V: proto.Version, Kind: announceHello, ID: "u_me",
-		Name: "Me", Status: string(model.Online), Port: 47824,
+		Name: "Me", Status: string(model.Online), Port: 42224,
 	}, net.ParseIP("192.168.1.10"))
 
 	p, ok := n.Peer("u_hidden")
@@ -115,11 +117,11 @@ func TestPeersSortAvailableFirst(t *testing.T) {
 	n := New(Options{Profile: model.Profile{ID: "u_me", Name: "Me"}, DisableDiscovery: true})
 	n.applyAnnouncement(announcement{
 		App: appTag, V: proto.Version, Kind: announceHello, ID: "u_off",
-		Name: "Offline", Status: string(model.Offline), Port: 47824,
+		Name: "Offline", Status: string(model.Offline), Port: 42224,
 	}, net.ParseIP("192.168.1.11"))
 	n.applyAnnouncement(announcement{
 		App: appTag, V: proto.Version, Kind: announceHello, ID: "u_on",
-		Name: "Online", Status: string(model.Online), Port: 47824,
+		Name: "Online", Status: string(model.Online), Port: 42224,
 	}, net.ParseIP("192.168.1.12"))
 	peers := n.Peers()
 	if len(peers) != 2 || peers[0].ID != "u_on" {

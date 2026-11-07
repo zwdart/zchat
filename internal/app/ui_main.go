@@ -108,20 +108,20 @@ func (a *app) sidebar(c *ui.Context) {
 		a.profileRow(c)
 		a.searchField(c)
 		ui.Box(c).Height(6)
-		a.navItem(c, iconChatFill, "聊天", pageChat)
-		a.navItem(c, iconCompass, "发现设备", pageDiscover)
-		a.navItem(c, iconFolder, "文件共享", pageShare)
+		a.navItem(c, iconChatFill, tr("聊天"), pageChat)
+		a.navItem(c, iconCompass, tr("发现设备"), pageDiscover)
+		a.navItem(c, iconFolder, tr("文件共享"), pageShare)
 		ui.Row(c).Padding(10, 10, 6, 10).AlignItems(ui.Center).Children(func() {
-			ui.Text(c, "会话").FontSize(11.5).FontWeight(700).TextColor(p.faint).LetterSpacing(0.6)
+			ui.Text(c, tr("会话")).FontSize(11.5).FontWeight(700).TextColor(p.faint).LetterSpacing(0.6)
 			ui.Spacer(c)
-			b := iconButton(c, iconPlus, 15, p.muted, "新建群聊")
+			b := iconButton(c, iconPlus, 15, p.muted, tr("新建群聊"))
 			if b.Clicked() {
 				a.openNewGroup()
 			}
 		})
 		ui.Scroll(c).Key("conversations").Grow(1).Margin(0, -6).Padding(0, 6).Gap(2).Children(func() {
 			if len(a.convs) == 0 {
-				ui.Text(c, "还没有会话\n在「发现设备」里找人聊聊").FontSize(12.5).TextColor(p.muted).LineHeight(1.6).Padding(10, 12)
+				ui.Text(c, tr("还没有会话\n在「发现设备」里找人聊聊")).FontSize(12.5).TextColor(p.muted).LineHeight(1.6).Padding(10, 12)
 			}
 			for _, conv := range a.orderedConvs() {
 				if !a.convMatches(conv) {
@@ -136,7 +136,7 @@ func (a *app) sidebar(c *ui.Context) {
 
 func (a *app) profileRow(c *ui.Context) {
 	p := a.pal
-	b := ui.ButtonBase(c).Key("profile").Padding(8, 8).Radius(12).Gap(10).AlignItems(ui.Center).FocusRing(false).Label("个人资料")
+	b := ui.ButtonBase(c).Key("profile").Padding(8, 8).Radius(12).Gap(10).AlignItems(ui.Center).FocusRing(false).Label(tr("个人资料"))
 	bg := ui.Transparent
 	if b.Hovered() {
 		bg = p.hover
@@ -148,7 +148,7 @@ func (a *app) profileRow(c *ui.Context) {
 			ui.Text(c, a.profile.Name).FontSize(13.5).FontWeight(650).SingleLine()
 			ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
 				dot(c, a.profile.Status, 7)
-				ui.Text(c, a.profile.Status.Label()).FontSize(11.5).TextColor(p.muted).SingleLine()
+				ui.Text(c, presenceLabel(a.profile.Status)).FontSize(11.5).TextColor(p.muted).SingleLine()
 			})
 		})
 		ui.Icon(c, iconSettings).Size(15, 15).TextColor(p.faint)
@@ -156,10 +156,18 @@ func (a *app) profileRow(c *ui.Context) {
 	if b.Clicked() {
 		a.openSettings()
 	}
+	b.ContextMenu(func(m *ui.Menu) {
+		if m.Item(tr("查看资料")).Chosen() {
+			a.openUserInfo(a.profile.ID)
+		}
+		if m.Item(tr("设置…")).Chosen() {
+			a.openSettings()
+		}
+	})
 }
 
 func (a *app) searchField(c *ui.Context) {
-	in := ui.SearchField(c, &a.query).Bind(&a.searchBox).Label("搜索会话").Placeholder("搜索会话或消息")
+	in := ui.SearchField(c, &a.query).Bind(&a.searchBox).Label(tr("搜索会话")).Placeholder(tr("搜索会话或消息"))
 	in.Margin(4, 8, 4, 8)
 	in.Changed()
 }
@@ -197,7 +205,7 @@ func (a *app) convMatches(conv *model.Conversation) bool {
 	if strings.Contains(strings.ToLower(a.convTitle(conv)), q) {
 		return true
 	}
-	if m := a.lastMessage(conv.ID); m != nil && strings.Contains(strings.ToLower(m.Preview()), q) {
+	if m := a.lastMessage(conv.ID); m != nil && strings.Contains(strings.ToLower(messagePreview(m)), q) {
 		return true
 	}
 	return false
@@ -225,11 +233,11 @@ func (a *app) convRow(c *ui.Context, conv *model.Conversation) {
 				}
 			})
 			ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
-				preview := "还没有消息"
+				preview := tr("还没有消息")
 				if m := a.lastMessage(conv.ID); m != nil {
-					preview = m.Preview()
+					preview = messagePreview(m)
 					if m.Mine && m.Kind != model.KindSystem {
-						preview = "我：" + preview
+						preview = tr("我：") + preview
 					}
 				}
 				ui.Text(c, preview).FontSize(11.5).TextColor(p.muted).SingleLine().Grow(1).Shrink(1).MinWidth(0)
@@ -248,20 +256,28 @@ func (a *app) convRow(c *ui.Context, conv *model.Conversation) {
 		a.openConv(conv.ID)
 	}
 	b.ContextMenu(func(m *ui.Menu) {
-		if m.Item("置顶会话").Checked(conv.Pinned).Chosen() {
+		if conv.Kind == model.KindGroup {
+			if m.Item(tr("群聊信息")).Chosen() {
+				a.openGroupInfo(conv)
+			}
+		} else if m.Item(tr("查看资料")).Chosen() {
+			a.openUserInfo(conv.PeerID)
+		}
+		m.Separator()
+		if m.Item(tr("置顶会话")).Checked(conv.Pinned).Chosen() {
 			conv.Pinned = !conv.Pinned
 			a.scheduleSave()
 		}
-		if m.Item("消息免打扰").Checked(conv.Muted).Chosen() {
+		if m.Item(tr("消息免打扰")).Checked(conv.Muted).Chosen() {
 			conv.Muted = !conv.Muted
 			a.scheduleSave()
 		}
 		m.Separator()
-		if m.Item("清空聊天记录").Chosen() {
-			a.confirm("清空聊天记录", "只会删除这台设备上的记录。", func() { a.clearHistory(conv.ID) })
+		if m.Item(tr("清空聊天记录")).Chosen() {
+			a.confirm(tr("清空聊天记录"), tr("只会删除这台设备上的记录。"), func() { a.clearHistory(conv.ID) })
 		}
-		if m.Item("删除会话").Chosen() {
-			a.confirm("删除会话", "确定删除「"+a.convTitle(conv)+"」吗？", func() { a.deleteConversation(conv.ID) })
+		if m.Item(tr("删除会话")).Chosen() {
+			a.confirm(tr("删除会话"), tr("确定删除「")+a.convTitle(conv)+tr("」吗？"), func() { a.deleteConversation(conv.ID) })
 		}
 	})
 }
@@ -276,7 +292,7 @@ func (a *app) convAvatar(c *ui.Context, conv *model.Conversation, size float32) 
 	p := a.peers[conv.PeerID]
 	name, avatar := "?", ""
 	if p != nil {
-		name, avatar = p.Title(), p.Avatar
+		name, avatar = tr(p.Title()), p.Avatar
 	}
 	ui.Avatar(c, name, a.avatarBitmap(avatar)).Size(size, size)
 }
@@ -304,10 +320,10 @@ func shortStamp(t, now time.Time) string {
 		return t.Format("15:04")
 	}
 	if model.SameDay(t, now.AddDate(0, 0, -1)) {
-		return "昨天"
+		return tr("昨天")
 	}
 	if t.Year() == now.Year() {
-		return t.Format("1月2日")
+		return t.Format(tr("1月2日"))
 	}
 	return t.Format("2006/1/2")
 }
@@ -322,33 +338,45 @@ func shortCount(n int) string {
 func (a *app) statusRow(c *ui.Context) {
 	ui.Row(c).Padding(8, 8).AlignItems(ui.Center).Gap(8).Children(func() {
 		dot(c, a.profile.Status, 8)
-		ui.PopoverMenuButton(c, a.profile.Status.Label(), func(m *ui.Menu) {
+		ui.PopoverMenuButton(c, presenceLabel(a.profile.Status), func(m *ui.Menu) {
 			for _, o := range model.PresenceOptions {
-				if m.Item(o.Label).Checked(a.profile.Status == o.Value).Chosen() {
+				if m.Item(tr(o.Label)).Checked(a.profile.Status == o.Value).Chosen() {
 					a.setStatus(o.Value)
 				}
 			}
 			m.Separator()
-			if m.Item("设置…").Chosen() {
+			if m.Item(tr("设置…")).Chosen() {
 				a.openSettings()
 			}
 		}).Grow(1).Justify(ui.Start)
 	})
 }
 
+// contentTop is the room the native window controls take at the top of the
+// content pane. The sidebar offsets itself when the controls are on its
+// side; this keeps the chat, discover and share pages clear when they are
+// over the content, as on Windows and most Linux desktops.
+func (a *app) contentTop(c *ui.Context) float32 {
+	bar := c.TitleBar()
+	if bar.Height > 0 && bar.Right > 0 {
+		return bar.Height
+	}
+	return 0
+}
+
 func (a *app) welcomePage(c *ui.Context) {
 	p := a.pal
-	ui.Column(c).Fill().Center().Gap(14).Children(func() {
+	ui.Column(c).Fill().Center().Gap(14).DragWindow().Children(func() {
 		ui.Box(c).Size(84, 84).Radius(26).Background(p.accent.Alpha(0.12)).Center().Children(func() {
 			ui.Icon(c, iconChatFill).Size(40, 40).TextColor(p.accent)
 		})
 		ui.Text(c, "zchat").FontSize(28).FontWeight(750).LetterSpacing(-0.5)
-		ui.Text(c, "局域网聊天，不经过服务器").FontSize(14).TextColor(p.muted)
+		ui.Text(c, tr("局域网聊天，不经过服务器")).FontSize(14).TextColor(p.muted)
 		ui.Row(c).Gap(10).Margin(0, 18, 0, 0).Children(func() {
-			if pillButton(c, iconCompass, "发现设备", p.accent, p.onAcc).Clicked() {
+			if pillButton(c, iconCompass, tr("发现设备"), p.accent, p.onAcc).Clicked() {
 				a.setPage(pageDiscover)
 			}
-			if pillButton(c, iconUsers, "新建群聊", p.panel, p.text).Clicked() {
+			if pillButton(c, iconUsers, tr("新建群聊"), p.panel, p.text).Clicked() {
 				a.openNewGroup()
 			}
 		})

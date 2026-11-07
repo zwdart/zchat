@@ -1,20 +1,48 @@
 package app
 
 import (
-	_ "embed"
+	"bytes"
+	"image"
+	"image/png"
 	"log"
-	"runtime"
 
 	"github.com/egoist/mygo"
+	xdraw "golang.org/x/image/draw"
 
 	"xin.dart.zchat/internal/model"
 )
 
-//go:embed tray/tray.png
-var trayColor []byte
+var (
+	trayIconPNG    []byte
+	trayIconDevPNG []byte
+)
 
-//go:embed tray/tray-template.png
-var trayTemplate []byte
+// SetTrayIcons supplies the app icons used in the tray. The root package
+// embeds them from resources/, outside this package.
+func SetTrayIcons(icon, dev []byte) {
+	trayIconPNG, trayIconDevPNG = icon, dev
+}
+
+// trayIcon returns the app icon at the size tray areas expect. The
+// production icon and the development icon are the only tray icons; there
+// is no separate tray artwork.
+func trayIcon() []byte {
+	src := trayIconPNG
+	if mygo.IsDev() && len(trayIconDevPNG) > 0 {
+		src = trayIconDevPNG
+	}
+	img, err := png.Decode(bytes.NewReader(src))
+	if err != nil {
+		return src
+	}
+	dst := image.NewRGBA(image.Rect(0, 0, 32, 32))
+	xdraw.CatmullRom.Scale(dst, dst.Bounds(), img, img.Bounds(), xdraw.Over, nil)
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, dst); err != nil {
+		return src
+	}
+	return buf.Bytes()
+}
 
 // applyTray adds the icon in the menu bar or notification area.
 func (a *app) applyTray() {
@@ -22,16 +50,11 @@ func (a *app) applyTray() {
 		a.tray.Destroy()
 		a.tray = nil
 	}
-	icon, template := trayColor, false
-	if runtime.GOOS == "darwin" {
-		icon, template = trayTemplate, true
-	}
 	t, err := mygo.NewTray(mygo.TrayOptions{
-		ID:             "zchat",
-		Icon:           icon,
-		IconIsTemplate: template,
-		ToolTip:        "zchat",
-		Menu:           a.trayMenu(),
+		ID:      "zchat",
+		Icon:    trayIcon(),
+		ToolTip: "zchat",
+		Menu:    a.trayMenu(),
 	})
 	if err != nil {
 		log.Println("zchat: tray:", err)
@@ -58,33 +81,33 @@ func (a *app) trayMenu() *mygo.Menu {
 	for _, o := range model.PresenceOptions {
 		o := o
 		statusItems = append(statusItems, &mygo.MenuItem{
-			Label:   o.Label,
+			Label:   tr(o.Label),
 			Type:    mygo.MenuItemRadio,
 			Checked: a.profile.Status == o.Value,
 			Click:   run(func() { a.setStatus(o.Value) }),
 		})
 	}
 	return mygo.NewMenu([]*mygo.MenuItem{
-		{Label: "打开 zchat", Click: run(a.showMain)},
+		{Label: tr("打开 zchat"), Click: run(a.showMain)},
 		mygo.Separator(),
-		{Label: "状态", Submenu: statusItems},
+		{Label: tr("状态"), Submenu: statusItems},
 		mygo.Separator(),
-		{Label: "新建群聊…", Click: run(func() {
+		{Label: tr("新建群聊…"), Click: run(func() {
 			a.showMain()
 			a.openNewGroup()
 		})},
-		{Label: "发现设备", Click: run(func() {
+		{Label: tr("发现设备"), Click: run(func() {
 			a.showMain()
 			a.setPage(pageDiscover)
 		})},
-		{Label: "文件共享", Click: run(func() {
+		{Label: tr("文件共享"), Click: run(func() {
 			a.showMain()
 			a.setPage(pageShare)
 		})},
 		mygo.Separator(),
-		{Label: "设置…", Click: run(a.openSettings)},
-		{Label: "检查更新…", Click: run(checkForUpdates)},
+		{Label: tr("设置…"), Click: run(a.openSettings)},
+		{Label: tr("检查更新…"), Click: run(checkForUpdates)},
 		mygo.Separator(),
-		{Label: "退出 zchat", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
+		{Label: tr("退出 zchat"), Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
 	})
 }

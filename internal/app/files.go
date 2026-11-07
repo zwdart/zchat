@@ -10,6 +10,7 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"io"
+	"log"
 	"mime"
 	"net/http"
 	"os"
@@ -23,6 +24,7 @@ import (
 	"xin.dart.zchat/internal/model"
 	"xin.dart.zchat/internal/netutil"
 	"xin.dart.zchat/internal/share"
+	"xin.dart.zchat/internal/transfer"
 )
 
 // startShare starts the HTTP server, showing a toast when asked.
@@ -32,24 +34,32 @@ func (a *app) startShare(announce bool) {
 	}
 	if a.settings.ShareDir != "" {
 		if info, err := os.Stat(a.settings.ShareDir); err != nil || !info.IsDir() {
-			a.setToast("共享目录不存在")
+			a.setToast(tr("共享目录不存在"))
+			return
+		}
+	}
+	if a.settings.UploadDir != "" {
+		if info, err := os.Stat(a.settings.UploadDir); err != nil || !info.IsDir() {
+			a.setToast(tr("上传目录不存在"))
 			return
 		}
 	}
 	a.share.SetDir(a.settings.ShareDir)
+	a.share.SetUploadDir(a.settings.UploadDir)
 	if err := a.share.Start(a.settings.SharePort); err != nil {
-		a.setToast("无法开启文件共享：" + err.Error())
+		a.shareExplicit = false
+		a.setToast(tr("无法开启文件共享：") + err.Error())
 		return
 	}
+	a.shareExplicit = true
 	if announce {
-		// Sending a file starts the server too, but should not make it
-		// share the directory on every launch.
+		// A share the user started should come back on the next launch.
 		a.settings.ShareOnStart = true
 		_ = a.settings.save()
 	}
 	a.generateShareQR()
 	if announce {
-		a.setToast("文件共享已开启")
+		a.setToast(tr("文件共享已开启"))
 	}
 	a.redraw()
 }
@@ -57,7 +67,9 @@ func (a *app) startShare(announce bool) {
 func (a *app) stopShare() {
 	if a.share != nil {
 		a.share.Stop()
+		a.share.SetUploadDir("")
 	}
+	a.shareExplicit = false
 	a.settings.ShareOnStart = false
 	_ = a.settings.save()
 	a.redraw()
@@ -65,6 +77,39 @@ func (a *app) stopShare() {
 
 func (a *app) shareRunning() bool {
 	return a.share != nil && a.share.Running()
+}
+
+func (a *app) shareUploadsActive() bool {
+	return a.shareExplicit && a.share != nil && a.share.UploadDir() != ""
+}
+
+// ensureShareServer starts the HTTP attachment server when a chat file
+// needs an HTTP fallback for peers that cannot use the TCP transfer, or
+// for old messages that only carry a download URL. A missing share folder
+// is not fatal: attachments still work while directory browsing stays off.
+func (a *app) ensureShareServer() bool {
+	if a.share == nil {
+		return false
+	}
+	if a.share.Running() {
+		return true
+	}
+	dir := a.settings.ShareDir
+	if dir != "" {
+		if info, err := os.Stat(dir); err != nil || !info.IsDir() {
+			dir = ""
+		}
+	}
+	a.share.SetDir(dir)
+	// Uploads belong to an explicitly started share; the fallback HTTP
+	// server used for attachments stays read-only.
+	a.share.SetUploadDir("")
+	a.shareExplicit = false
+	if err := a.share.Start(a.settings.SharePort); err != nil {
+		return false
+	}
+	a.generateShareQR()
+	return true
 }
 
 func (a *app) shareURL() string {
@@ -92,44 +137,70 @@ func (a *app) generateShareQR() {
 	a.qrForURL = url
 }
 
-// sendFiles shares files through the attachment server and posts them to
-// the active conversation.
+// sendFiles offers files through the TCP transfer server and posts them to
+// the active conversation. The HTTP attachment server also gets a copy so
+// older peers, or peers whose TCP transfer is blocked, can still download.
 func (a *app) sendFiles(paths []string) {
 	c := a.currentConv()
 	if c == nil {
-		a.setToast("先打开一个聊天")
+		a.setToast(tr("先打开一个聊天"))
 		return
 	}
 	if len(paths) == 0 {
 		return
 	}
-	if !a.shareRunning() {
-		a.startShare(false)
+	if a.transfer == nil || !a.transfer.Running() {
+		a.startTransfer()
 	}
-	if !a.shareRunning() {
-		a.setToast("文件服务器未启动，无法发送文件")
+	tcpReady := a.transfer != nil && a.transfer.Running()
+	httpReady := a.ensureShareServer()
+	if !tcpReady && !httpReady {
+		a.setToast(tr("文件传输服务未启动，无法发送文件"))
 		return
 	}
-	host := netutil.PrimaryIP()
 	added := 0
 	for _, path := range paths {
 		info, err := os.Stat(path)
 		if err != nil || info.IsDir() {
 			continue
 		}
-		tr, err := a.share.AddTransfer(path)
-		if err != nil {
+		var file *model.File
+		if tcpReady {
+			tr, err := a.transfer.Add(path)
+			if err != nil {
+				log.Println("zchat: cannot register TCP transfer:", err)
+			} else {
+				file = &model.File{
+					Name:  tr.Name,
+					Size:  tr.Size,
+					MIME:  tr.MIME,
+					Token: tr.Token,
+					Path:  path,
+				}
+			}
+		}
+		if httpReady {
+			st, err := a.share.AddTransfer(path)
+			if err == nil {
+				if file == nil {
+					file = &model.File{
+						Name: st.Name,
+						Size: st.Size,
+						MIME: st.MIME,
+						Path: path,
+					}
+				} else {
+					// Keep the TCP token as the fast path; the URL is
+					// only a fallback for peers that cannot use it.
+					file.URL = a.share.TransferURL(netutil.PrimaryIP(), st)
+				}
+			}
+		}
+		if file == nil {
 			continue
 		}
-		file := &model.File{
-			Name: tr.Name,
-			Size: tr.Size,
-			MIME: tr.MIME,
-			URL:  a.share.TransferURL(host, tr),
-			Path: path,
-		}
 		kind := model.KindFile
-		if strings.HasPrefix(tr.MIME, "image/") {
+		if strings.HasPrefix(file.MIME, "image/") {
 			kind = model.KindImage
 			file.Width, file.Height = imageSize(path)
 			a.loadImage(path)
@@ -143,25 +214,38 @@ func (a *app) sendFiles(paths []string) {
 			SentAt:     time.Now(),
 			Status:     model.Sent,
 		}
+		if a.sendTokenMsg == nil {
+			a.sendTokenMsg = map[string]string{}
+		}
+		if file.Token != "" {
+			a.sendTokenMsg[file.Token] = m.ID
+		}
+		if tok := shareToken(file.URL); tok != "" {
+			a.sendTokenMsg[tok] = m.ID
+		}
+		if a.sends == nil {
+			a.sends = map[string]*sendState{}
+		}
+		a.sends[m.ID] = &sendState{Total: file.Size}
 		a.addLocalMessage(c, &m)
 		added++
 	}
 	if added == 0 {
-		a.setToast("没有可发送的文件")
+		a.setToast(tr("没有可发送的文件"))
 	}
 }
 
 func (a *app) sendClipboardImage() {
-	if !a.shareRunning() {
-		a.startShare(false)
+	if a.transfer == nil || !a.transfer.Running() {
+		a.startTransfer()
 	}
-	if !a.shareRunning() {
-		a.setToast("文件服务器未启动，无法发送图片")
+	if (a.transfer == nil || !a.transfer.Running()) && !a.ensureShareServer() {
+		a.setToast(tr("文件传输服务未启动，无法发送图片"))
 		return
 	}
 	data := mygo.Clipboard.ReadImage()
 	if len(data) == 0 {
-		a.setToast("剪贴板里没有图片")
+		a.setToast(tr("剪贴板里没有图片"))
 		return
 	}
 	c := a.currentConv()
@@ -172,7 +256,7 @@ func (a *app) sendClipboardImage() {
 	_ = os.MkdirAll(dir, 0o700)
 	path := filepath.Join(dir, model.NewID("img")+".png")
 	if err := os.WriteFile(path, data, 0o600); err != nil {
-		a.setToast("无法保存粘贴的图片")
+		a.setToast(tr("无法保存粘贴的图片"))
 		return
 	}
 	a.sendFiles([]string{path})
@@ -181,28 +265,28 @@ func (a *app) sendClipboardImage() {
 func (a *app) sendShareLink() {
 	c := a.currentConv()
 	if c == nil {
-		a.setToast("先打开一个聊天")
+		a.setToast(tr("先打开一个聊天"))
 		return
 	}
 	url := a.shareURL()
 	if url == "" {
-		a.setToast("文件共享还没有开启")
+		a.setToast(tr("文件共享还没有开启"))
 		return
 	}
-	a.sendTextTo(c.ID, "我在 zchat 共享了一个目录："+url)
+	a.sendTextTo(c.ID, tr("我在 zchat 共享了一个目录：")+url)
 }
 
 // autoDownloadImage fetches an incoming image into the cache.
 func (a *app) autoDownloadImage(convID, msgID string) {
 	m := a.message(convID, msgID)
-	if m == nil || m.File == nil || m.File.URL == "" || m.File.Path != "" {
+	if m == nil || m.File == nil || (m.File.URL == "" && m.File.Token == "") || m.File.Path != "" {
 		return
 	}
-	ext := filepath.Ext(m.File.Name)
+	ext := filepath.Ext(safeFileName(m.File.Name))
 	if ext == "" {
 		ext = ".img"
 	}
-	dest := filepath.Join(a.store.CacheDir(), "images", m.ID+ext)
+	dest := filepath.Join(a.store.CacheDir(), "images", messageKey(m.ID)+ext)
 	a.downloadTo(convID, msgID, dest, true)
 }
 
@@ -217,7 +301,7 @@ func (a *app) queueActiveImages() {
 	}
 	for i := range a.msgs[c.ID] {
 		m := &a.msgs[c.ID][i]
-		if m.Kind == model.KindImage && m.File != nil && m.File.Path == "" && m.File.URL != "" {
+		if m.Kind == model.KindImage && m.File != nil && m.File.Path == "" && (m.File.URL != "" || m.File.Token != "") {
 			a.autoDownloadImage(c.ID, m.ID)
 		}
 	}
@@ -229,16 +313,18 @@ func (a *app) saveMessageAs(convID, msgID string) {
 	if m == nil || m.File == nil {
 		return
 	}
-	name := filepath.Base(m.File.Name)
-	if name == "." || name == "" || name == string(filepath.Separator) {
-		name = "zchat-file"
+	name := safeFileName(m.File.Name)
+	dir, _ := a.ensureDownloadDir()
+	defaultPath := name
+	if dir != "" {
+		defaultPath = filepath.Join(dir, name)
 	}
 	go func() {
 		path, err := mygo.Dialog.Save(mygo.SaveDialogOptions{
 			Parent:      a.win,
-			Title:       "保存文件",
-			DefaultPath: filepath.Join(a.settings.DownloadDir, name),
-			ButtonLabel: "保存",
+			Title:       tr("保存文件"),
+			DefaultPath: defaultPath,
+			ButtonLabel: tr("保存"),
 		})
 		if err != nil || path == "" {
 			return
@@ -250,16 +336,16 @@ func (a *app) saveMessageAs(convID, msgID string) {
 // pickImages sends images chosen in a file dialog.
 func (a *app) pickImages() {
 	if a.currentConv() == nil {
-		a.setToast("先打开一个聊天")
+		a.setToast(tr("先打开一个聊天"))
 		return
 	}
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:      a.win,
-			Title:       "发送图片",
+			Title:       tr("发送图片"),
 			Multiple:    true,
-			ButtonLabel: "发送",
-			Filters:     []mygo.FileFilter{{Name: "图片", Extensions: []string{"png", "jpg", "jpeg", "gif", "webp", "bmp"}}},
+			ButtonLabel: tr("发送"),
+			Filters:     []mygo.FileFilter{{Name: tr("图片"), Extensions: []string{"png", "jpg", "jpeg", "gif", "webp", "bmp"}}},
 		})
 		if err != nil || len(paths) == 0 {
 			return
@@ -270,21 +356,23 @@ func (a *app) pickImages() {
 
 func (a *app) downloadMessage(convID, msgID string, path string) {
 	if path == "" {
-		path = filepath.Join(a.settings.DownloadDir, a.suggestName(convID, msgID))
+		dir, err := a.ensureDownloadDir()
+		if err != nil {
+			a.setToast(tr("无法创建下载目录：") + err.Error())
+			return
+		}
+		path = a.suggestName(convID, msgID, dir)
 	}
 	a.downloadTo(convID, msgID, path, false)
 }
 
-func (a *app) suggestName(convID, msgID string) string {
+func (a *app) suggestName(convID, msgID, dir string) string {
 	m := a.message(convID, msgID)
-	if m == nil || m.File == nil {
-		return "zchat-file"
+	name := "zchat-file"
+	if m != nil && m.File != nil {
+		name = safeFileName(m.File.Name)
 	}
-	name := filepath.Base(m.File.Name)
-	if name == "." || name == string(filepath.Separator) || name == "" {
-		name = "zchat-file"
-	}
-	return uniquePath(filepath.Join(a.settings.DownloadDir, name))
+	return uniquePath(filepath.Join(dir, name))
 }
 
 func (a *app) downloadTo(convID, msgID, dest string, imageOnly bool) {
@@ -298,50 +386,308 @@ func (a *app) downloadTo(convID, msgID, dest string, imageOnly bool) {
 		}
 		return
 	}
-	if m.File.URL == "" {
-		a.setToast("这个文件没有下载地址，发送方可能已经离线")
-		return
-	}
 	if st := a.transfers[msgID]; st != nil && st.Working {
 		return
 	}
-	a.transfers[msgID] = &transferState{Total: m.File.Size, Working: true}
+	st := &transferState{Total: m.File.Size, Working: true}
+	a.transfers[msgID] = st
 	a.redraw()
+	if m.File.Token != "" {
+		if peer := a.peers[m.SenderID]; peer != nil {
+			if addr := peer.TransferAddr(); addr != "" {
+				st.Transport = "TCP"
+				log.Printf("zchat: downloading %s over TCP from %s", msgID, addr)
+				a.downloadSocket(convID, msgID, m, dest, addr, imageOnly)
+				return
+			}
+		}
+	}
+	if m.File.URL != "" {
+		st.Transport = "HTTP"
+		log.Printf("zchat: downloading %s over HTTP", msgID)
+		a.downloadHTTP(convID, msgID, m.File.URL, dest, m.File.Size, imageOnly)
+		return
+	}
+	delete(a.transfers, msgID)
+	a.setToast(tr("无法下载：发送方离线，或不支持文件传输"))
+	a.redraw()
+}
+
+// downloadSocket fetches an attachment over the sender's TCP transfer
+// service. A partial file in the cache is resumed from its last byte, and
+// the HTTP URL, when present, is tried if the socket transfer fails.
+func (a *app) downloadSocket(convID, msgID string, m *model.Message, dest, addr string, imageOnly bool) {
+	token, want, fallback := m.File.Token, m.File.Size, m.File.URL
+	part := a.partPath(msgID)
+	fail := func(done int64, err error) {
+		if fallback != "" {
+			log.Println("zchat: TCP transfer failed, trying HTTP fallback:", err)
+			a.startHTTPFallback(convID, msgID, fallback, dest, want, imageOnly)
+			return
+		}
+		a.finishDownload(convID, msgID, part, done, err, imageOnly)
+	}
 	go func() {
-		_ = os.MkdirAll(filepath.Dir(dest), 0o700)
-		tmp := dest + ".part"
-		resp, err := http.Get(m.File.URL)
-		if err != nil {
-			a.finishDownload(convID, msgID, dest, 0, err, imageOnly)
+		if err := os.MkdirAll(filepath.Dir(part), 0o700); err != nil {
+			fail(0, fmt.Errorf("%s", tf("无法创建缓存目录 %s：%v", filepath.Dir(part), err)))
 			return
 		}
-		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK {
-			a.finishDownload(convID, msgID, dest, 0, fmt.Errorf("HTTP %s", resp.Status), imageOnly)
+		var offset int64
+		if info, err := os.Stat(part); err == nil {
+			offset = info.Size()
+		}
+		if want > 0 && offset > want {
+			_ = os.Remove(part)
+			offset = 0
+		}
+		if want > 0 && offset == want {
+			a.completeTransfer(convID, msgID, part, dest, offset, imageOnly)
 			return
 		}
-		if resp.ContentLength > 0 {
-			total := resp.ContentLength
+		if offset > 0 {
 			a.post(func() {
 				if st := a.transfers[msgID]; st != nil {
-					st.Total = total
+					st.Done = offset
 				}
 			})
 		}
-		f, err := os.Create(tmp)
+		f, err := os.OpenFile(part, os.O_CREATE|os.O_WRONLY, 0o600)
 		if err != nil {
-			a.finishDownload(convID, msgID, dest, 0, err, imageOnly)
+			fail(offset, err)
 			return
 		}
-		var done int64
-		buf := make([]byte, 64*1024)
+		if _, err := f.Seek(offset, io.SeekStart); err != nil {
+			f.Close()
+			fail(offset, err)
+			return
+		}
+		last := time.Now()
+		done, err := transfer.Download(addr, token, offset, f, func(done, total int64) {
+			if time.Since(last) < 120*time.Millisecond {
+				return
+			}
+			last = time.Now()
+			a.post(func() {
+				if st := a.transfers[msgID]; st != nil {
+					st.Done, st.Total = done, total
+				}
+			})
+		})
+		if cerr := f.Close(); err == nil {
+			err = cerr
+		}
+		if err != nil {
+			fail(done, err)
+			return
+		}
+		if want > 0 && done != want {
+			_ = os.Remove(part)
+			fail(done, fmt.Errorf(tr("文件大小不一致：收到 %d，预期 %d"), done, want))
+			return
+		}
+		a.completeTransfer(convID, msgID, part, dest, done, imageOnly)
+	}()
+}
+
+// startHTTPFallback switches a failed socket download to the sender's HTTP
+// attachment URL on the UI thread, where the transfer state is owned.
+func (a *app) startHTTPFallback(convID, msgID, url, dest string, want int64, imageOnly bool) {
+	a.post(func() {
+		st := a.transfers[msgID]
+		if st == nil {
+			st = &transferState{}
+			a.transfers[msgID] = st
+		}
+		st.Working = true
+		st.Done = 0
+		st.Err = ""
+		st.Total = want
+		st.Transport = "HTTP"
+		a.downloadHTTP(convID, msgID, url, dest, want, imageOnly)
+	})
+}
+
+func (a *app) completeTransfer(convID, msgID, part, dest string, done int64, imageOnly bool) {
+	final := uniquePath(dest)
+	if err := os.MkdirAll(filepath.Dir(final), 0o700); err != nil {
+		a.finishDownload(convID, msgID, part, done, fmt.Errorf("%s", tf("无法创建下载目录 %s：%v", filepath.Dir(final), err)), imageOnly)
+		return
+	}
+	if err := moveFile(part, final); err != nil {
+		a.finishDownload(convID, msgID, part, done, fmt.Errorf("%s", tf("无法保存到 %s：%v", final, err)), imageOnly)
+		return
+	}
+	a.finishDownload(convID, msgID, final, done, nil, imageOnly)
+}
+
+// moveFile renames src to dst, copying when they are on different volumes
+// (Windows returns an error for a cross-drive rename).
+func moveFile(src, dst string) error {
+	if err := os.Rename(src, dst); err == nil {
+		return nil
+	}
+	if err := copyFile(src, dst); err != nil {
+		return err
+	}
+	return os.Remove(src)
+}
+
+func copyFile(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+	out, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(out, in); err != nil {
+		out.Close()
+		_ = os.Remove(dst)
+		return err
+	}
+	if err := out.Close(); err != nil {
+		_ = os.Remove(dst)
+		return err
+	}
+	return nil
+}
+
+// forgetMessageFiles stops serving attachments that are being deleted.
+func (a *app) forgetMessageFiles(msgs []model.Message) {
+	tokens := make([]string, 0, len(msgs))
+	for i := range msgs {
+		f := msgs[i].File
+		if f == nil {
+			continue
+		}
+		delete(a.sends, msgs[i].ID)
+		if f.Token != "" {
+			tokens = append(tokens, f.Token)
+			delete(a.sendTokenMsg, f.Token)
+		}
+		if tok := shareToken(f.URL); tok != "" {
+			delete(a.sendTokenMsg, tok)
+			if a.share != nil {
+				a.share.RemoveTransfer(tok)
+			}
+		}
+	}
+	if a.transfer != nil {
+		a.transfer.RemoveMany(tokens)
+	}
+}
+
+// shareToken extracts the token from an HTTP attachment URL.
+func shareToken(raw string) string {
+	const marker = "/t/"
+	i := strings.Index(raw, marker)
+	if i < 0 {
+		return ""
+	}
+	rest := raw[i+len(marker):]
+	if j := strings.IndexAny(rest, "/?#"); j >= 0 {
+		rest = rest[:j]
+	}
+	return rest
+}
+
+func (a *app) partPath(msgID string) string {
+	return filepath.Join(a.store.CacheDir(), "transfers", messageKey(msgID)+".part")
+}
+
+func messageKey(id string) string {
+	sum := sha256.Sum256([]byte(id))
+	return hex.EncodeToString(sum[:])
+}
+
+func (a *app) downloadHTTP(convID, msgID, url, dest string, want int64, imageOnly bool) {
+	go func() {
+		if err := os.MkdirAll(filepath.Dir(dest), 0o700); err != nil {
+			a.finishDownload(convID, msgID, dest, 0, fmt.Errorf("%s", tf("无法创建下载目录 %s：%v", filepath.Dir(dest), err)), imageOnly)
+			return
+		}
+		tmp := dest + ".part"
+		var offset int64
+		if info, err := os.Stat(tmp); err == nil {
+			offset = info.Size()
+		}
+		if want > 0 && offset > want {
+			_ = os.Remove(tmp)
+			offset = 0
+		}
+		if want > 0 && offset == want {
+			a.completeTransfer(convID, msgID, tmp, dest, offset, imageOnly)
+			return
+		}
+		req, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			a.finishDownload(convID, msgID, dest, offset, err, imageOnly)
+			return
+		}
+		if offset > 0 {
+			req.Header.Set("Range", fmt.Sprintf("bytes=%d-", offset))
+		}
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			a.finishDownload(convID, msgID, dest, offset, err, imageOnly)
+			return
+		}
+		defer resp.Body.Close()
+		switch resp.StatusCode {
+		case http.StatusPartialContent:
+			// The server honored our resume request.
+		case http.StatusOK:
+			// Range was ignored; start over so the file is not duplicated.
+			offset = 0
+			_ = os.Remove(tmp)
+		case http.StatusRequestedRangeNotSatisfiable:
+			if want > 0 && offset == want {
+				a.completeTransfer(convID, msgID, tmp, dest, offset, imageOnly)
+				return
+			}
+			a.finishDownload(convID, msgID, dest, offset, fmt.Errorf("HTTP %s", resp.Status), imageOnly)
+			return
+		default:
+			a.finishDownload(convID, msgID, dest, offset, fmt.Errorf("HTTP %s", resp.Status), imageOnly)
+			return
+		}
+		total := want
+		if total <= 0 && resp.ContentLength > 0 {
+			total = offset + resp.ContentLength
+		}
+		a.post(func() {
+			if st := a.transfers[msgID]; st != nil {
+				st.Total = total
+				st.Done = offset
+			}
+		})
+		f, err := os.OpenFile(tmp, os.O_CREATE|os.O_WRONLY, 0o600)
+		if err != nil {
+			a.finishDownload(convID, msgID, dest, offset, err, imageOnly)
+			return
+		}
+		if offset == 0 {
+			if err := f.Truncate(0); err != nil {
+				f.Close()
+				a.finishDownload(convID, msgID, dest, offset, err, imageOnly)
+				return
+			}
+		}
+		if _, err := f.Seek(offset, io.SeekStart); err != nil {
+			f.Close()
+			a.finishDownload(convID, msgID, dest, offset, err, imageOnly)
+			return
+		}
+		done := offset
+		buf := make([]byte, 256*1024)
 		last := time.Now()
 		for {
 			n, rerr := resp.Body.Read(buf)
 			if n > 0 {
 				if _, werr := f.Write(buf[:n]); werr != nil {
 					f.Close()
-					os.Remove(tmp)
 					a.finishDownload(convID, msgID, dest, done, werr, imageOnly)
 					return
 				}
@@ -360,23 +706,20 @@ func (a *app) downloadTo(convID, msgID, dest string, imageOnly bool) {
 			}
 			if rerr != nil {
 				f.Close()
-				os.Remove(tmp)
 				a.finishDownload(convID, msgID, dest, done, rerr, imageOnly)
 				return
 			}
 		}
 		if err := f.Close(); err != nil {
-			os.Remove(tmp)
 			a.finishDownload(convID, msgID, dest, done, err, imageOnly)
 			return
 		}
-		dest = uniquePath(dest)
-		if err := os.Rename(tmp, dest); err != nil {
-			os.Remove(tmp)
-			a.finishDownload(convID, msgID, dest, done, err, imageOnly)
+		if want > 0 && done != want {
+			_ = os.Remove(tmp)
+			a.finishDownload(convID, msgID, dest, done, fmt.Errorf(tr("文件大小不一致：收到 %d，预期 %d"), done, want), imageOnly)
 			return
 		}
-		a.finishDownload(convID, msgID, dest, done, nil, imageOnly)
+		a.completeTransfer(convID, msgID, tmp, dest, done, imageOnly)
 	}()
 }
 
@@ -401,7 +744,7 @@ func (a *app) finishDownload(convID, msgID, dest string, done int64, err error, 
 				a.loadImage(dest)
 			}
 			if !imageOnly {
-				a.setToast("已保存到 " + dest)
+				a.setToast(tr("已保存到 ") + dest)
 			}
 		}
 	})
@@ -476,11 +819,11 @@ func (a *app) openPath(path string) {
 		return
 	}
 	if _, err := os.Stat(path); err != nil {
-		a.setToast("文件不存在或已被移动")
+		a.setToast(tr("文件不存在或已被移动"))
 		return
 	}
 	if err := mygo.Shell.OpenPath(path); err != nil {
-		a.setToast("无法打开文件：" + err.Error())
+		a.setToast(tr("无法打开文件：") + err.Error())
 	}
 }
 

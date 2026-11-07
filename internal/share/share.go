@@ -21,13 +21,16 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"rsc.io/qr"
 
+	"xin.dart.zchat/internal/i18n"
 	"xin.dart.zchat/internal/netutil"
 )
 
@@ -48,12 +51,14 @@ type Transfer struct {
 type Server struct {
 	mu        sync.RWMutex
 	dir       string
+	uploadDir string
 	port      int
 	ln        net.Listener
 	srv       *http.Server
 	transfers map[string]Transfer
 	persist   string
 	stopped   chan struct{}
+	progress  func(token string, sent, total int64, err error)
 }
 
 // New makes a server that keeps its transfer tokens in persist, so links
@@ -77,6 +82,39 @@ func (s *Server) Dir() string {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.dir
+}
+
+// SetUploadDir chooses where HTTP visitors may upload files. Passing ""
+// turns uploads off without affecting directory browsing.
+func (s *Server) SetUploadDir(dir string) {
+	s.mu.Lock()
+	s.uploadDir = dir
+	s.mu.Unlock()
+}
+
+// UploadDir is the directory visitors upload into.
+func (s *Server) UploadDir() string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.uploadDir
+}
+
+// SetProgress installs a callback for attachment bytes sent to receivers.
+// It is called from HTTP handler goroutines, so callers must not block on
+// the UI thread there.
+func (s *Server) SetProgress(fn func(token string, sent, total int64, err error)) {
+	s.mu.Lock()
+	s.progress = fn
+	s.mu.Unlock()
+}
+
+func (s *Server) reportProgress(token string, sent, total int64, err error) {
+	s.mu.RLock()
+	fn := s.progress
+	s.mu.RUnlock()
+	if fn != nil {
+		fn(token, sent, total, err)
+	}
 }
 
 // Start listens on port, or on any free port when port is 0. Calling Start
@@ -228,6 +266,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "zchat\n")
 		return
 	}
+	if r.URL.Path == "/upload" {
+		s.serveUpload(w, r)
+		return
+	}
 	s.serveDir(w, r)
 }
 
@@ -241,7 +283,7 @@ func (s *Server) serveTransfer(w http.ResponseWriter, r *http.Request) {
 	}
 	f, err := os.Open(tr.Path)
 	if err != nil {
-		http.Error(w, "文件已不存在", http.StatusNotFound)
+		http.Error(w, i18n.T("文件已不存在"), http.StatusNotFound)
 		return
 	}
 	defer f.Close()
@@ -251,7 +293,105 @@ func (s *Server) serveTransfer(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Get("download") == "1" {
 		w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename*=UTF-8''%s", url.PathEscape(tr.Name)))
 	}
-	http.ServeContent(w, r, tr.Name, tr.Created, f)
+	var pw *httpProgressWriter
+	out := w
+	if r.Method == http.MethodGet {
+		if start, ok := httpRangeStart(r.Header.Get("Range"), tr.Size); ok {
+			pw = &httpProgressWriter{
+				ResponseWriter: w,
+				token:          tok,
+				start:          start,
+				total:          tr.Size,
+				report:         s.reportProgress,
+			}
+			out = pw
+		}
+	}
+	http.ServeContent(out, r, tr.Name, tr.Created, f)
+	if pw == nil || !pw.started {
+		return
+	}
+	done := pw.start + pw.sent
+	if done >= pw.total {
+		pw.report(pw.token, pw.total, pw.total, nil)
+		return
+	}
+	err = r.Context().Err()
+	if err == nil {
+		err = errors.New("transfer interrupted")
+	}
+	pw.report(pw.token, done, pw.total, err)
+}
+
+// httpRangeStart extracts the start of a single open-ended byte range. The
+// app resumes with "bytes=N-"; other range forms are left without progress.
+func httpRangeStart(header string, size int64) (int64, bool) {
+	if size == 0 || header == "" {
+		return 0, true
+	}
+	if !strings.HasPrefix(header, "bytes=") {
+		return 0, false
+	}
+	spec := strings.TrimPrefix(header, "bytes=")
+	if strings.Contains(spec, ",") {
+		return 0, false
+	}
+	startText, endText, ok := strings.Cut(spec, "-")
+	if !ok || startText == "" || strings.TrimSpace(endText) != "" {
+		return 0, false
+	}
+	start, err := strconv.ParseInt(strings.TrimSpace(startText), 10, 64)
+	if err != nil || start < 0 || start >= size {
+		return 0, false
+	}
+	return start, true
+}
+
+// httpProgressWriter counts response body bytes and reports them through
+// the server's progress callback, throttled to a few updates per second.
+type httpProgressWriter struct {
+	http.ResponseWriter
+	token   string
+	start   int64
+	total   int64
+	sent    int64
+	status  int
+	started bool
+	last    time.Time
+	report  func(token string, sent, total int64, err error)
+}
+
+func (w *httpProgressWriter) WriteHeader(code int) {
+	if w.status == 0 {
+		w.status = code
+	}
+	if !w.started && (code == http.StatusOK || code == http.StatusPartialContent) {
+		w.started = true
+		w.last = time.Now()
+		w.report(w.token, w.start, w.total, nil)
+	}
+	w.ResponseWriter.WriteHeader(code)
+}
+
+func (w *httpProgressWriter) Write(p []byte) (int, error) {
+	if w.status == 0 {
+		w.WriteHeader(http.StatusOK)
+	}
+	n, err := w.ResponseWriter.Write(p)
+	w.sent += int64(n)
+	if !w.started {
+		return n, err
+	}
+	done := w.start + w.sent
+	if done > w.total {
+		done = w.total
+	}
+	if done < w.total && time.Since(w.last) < 100*time.Millisecond {
+		return n, err
+	}
+	w.last = time.Now()
+	w.report(w.token, done, w.total, nil)
+	return n, err
 }
 
 type dirEntry struct {
@@ -264,16 +404,28 @@ type dirEntry struct {
 }
 
 type dirPage struct {
-	Title   string
-	Rel     string
-	Entries []dirEntry
-	Parent  string
-	Query   string
-	Count   string
+	Title             string
+	Rel               string
+	Entries           []dirEntry
+	Parent            string
+	Query             string
+	Count             string
+	Lang              string
+	Search            string
+	SearchPlaceholder string
+	Back              string
+	Empty             string
+	Footer            string
+	ShowSearch        bool
+	Upload            bool
+	UploadAction      string
+	UploadHint        string
+	UploadNotice      string
+	Next              string
 }
 
 var listing = template.Must(template.New("dir").Parse(`<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8">
+<html lang="{{.Lang}}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{.Title}} · zchat</title>
 <style>
@@ -288,32 +440,64 @@ h1{font-size:20px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:2px
 .row{display:flex;align-items:center;gap:14px;padding:13px 16px;text-decoration:none;color:inherit;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}.row:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)}
 .ico{width:34px;height:34px;border-radius:9px;background:color-mix(in srgb,var(--accent) 14%,transparent);display:grid;place-items:center;flex:0 0 auto}
-.name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.meta{color:var(--muted);font-size:12px;white-space:nowrap}
+.name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.meta{color:var(--muted);font-size:12px;white-space:nowrap;text-align:right;line-height:1.4}
 .empty{color:var(--muted);text-align:center;padding:48px 20px}
-form{display:flex;gap:8px;margin:0 0 16px}input{flex:1;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit}
-button{padding:10px 16px;border:0;border-radius:10px;background:var(--accent);color:#fff;font:inherit;font-weight:600}
+form.search{display:flex;gap:8px;margin:0 0 16px}form.search input{flex:1}
+input{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit}
+form.upload{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:0 0 16px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--card);align-items:center}
+form.upload .uploadHint{grid-column:1/-1;color:var(--muted);font-size:12px;line-height:1.35}
+form.upload input[type=file]{min-width:0;border:0;background:transparent;padding:7px 4px;color:var(--muted)}
+.notice{padding:12px 16px;margin:0 0 16px;border-radius:12px;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line));background:color-mix(in srgb,var(--accent) 10%,var(--card));font-size:14px}
+button{padding:10px 16px;border:0;border-radius:10px;background:var(--accent);color:#fff;font:inherit;font-weight:600;white-space:nowrap}
 footer{color:var(--muted);font-size:12px;text-align:center;margin-top:26px}
 </style></head><body><main>
 <header><div class="logo">Z</div><div><h1>{{.Title}}</h1><div class="sub">{{.Count}}</div></div></header>
-<form method="get"><input name="q" value="{{.Query}}" placeholder="在共享目录中搜索" aria-label="搜索"><button>搜索</button></form>
-{{if .Parent}}<div class="card" style="margin-bottom:14px"><a class="row" href="{{.Parent}}"><span class="ico">↑</span><span class="name">返回上一级</span></a></div>{{end}}
-<div class="card">
-{{range .Entries}}<a class="row" href="{{.URL}}"><span class="ico">{{if .Dir}}📁{{else}}📄{{end}}</span><span class="name">{{.Name}}</span><span class="meta">{{.Size}}</span></a>{{else}}<div class="empty">这个目录是空的</div>{{end}}
-</div>
-<footer>由 zchat 在局域网共享 · 只读</footer>
+{{if .ShowSearch}}<form class="search" method="get"><input name="q" value="{{.Query}}" placeholder="{{.SearchPlaceholder}}" aria-label="{{.Search}}"><button>{{.Search}}</button></form>{{end}}
+{{if .UploadNotice}}<div class="notice">{{.UploadNotice}}</div>{{end}}
+{{if .Upload}}<form class="upload" method="post" action="/upload" enctype="multipart/form-data">
+<input type="hidden" name="next" value="{{.Next}}">
+<div class="uploadHint">{{.UploadHint}}</div>
+<input type="file" name="files" multiple required aria-label="{{.UploadHint}}" title="{{.UploadHint}}">
+<button type="submit">{{.UploadAction}}</button>
+</form>{{end}}
+{{if .Parent}}<div class="card" style="margin-bottom:14px"><a class="row" href="{{.Parent}}"><span class="ico">↑</span><span class="name">{{.Back}}</span></a></div>{{end}}
+{{if or .Entries .Empty}}<div class="card">
+{{range .Entries}}<a class="row" href="{{.URL}}"><span class="ico">{{if .Dir}}📁{{else}}📄{{end}}</span><span class="name">{{.Name}}</span><span class="meta">{{.Size}}{{if .Added}}<br>{{.Added}}{{end}}</span></a>{{else}}<div class="empty">{{.Empty}}</div>{{end}}
+</div>{{end}}
+<footer>{{.Footer}}</footer>
 </main></body></html>`))
 
 func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 	root := s.Dir()
+	uploadDir := s.UploadDir()
+	uploadEnabled := uploadDir != ""
+	if uploadEnabled {
+		if info, err := os.Stat(uploadDir); err != nil || !info.IsDir() {
+			uploadEnabled = false
+		}
+	}
 	if root == "" {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		io.WriteString(w, `<!doctype html><meta charset="utf-8"><title>zchat</title><body style="font:16px system-ui;padding:48px"><h1>zchat 文件共享</h1><p>这个服务正在运行，但还没有选择共享目录。</p></body>`)
+		if uploadEnabled {
+			_ = listing.Execute(w, dirPage{
+				Title:        i18n.T("zchat 文件共享"),
+				Count:        i18n.T("共享目录未设置，但可以上传文件"),
+				Lang:         pageLang(),
+				Upload:       true,
+				UploadAction: i18n.T("上传"),
+				UploadHint:   i18n.T("选择文件后上传到共享者的上传目录"),
+				Next:         "/",
+				Footer:       i18n.T("由 zchat 在局域网共享"),
+			})
+			return
+		}
+		io.WriteString(w, `<!doctype html><html lang="`+pageLang()+`"><head><meta charset="utf-8"><title>zchat</title></head><body style="font:16px system-ui;padding:48px"><h1>`+template.HTMLEscapeString(i18n.T("zchat 文件共享"))+`</h1><p>`+template.HTMLEscapeString(i18n.T("这个服务正在运行，但还没有选择共享目录。"))+`</p></body></html>`)
 		return
 	}
 	rel := strings.TrimPrefix(r.URL.Path, "/")
 	full, err := safeJoin(root, rel)
 	if err != nil {
-		http.Error(w, "无效的路径", http.StatusBadRequest)
+		http.Error(w, i18n.T("无效的路径"), http.StatusBadRequest)
 		return
 	}
 	info, err := os.Stat(full)
@@ -336,7 +520,7 @@ func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 	}
 	entries, err := os.ReadDir(full)
 	if err != nil {
-		http.Error(w, "无法读取目录", http.StatusForbidden)
+		http.Error(w, i18n.T("无法读取目录"), http.StatusForbidden)
 		return
 	}
 	q := strings.TrimSpace(r.URL.Query().Get("q"))
@@ -358,7 +542,7 @@ func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 		if ei != nil {
 			row.Added = ei.ModTime().Format("2006-01-02 15:04")
 			if e.IsDir() {
-				row.Size = "文件夹"
+				row.Size = i18n.T("文件夹")
 			} else {
 				row.Size = humanSize(ei.Size())
 			}
@@ -380,16 +564,256 @@ func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 			parent = "/" + escapePath(dir) + "/"
 		}
 	}
-	title := "共享目录"
+	title := i18n.T("共享目录")
 	if strings.Trim(rel, "/") != "" {
 		title = path.Base(strings.Trim(rel, "/"))
 	}
-	count := fmt.Sprintf("%d 个文件", len(rows))
+	count := i18n.TF("%d 个文件", len(rows))
 	if q != "" {
-		count = fmt.Sprintf("搜索 “%s” · %d 个结果", q, len(rows))
+		count = i18n.TF("搜索 “%s” · %d 个结果", q, len(rows))
+	}
+	notice := ""
+	if n, err := strconv.Atoi(r.URL.Query().Get("uploaded")); err == nil && n > 0 {
+		notice = i18n.TF("已上传 %d 个文件", n)
+	}
+	footer := i18n.T("由 zchat 在局域网共享 · 只读")
+	if uploadEnabled {
+		footer = i18n.T("由 zchat 在局域网共享 · 可上传")
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	_ = listing.Execute(w, dirPage{Title: title, Rel: rel, Entries: rows, Parent: parent, Query: q, Count: count})
+	_ = listing.Execute(w, dirPage{
+		Title: title, Rel: rel, Entries: rows, Parent: parent, Query: q, Count: count,
+		Lang: pageLang(), Search: i18n.T("搜索"), SearchPlaceholder: i18n.T("在共享目录中搜索"),
+		Back: i18n.T("返回上一级"), Empty: i18n.T("这个目录是空的"),
+		Footer: footer, ShowSearch: true, Upload: uploadEnabled,
+		UploadAction: i18n.T("上传"), UploadHint: i18n.T("选择文件后上传到共享者的上传目录"),
+		UploadNotice: notice, Next: r.URL.Path,
+	})
+}
+
+func pageLang() string {
+	if i18n.Current() == i18n.English {
+		return "en"
+	}
+	return "zh-CN"
+}
+
+const maxUploadSize int64 = 8 << 30
+
+// serveUpload accepts multipart form uploads from the browser and saves
+// each file in the configured upload directory.
+func (s *Server) serveUpload(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow", http.MethodPost)
+		http.Error(w, i18n.T("请求格式错误"), http.StatusMethodNotAllowed)
+		return
+	}
+	dir := s.UploadDir()
+	if dir == "" {
+		http.Error(w, i18n.T("未开启上传"), http.StatusForbidden)
+		return
+	}
+	if info, err := os.Stat(dir); err != nil || !info.IsDir() {
+		http.Error(w, i18n.T("上传目录不存在"), http.StatusForbidden)
+		return
+	}
+	if r.ContentLength > maxUploadSize {
+		http.Error(w, i18n.T("文件过大"), http.StatusRequestEntityTooLarge)
+		return
+	}
+	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
+	mr, err := r.MultipartReader()
+	if err != nil {
+		http.Error(w, i18n.T("请求格式错误"), http.StatusBadRequest)
+		return
+	}
+	next := "/"
+	saved := make([]string, 0, 1)
+	ok := false
+	defer func() {
+		if ok {
+			return
+		}
+		for _, path := range saved {
+			_ = os.Remove(path)
+		}
+	}()
+	for {
+		part, err := mr.NextPart()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			if uploadTooLarge(err) {
+				http.Error(w, i18n.T("文件过大"), http.StatusRequestEntityTooLarge)
+			} else {
+				http.Error(w, i18n.T("请求格式错误"), http.StatusBadRequest)
+			}
+			return
+		}
+		name := part.FileName()
+		if name == "" {
+			if part.FormName() == "next" {
+				b, _ := io.ReadAll(io.LimitReader(part, 2048))
+				next = cleanUploadNext(string(b))
+			}
+			_ = part.Close()
+			continue
+		}
+		f, path, err := createUpload(dir, name)
+		if err != nil {
+			_ = part.Close()
+			http.Error(w, i18n.T("无法保存文件"), http.StatusInternalServerError)
+			return
+		}
+		_, copyErr := io.Copy(f, part)
+		closeErr := f.Close()
+		_ = part.Close()
+		if copyErr != nil || closeErr != nil {
+			_ = os.Remove(path)
+			if uploadTooLarge(copyErr) {
+				http.Error(w, i18n.T("文件过大"), http.StatusRequestEntityTooLarge)
+			} else {
+				http.Error(w, i18n.T("无法保存文件"), http.StatusInternalServerError)
+			}
+			return
+		}
+		saved = append(saved, path)
+	}
+	if len(saved) == 0 {
+		http.Error(w, i18n.T("没有选择文件"), http.StatusBadRequest)
+		return
+	}
+	ok = true
+	dest := &url.URL{Path: next, RawQuery: url.Values{"uploaded": {strconv.Itoa(len(saved))}}.Encode()}
+	http.Redirect(w, r, dest.String(), http.StatusSeeOther)
+}
+
+func uploadTooLarge(err error) bool {
+	var maxErr *http.MaxBytesError
+	return errors.As(err, &maxErr)
+}
+
+func createUpload(dir, name string) (*os.File, string, error) {
+	name = uploadName(name)
+	ext := filepath.Ext(name)
+	stem := strings.TrimSuffix(name, ext)
+	if stem == "" {
+		stem, ext = name, ""
+	}
+	for i := 0; i < 10000; i++ {
+		candidate := name
+		if i > 0 {
+			candidate = fmt.Sprintf("%s (%d)%s", stem, i+1, ext)
+		}
+		path := filepath.Join(dir, candidate)
+		f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+		if err == nil {
+			return f, path, nil
+		}
+		if !os.IsExist(err) {
+			return nil, "", err
+		}
+	}
+	return nil, "", errors.New("share: no free upload name")
+}
+
+func cleanUploadNext(next string) string {
+	next = strings.TrimSpace(next)
+	if next == "" || !strings.HasPrefix(next, "/") || strings.HasPrefix(next, "//") {
+		return "/"
+	}
+	u, err := url.Parse(next)
+	if err != nil || u.IsAbs() || u.Host != "" {
+		return "/"
+	}
+	p := u.Path
+	if p == "" || p == "/upload" || strings.HasPrefix(p, "//") {
+		return "/"
+	}
+	return strings.Map(func(r rune) rune {
+		if r == '\r' || r == '\n' {
+			return -1
+		}
+		return r
+	}, p)
+}
+
+func uploadName(name string) string {
+	return uploadNameFor(name, runtime.GOOS)
+}
+
+func uploadNameFor(name, goos string) string {
+	// Treat both separators as separators so a browser's fake path cannot
+	// become part of a server-side filename.
+	name = strings.ReplaceAll(name, "\\", "/")
+	name = path.Base(name)
+	if name == "." || name == ".." || name == "/" || name == "" {
+		return "upload"
+	}
+	name = strings.Map(func(r rune) rune {
+		if r < 0x20 || r == 0x7f {
+			return '_'
+		}
+		return r
+	}, name)
+	if goos == "windows" {
+		var b strings.Builder
+		for _, r := range name {
+			if strings.ContainsRune(`<>:"/\|?*`, r) {
+				b.WriteRune('_')
+			} else {
+				b.WriteRune(r)
+			}
+		}
+		name = strings.TrimRight(b.String(), " .")
+		if name == "" {
+			return "upload"
+		}
+		base := name
+		if i := strings.IndexByte(base, '.'); i >= 0 {
+			base = base[:i]
+		}
+		base = strings.TrimRight(base, " .")
+		switch strings.ToUpper(base) {
+		case "CON", "PRN", "AUX", "NUL",
+			"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+			"LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9":
+			name = "_" + name
+		}
+	}
+	name = trimUploadName(name, 120)
+	if goos == "windows" {
+		name = strings.TrimRight(name, " .")
+	}
+	if name == "" || name == "." || name == ".." {
+		return "upload"
+	}
+	return name
+}
+
+func trimUploadName(name string, max int) string {
+	runes := []rune(name)
+	if len(runes) <= max {
+		return name
+	}
+	ext := path.Ext(name)
+	extRunes := []rune(ext)
+	if len(extRunes) >= max {
+		extRunes = extRunes[:max/2]
+	}
+	room := max - len(extRunes)
+	if room < 1 {
+		room = 1
+	}
+	baseRunes := []rune(strings.TrimSuffix(name, ext))
+	if len(baseRunes) > room {
+		baseRunes = baseRunes[:room]
+	}
+	if len(baseRunes) == 0 {
+		baseRunes = []rune("upload")
+	}
+	return string(baseRunes) + string(extRunes)
 }
 
 func safeJoin(root, rel string) (string, error) {
