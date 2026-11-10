@@ -410,3 +410,43 @@ zchat 文件共享	zchat File Sharing
 没有选择文件	No files selected
 由 zchat 在局域网共享	Shared by zchat on the LAN
 由 zchat 在局域网共享 · 可上传	Shared by zchat on the LAN · Uploads allowed
+截图	Screenshot
+截图失败	Screenshot failed
+截图已复制到剪贴板	Screenshot copied to the clipboard
+截图已保存：	Screenshot saved: 
+截图保存目录已更新	Screenshot folder updated
+截图快捷键已更新	Screenshot shortcut updated
+截图快捷键注册失败：	Could not register the screenshot shortcut: 
+保存截图	Save screenshot
+选择截图保存目录	Choose screenshot folder
+无法生成截图	Could not create the screenshot
+无法复制截图：	Could not copy the screenshot: 
+无法保存截图：	Could not save the screenshot: 
+无法创建保存目录：	Could not create the save folder: 
+无法读取显示器信息	Could not read display information
+没有屏幕录制权限。请在系统设置中允许 zchat 录制屏幕后重试。	zchat does not have screen recording permission. Allow it in System Settings and try again.
+已截取屏幕，请拖选区域后编辑	Screen captured. Drag to select an area, then edit it.
+拖动选择区域，按 Esc 取消	Drag to select an area, or press Esc to cancel
+先打开一个聊天	Open a chat first
+贴图	Pin
+保存…	Save…
+不透明度	Opacity
+全局快捷键	Global shortcut
+在其他窗口前面也能截图；留空或填 off 可关闭	Capture from any window; leave empty or enter off to disable
+应用	Apply
+保存目录	Save folder
+捕获鼠标指针	Capture the mouse pointer
+截图时把鼠标指针一起截取下来	Include the mouse pointer in the screenshot
+立即截图	Take a screenshot now
+选择区域后可以标注、复制、保存、贴图或发送到聊天	Select an area to annotate, copy, save, pin or send it to a chat
+选择	Choose
+启用截图	Enable screenshots
+在聊天工具栏、菜单和快捷键中使用截图	Use screenshots from the chat toolbar, menus and shortcuts
+保存为…	Save as…
+鼠标穿透	Click-through
+显示全部贴图	Show all pins
+恢复贴图鼠标交互	Restore pin interaction
+关闭全部贴图	Close all pins
+贴图已恢复鼠标交互	Pins respond to the mouse again
+贴图已开启鼠标穿透	Pins are now click-through
+截图与贴图	Screenshots and pins

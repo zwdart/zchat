@@ -55,6 +55,10 @@ type sendState struct {
 	lastSent  int64
 }
 
+// globalApp is the instance built by Run. Pin windows live outside the main
+// window's lifetime and use it to show toasts.
+var globalApp *app
+
 // app is the state both windows show. It is read and changed on the main
 // thread: by views, and by network goroutines through post.
 type app struct {
@@ -146,6 +150,18 @@ type app struct {
 	lastRead    map[string]time.Time
 	version     string
 	startedOnce bool
+
+	shot                *shotSession
+	shotPins            []*pinWindow
+	pins                []*pinWindow
+	shotIncludeShortcut string
+	shotExcludeShortcut string
+	shotIncludeEdit     string
+	shotExcludeEdit     string
+	shotChooserOpen     bool
+	shotChooserAnchored bool
+	shotPending         bool
+	shotReveal          func()
 }
 
 // post runs fn on the main thread and redraws the window. Without a
@@ -188,6 +204,17 @@ func (a *app) showMain() {
 	a.redraw()
 }
 
+// hasArg reports whether args contains flag, with or without a leading
+// value separator.
+func hasArg(args []string, flag string) bool {
+	for _, a := range args {
+		if a == flag {
+			return true
+		}
+	}
+	return false
+}
+
 // Run runs the app until it quits.
 func Run() error {
 	if !mygo.App.RequestSingleInstanceLock() {
@@ -213,8 +240,16 @@ func Run() error {
 		saveDue:        map[string]bool{},
 		lastRead:       map[string]time.Time{},
 	}
+	globalApp = a
+	shotApp = a
 	a.useUpdater()
-	mygo.App.OnSecondInstance(func([]string, string) { a.showMain() })
+	mygo.App.OnSecondInstance(func(args []string, _ string) {
+		if hasArg(args, "--capture") {
+			a.startScreenshot(false)
+			return
+		}
+		a.showMain()
+	})
 	mygo.App.OnNotificationClick(func(id string) {
 		if !strings.HasPrefix(id, "chat:") {
 			a.showMain()
@@ -280,10 +315,21 @@ func Run() error {
 			a.startShare(false)
 		}
 		a.updateBadge()
+		a.applyScreenshotShortcut()
 		a.saveStateNow()
+		if hasArg(os.Args[1:], "--capture") {
+			a.startScreenshot(false)
+		}
 	})
 	mygo.App.OnBeforeQuit(func(*mygo.QuitEvent) {
 		a.quitting = true
+		for _, p := range append([]*pinWindow(nil), a.pins...) {
+			if p.win != nil && !p.win.IsDestroyed() {
+				p.win.Close()
+			}
+		}
+		a.pins = nil
+		a.unregisterScreenshotShortcuts()
 		a.settings.Status = a.profile.Status
 		_ = a.settings.save()
 		a.saveAll()

@@ -87,6 +87,16 @@ func (a *app) trayMenu() *mygo.Menu {
 			Click:   run(func() { a.setStatus(o.Value) }),
 		})
 	}
+	shots := []*mygo.MenuItem{}
+	if a.settings.ScreenshotEnabled {
+		shots = append(shots, &mygo.MenuItem{Label: tr("截图…"), Click: run(a.openScreenshotChooser)})
+	}
+	shots = append(shots,
+		&mygo.MenuItem{Label: tr("显示全部贴图"), Click: run(a.showAllPins)},
+		&mygo.MenuItem{Label: tr("恢复贴图鼠标交互"), Click: run(func() { a.setPinsInteractive(true) })},
+		&mygo.MenuItem{Label: tr("关闭全部贴图"), Click: run(a.closeAllPins)},
+	)
+
 	return mygo.NewMenu([]*mygo.MenuItem{
 		{Label: tr("打开 zchat"), Click: run(a.showMain)},
 		mygo.Separator(),
@@ -104,6 +114,7 @@ func (a *app) trayMenu() *mygo.Menu {
 			a.showMain()
 			a.setPage(pageShare)
 		})},
+		{Label: tr("截图与贴图"), Submenu: shots},
 		mygo.Separator(),
 		{Label: tr("设置…"), Click: run(a.openSettings)},
 		{Label: tr("检查更新…"), Click: run(checkForUpdates)},

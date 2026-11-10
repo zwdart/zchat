@@ -28,24 +28,40 @@ type settings struct {
 	UploadDir          string         `json:"uploadDir,omitempty"`
 	SharePort          int            `json:"sharePort"`
 	ShareOnStart       bool           `json:"shareOnStart"`
-	path               string
+	ScreenshotEnabled  bool           `json:"screenshotEnabled"`
+	// ScreenshotIncludeShortcut captures the screen with the chat window in
+	// it, and ScreenshotExcludeShortcut hides the chat window first.
+	ScreenshotIncludeShortcut string `json:"screenshotIncludeShortcut,omitempty"`
+	ScreenshotExcludeShortcut string `json:"screenshotExcludeShortcut,omitempty"`
+	ScreenshotDir             string `json:"screenshotDir,omitempty"`
+	ScreenshotCursor          bool   `json:"screenshotCursor"`
+	path                      string
 }
 
 func defaultSettings() settings {
 	downloads, _ := mygo.App.Path(mygo.PathDownloads)
+	pictures, _ := mygo.App.Path(mygo.PathPictures)
+	if pictures == "" {
+		pictures = downloads
+	}
 	return settings{
-		Appearance:         "system",
-		Language:           "system",
-		Status:             model.Online,
-		Notifications:      true,
-		AutoDownloadImages: true,
-		CloseToTray:        true,
-		Discovery:          true,
-		Port:               42224,
-		TransferPort:       42225,
-		DownloadDir:        filepath.Join(downloads, appFolderName),
-		SharePort:          42230,
-		ShareOnStart:       false,
+		Appearance:                "system",
+		Language:                  "system",
+		Status:                    model.Online,
+		Notifications:             true,
+		AutoDownloadImages:        true,
+		CloseToTray:               true,
+		Discovery:                 true,
+		Port:                      42224,
+		TransferPort:              42225,
+		DownloadDir:               filepath.Join(downloads, appFolderName),
+		SharePort:                 42230,
+		ShareOnStart:              false,
+		ScreenshotEnabled:         true,
+		ScreenshotIncludeShortcut: "Ctrl+F1",
+		ScreenshotExcludeShortcut: "Ctrl+F2",
+		ScreenshotDir:             filepath.Join(pictures, appFolderName),
+		ScreenshotCursor:          true,
 	}
 }
 

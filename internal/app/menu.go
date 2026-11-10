@@ -48,26 +48,33 @@ func (a *app) setMenu() {
 		})
 	}
 
+	fileItems := []*mygo.MenuItem{
+		{Label: tr("新建群聊…"), Accelerator: "CmdOrCtrl+N", Click: run(func() {
+			a.showMain()
+			a.openNewGroup()
+		})},
+		{Label: tr("通过 IP 连接…"), Accelerator: "CmdOrCtrl+Shift+N", Click: run(func() {
+			a.showMain()
+			a.manualOpen = true
+		})},
+		mygo.Separator(),
+	}
+	if a.settings.ScreenshotEnabled {
+		fileItems = append(fileItems, &mygo.MenuItem{Label: tr("截图…"), Click: run(a.openScreenshotChooser)})
+	}
+	fileItems = append(fileItems,
+		&mygo.MenuItem{Label: tr("发送文件…"), Accelerator: "CmdOrCtrl+O", Click: run(a.pickFiles)},
+		&mygo.MenuItem{Label: tr("发送剪贴板图片"), Click: run(a.sendClipboardImage)},
+		mygo.Separator(),
+		&mygo.MenuItem{Label: tr("文件共享…"), Click: run(func() {
+			a.showMain()
+			a.setPage(pageShare)
+		})},
+	)
+
 	mygo.App.SetMenu(mygo.NewMenu([]*mygo.MenuItem{
 		{Label: name, Submenu: appMenu},
-		{Label: tr("文件"), Submenu: []*mygo.MenuItem{
-			{Label: tr("新建群聊…"), Accelerator: "CmdOrCtrl+N", Click: run(func() {
-				a.showMain()
-				a.openNewGroup()
-			})},
-			{Label: tr("通过 IP 连接…"), Accelerator: "CmdOrCtrl+Shift+N", Click: run(func() {
-				a.showMain()
-				a.manualOpen = true
-			})},
-			mygo.Separator(),
-			{Label: tr("发送文件…"), Accelerator: "CmdOrCtrl+O", Click: run(a.pickFiles)},
-			{Label: tr("发送剪贴板图片"), Click: run(a.sendClipboardImage)},
-			mygo.Separator(),
-			{Label: tr("文件共享…"), Click: run(func() {
-				a.showMain()
-				a.setPage(pageShare)
-			})},
-		}},
+		{Label: tr("文件"), Submenu: fileItems},
 		{Label: tr("编辑"), Submenu: []*mygo.MenuItem{
 			{Role: mygo.RoleUndo, Label: tr("撤销")},
 			{Role: mygo.RoleRedo, Label: tr("重做")},

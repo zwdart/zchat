@@ -16,6 +16,12 @@ func (a *app) dialogs(c *ui.Context) {
 	a.aliasDialog(c)
 	a.userInfoDialog(c)
 	a.confirmDialog(c)
+	// The chooser opens above the composer's screenshot button; only when
+	// that button did not render this frame (another page, or no
+	// conversation open) does its centered panel stand in.
+	if !a.shotChooserAnchored {
+		a.screenshotChooserDialog(c)
+	}
 }
 
 func dialogPanel(backdrop, panel ui.Element, p palette, width float32) {
@@ -411,5 +417,59 @@ func (a *app) confirmDialog(c *ui.Context) {
 				}
 			}
 		})
+	})
+}
+
+// screenshotChooserRows are the two choices of the screenshot chooser.
+func (a *app) screenshotChooserRows(c *ui.Context, p palette) {
+	if pillButtonKey(c, "shot-with-chat", nil, tr("包含当前聊天窗口"), p.accent, p.onAcc).FillWidth().Clicked() {
+		a.shotChooserOpen = false
+		a.redraw()
+		a.startScreenshot(true)
+	}
+	if pillButtonKey(c, "shot-without-chat", nil, tr("不包含当前聊天窗口"), p.hover.Over(p.bg), p.text).FillWidth().Clicked() {
+		a.shotChooserOpen = false
+		a.redraw()
+		a.startScreenshot(false)
+	}
+}
+
+// screenshotChooserPopover asks whether the next screenshot includes the
+// chat window, in a small panel above the composer's screenshot button.
+func (a *app) screenshotChooserPopover(c *ui.Context, anchor ui.Element) {
+	if !a.shotChooserOpen {
+		return
+	}
+	a.shotChooserAnchored = true
+	p := a.pal
+	ui.PopoverBase(c, anchor, &a.shotChooserOpen, func(panel ui.Element) {
+		panel.Width(232).Margin(6, 0, 0, 0).Padding(12).Radius(14).Gap(9).
+			Background(p.bg).Border(1, p.hair).
+			Shadow(0, 18, 44, -12, ui.RGBA(0, 0, 0, 0.4)).
+			// The capture may follow this click within a frame or two, so
+			// leave no exit fade that the shot could catch.
+			Transition(ui.ElementTransition{})
+		ui.Text(c, tr("截图")).FontSize(13).FontWeight(700)
+		a.screenshotChooserRows(c, p)
+		ui.Text(c, tr("快捷键")+"  "+shortcutLabel(a.settings.ScreenshotIncludeShortcut)+" / "+
+			shortcutLabel(a.settings.ScreenshotExcludeShortcut)).FontSize(10.5).TextColor(p.faint)
+	})
+}
+
+// screenshotChooserDialog is the chooser for entry points whose window has
+// no composer button to anchor the popover to.
+func (a *app) screenshotChooserDialog(c *ui.Context) {
+	p := a.pal
+	ui.DialogBase(c.Key("shot-mode"), &a.shotChooserOpen, func(backdrop, panel ui.Element) {
+		backdrop.Background(ui.RGBA(0, 0, 0, 0.3))
+		panel.Width(320).Padding(18).Radius(16).Gap(11).
+			Background(p.bg).Border(1, p.hair).
+			Shadow(0, 24, 60, -12, ui.RGBA(0, 0, 0, 0.42)).
+			// As the popover: no exit fade that the capture could catch.
+			Transition(ui.ElementTransition{})
+		ui.Text(c, tr("截图")).FontSize(15).FontWeight(700)
+		a.screenshotChooserRows(c, p)
+		ui.Text(c, tr("快捷键")+"  "+shortcutLabel(a.settings.ScreenshotIncludeShortcut)+" / "+
+			shortcutLabel(a.settings.ScreenshotExcludeShortcut)).FontSize(10.5).TextColor(p.faint)
 	})
 }

@@ -641,6 +641,13 @@ func (a *app) composer(c *ui.Context, conv *model.Conversation) {
 				if b := iconButton(c, iconImage, 16, p.muted, tr("发送图片")); b.Clicked() {
 					a.pickImages()
 				}
+				if a.settings.ScreenshotEnabled {
+					b := iconButton(c, iconScreenshot, 16, p.muted, tr("截图"))
+					if b.Clicked() {
+						a.shotChooserOpen = !a.shotChooserOpen
+					}
+					a.screenshotChooserPopover(c, b)
+				}
 				if b := iconButton(c, iconClip, 16, p.muted, tr("发送文件")); b.Clicked() {
 					a.pickFiles()
 				}

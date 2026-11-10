@@ -34,6 +34,8 @@ func (a *app) openSettings() {
 	a.portEdit = float64(a.settings.Port)
 	a.transferEdit = float64(a.settings.TransferPort)
 	a.shareEdit = float64(a.settings.SharePort)
+	a.shotIncludeEdit = a.settings.ScreenshotIncludeShortcut
+	a.shotExcludeEdit = a.settings.ScreenshotExcludeShortcut
 	a.settingsWin = mygo.NewWindow(mygo.WindowOptions{
 		Title:           tr("zchat 设置"),
 		Width:           600,
@@ -273,6 +275,54 @@ func (a *app) settingsView(c *ui.Context) {
 			row(tr("启动时自动共享"), tr("打开 zchat 后自动开启上一个共享目录"), func() {
 				if ui.Switch(c.Key("share-start"), &s.ShareOnStart).Label(tr("启动时自动共享")).Changed() {
 					a.settingsChanged()
+				}
+			})
+		})
+
+		group(tr("截图"), func() {
+			row(tr("启用截图"), tr("在聊天工具栏、菜单和快捷键中使用截图"), func() {
+				if ui.Switch(c.Key("shot-enabled"), &s.ScreenshotEnabled).Label(tr("启用截图")).Changed() {
+					a.settingsChanged()
+					a.applyScreenshotShortcut()
+					a.setMenu()
+					a.rebuildTray()
+				}
+			})
+			row(tr("包含聊天窗口的快捷键"), tr("连当前聊天窗口一起截取；留空或填 off 可关闭"), func() {
+				ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+					ui.TextInput(c.Key("shot-include-shortcut"), &a.shotIncludeEdit).Width(170).
+						Placeholder("Ctrl+F1")
+					if ui.Button(c.Key("shot-include-apply"), tr("应用")).Clicked() {
+						if a.setScreenshotShortcut(a.shotIncludeEdit, true) {
+							a.setToast(tr("截图快捷键已更新"))
+						}
+					}
+				})
+			})
+			row(tr("不包含聊天窗口的快捷键"), tr("先隐藏 zchat 再截取；留空或填 off 可关闭"), func() {
+				ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+					ui.TextInput(c.Key("shot-exclude-shortcut"), &a.shotExcludeEdit).Width(170).
+						Placeholder("Ctrl+F2")
+					if ui.Button(c.Key("shot-exclude-apply"), tr("应用")).Clicked() {
+						if a.setScreenshotShortcut(a.shotExcludeEdit, false) {
+							a.setToast(tr("截图快捷键已更新"))
+						}
+					}
+				})
+			})
+			row(tr("保存目录"), a.screenshotDir(), func() {
+				if ui.Button(c.Key("choose-screenshot-dir"), tr("选择…")).Clicked() {
+					a.chooseScreenshotDir()
+				}
+			})
+			row(tr("捕获鼠标指针"), tr("截图时把鼠标指针一起截取下来"), func() {
+				if ui.Switch(c.Key("shot-cursor"), &s.ScreenshotCursor).Label(tr("捕获鼠标指针")).Changed() {
+					a.settingsChanged()
+				}
+			})
+			row(tr("立即截图"), tr("选择区域后可以标注、复制、保存、贴图或发送到聊天"), func() {
+				if ui.Button(c.Key("shot-now"), tr("截图")).Clicked() {
+					a.openScreenshotChooser()
 				}
 			})
 		})

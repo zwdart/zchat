@@ -75,13 +75,18 @@ func (a *app) applySendProgress(token, transport string, sent, total int64, err 
 		st.lastAt, st.lastSent = now, sent
 		st.Speed = 0
 	} else if sent > st.lastSent {
-		if dt := now.Sub(st.lastAt).Seconds(); dt > 0 {
-			inst := float64(sent-st.lastSent) / dt
-			if st.Speed == 0 {
-				st.Speed = inst
-			} else {
-				st.Speed = st.Speed*0.7 + inst*0.3
-			}
+		dt := now.Sub(st.lastAt).Seconds()
+		if dt < 0.001 {
+			// Two updates may arrive within one timer tick, especially on
+			// Windows. A tiny floor keeps the first speed finite and above
+			// zero instead of dividing by zero.
+			dt = 0.001
+		}
+		inst := float64(sent-st.lastSent) / dt
+		if st.Speed == 0 {
+			st.Speed = inst
+		} else {
+			st.Speed = st.Speed*0.7 + inst*0.3
 		}
 		st.lastAt, st.lastSent = now, sent
 	}

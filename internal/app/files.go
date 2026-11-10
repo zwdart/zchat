@@ -779,7 +779,11 @@ func (a *app) loadImage(path string) *ui.Bitmap {
 		if err == nil {
 			bmp, err = ui.DecodeBitmap(b)
 		}
-		a.post(func() {
+		// Run on the main thread without going through post: the first
+		// view renders while NewWindow is still creating the window, so
+		// a.win is nil and post would drop the result, leaving the path
+		// stuck in imageLoading and the image missing until a restart.
+		mygo.RunOnMain(func() {
 			a.imageLoading[path] = false
 			if err != nil || bmp == nil {
 				a.imageFail[path] = true

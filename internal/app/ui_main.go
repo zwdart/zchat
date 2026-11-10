@@ -14,6 +14,10 @@ const sidebarWidth = 292
 
 // view builds the main window.
 func (a *app) view(c *ui.Context) {
+	// The screenshot chooser is a popover of the composer's button. Clear
+	// the mark of the last frame so dialogs falls back to its own panel
+	// when no composer button renders this frame.
+	a.shotChooserAnchored = false
 	t := *c.Theme()
 	a.pal = paletteFor(&t)
 	p := a.pal
@@ -81,12 +85,13 @@ func (a *app) shortcuts(c *ui.Context) {
 			a.clearMsgSearch()
 			return
 		}
-		if a.newGroupOpen || a.manualOpen || a.groupInfoOpen || a.groupAddOpen || a.confirmOpen {
+		if a.newGroupOpen || a.manualOpen || a.groupInfoOpen || a.groupAddOpen || a.confirmOpen || a.shotChooserOpen {
 			a.newGroupOpen = false
 			a.manualOpen = false
 			a.groupInfoOpen = false
 			a.groupAddOpen = false
 			a.confirmOpen = false
+			a.shotChooserOpen = false
 		}
 	})
 	c.OnShortcut(ui.Cmd|ui.Shift, ui.KeyM, func() {

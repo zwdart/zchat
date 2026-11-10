@@ -114,6 +114,7 @@ func systemLanguage() string {
 func parseTable(s string) map[string]string {
 	out := make(map[string]string)
 	for _, line := range strings.Split(s, "\n") {
+		line = strings.TrimSuffix(line, "\r")
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue
 		}
