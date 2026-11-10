@@ -37,18 +37,18 @@ type x11API struct {
 	rootWindow            func(dpy uintptr, screen int32) uintptr
 	displayWidth          func(dpy uintptr, screen int32) int32
 	displayHeight         func(dpy uintptr, screen int32) int32
-	resourceManagerString func(dpy uintptr) uintptr
+	resourceManagerString func(dpy uintptr) *byte
 	internAtom            func(dpy uintptr, name string, onlyIfExists int32) uintptr
 	getWindowProperty     func(dpy, w, property uintptr, offset, length int64, del int32, reqType uintptr,
-		actualType *uintptr, actualFormat *int32, nitems *uint64, bytesAfter *uint64, prop *uintptr) int32
+		actualType *uintptr, actualFormat *int32, nitems *uint64, bytesAfter *uint64, prop **byte) int32
 	free             func(data uintptr) int32
 	getGeometry      func(dpy, drawable uintptr, root *uintptr, x, y *int32, w, h *uint32, border *uint32, depth *uint32) int32
 	translateCoords  func(dpy, src, dst uintptr, srcX, srcY int32, dstX, dstY *int32, child *uintptr) int32
 	getWindowAttrs   func(dpy, w uintptr, attrs unsafe.Pointer) int32
-	getImage         func(dpy, drawable uintptr, x, y int32, w, h uint32, planeMask uintptr, format int32) uintptr
-	destroyImage     func(ximage uintptr) int32
+	getImage         func(dpy, drawable uintptr, x, y int32, w, h uint32, planeMask uintptr, format int32) *xImage
+	destroyImage     func(ximage *xImage) int32
 	xineramaIsActive func(dpy uintptr) int32
-	xineramaScreens  func(dpy uintptr, count *int32) uintptr
+	xineramaScreens  func(dpy uintptr, count *int32) *xineramaScreenInfo
 }
 
 type x11Backend struct {
@@ -79,7 +79,7 @@ type xImage struct {
 	Height       int32
 	XOffset      int32
 	Format       int32
-	Data         uintptr
+	Data         *byte
 	ByteOrder    int32
 	BitmapUnit   int32
 	BitOrder     int32
@@ -181,7 +181,7 @@ func x11Scale(api x11API, dpy uintptr) float64 {
 	}
 	if api.resourceManagerString != nil {
 		ptr := api.resourceManagerString(dpy)
-		if ptr != 0 {
+		if ptr != nil {
 			res := cString(ptr)
 			for _, line := range strings.Split(res, "\n") {
 				line = strings.TrimSpace(line)
@@ -197,13 +197,13 @@ func x11Scale(api x11API, dpy uintptr) float64 {
 	return 1
 }
 
-func cString(ptr uintptr) string {
-	if ptr == 0 {
+func cString(ptr *byte) string {
+	if ptr == nil {
 		return ""
 	}
 	var b []byte
-	for i := uintptr(0); i < 1<<20; i++ {
-		c := *(*byte)(unsafe.Pointer(ptr + i))
+	for i := 0; i < 1<<20; i++ {
+		c := *(*byte)(unsafe.Add(unsafe.Pointer(ptr), i))
 		if c == 0 {
 			break
 		}
@@ -221,12 +221,13 @@ func (b *x11Backend) loadDisplays() {
 	}
 	if api.xineramaIsActive != nil && api.xineramaScreens != nil && api.xineramaIsActive(b.dpy) != 0 {
 		var count int32
-		ptr := api.xineramaScreens(b.dpy, &count)
-		if ptr != 0 {
-			defer api.free(ptr)
+		infos := api.xineramaScreens(b.dpy, &count)
+		if infos != nil {
+			defer api.free(uintptr(unsafe.Pointer(infos)))
 			if count > 0 && count < 64 {
-				infos := unsafe.Slice((*xineramaScreenInfo)(unsafe.Pointer(ptr)), count)
-				for i, info := range infos {
+				arr := unsafe.Slice(infos, count)
+				for i := 0; i < int(count) && i < len(arr); i++ {
+					info := arr[i]
 					if info.Width <= 0 || info.Height <= 0 {
 						continue
 					}
@@ -332,19 +333,20 @@ func (b *x11Backend) Capture(ctx context.Context, opts Options) ([]Frame, error)
 			continue
 		}
 		ximg := api.getImage(b.dpy, root, int32(r.Min.X), int32(r.Min.Y), uint32(r.Dx()), uint32(r.Dy()), xAllPlanes, xZPixmap)
-		if ximg == 0 {
+		if ximg == nil {
 			if firstErr == nil {
 				firstErr = fmt.Errorf("%w: XGetImage", ErrCaptureFailed)
 			}
 			continue
 		}
-		img := (*xImage)(unsafe.Pointer(ximg))
+		img := ximg
 		w, h := int(img.Width), int(img.Height)
 		stride := int(img.BytesPerLine)
 		bpp := int(img.BitsPerPixel) / 8
 		var rgba *image.RGBA
-		if img.Data != 0 && stride > 0 && bpp >= 2 && w > 0 && h > 0 {
-			data := unsafe.Slice((*byte)(unsafe.Pointer(img.Data)), stride*h)
+		dataPtr := (*byte)(unsafe.Pointer(img.Data))
+		if dataPtr != nil && stride > 0 && bpp >= 2 && w > 0 && h > 0 {
+			data := unsafe.Slice(dataPtr, stride*h)
 			rgba = RGBAFromPacked(data, stride, w, h, bpp, uint32(img.ByteOrder),
 				uint32(img.RedMask), uint32(img.GreenMask), uint32(img.BlueMask))
 			// Masks may be wider than 32 bits on a deep visual.
@@ -355,9 +357,8 @@ func (b *x11Backend) Capture(ctx context.Context, opts Options) ([]Frame, error)
 		}
 		if api.destroyImage != nil {
 			api.destroyImage(ximg)
-		} else if img.Data != 0 {
-			api.free(img.Data)
-			api.free(ximg)
+		} else if dataPtr != nil {
+			api.free(uintptr(unsafe.Pointer(dataPtr)))
 		}
 		if rgba == nil {
 			if firstErr == nil {
@@ -519,12 +520,12 @@ func (b *x11Backend) readLongsFor(w, property uintptr) ([]uint64, bool) {
 	var actualType uintptr
 	var format int32
 	var nitems, bytesAfter uint64
-	var data uintptr
+	var data *byte
 	if api.getWindowProperty(b.dpy, w, property, 0, 4096, 0, xAnyProperty,
-		&actualType, &format, &nitems, &bytesAfter, &data) != xSuccess || data == 0 {
+		&actualType, &format, &nitems, &bytesAfter, &data) != xSuccess || data == nil {
 		return nil, false
 	}
-	defer api.free(data)
+	defer api.free(uintptr(unsafe.Pointer(data)))
 	if format != 32 || nitems == 0 {
 		return nil, false
 	}
@@ -541,14 +542,14 @@ func (b *x11Backend) stringProperty(w, property uintptr) string {
 	var actualType uintptr
 	var format int32
 	var nitems, bytesAfter uint64
-	var data uintptr
+	var data *byte
 	if api.getWindowProperty(b.dpy, w, property, 0, 4096, 0, xAnyProperty,
-		&actualType, &format, &nitems, &bytesAfter, &data) != xSuccess || data == 0 {
+		&actualType, &format, &nitems, &bytesAfter, &data) != xSuccess || data == nil {
 		return ""
 	}
-	defer api.free(data)
+	defer api.free(uintptr(unsafe.Pointer(data)))
 	if format != 8 || nitems == 0 {
 		return ""
 	}
-	return string(unsafe.Slice((*byte)(unsafe.Pointer(data)), nitems))
+	return string(unsafe.Slice(data, nitems))
 }
