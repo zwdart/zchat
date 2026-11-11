@@ -29,6 +29,9 @@ type settings struct {
 	SharePort          int            `json:"sharePort"`
 	ShareOnStart       bool           `json:"shareOnStart"`
 	ScreenshotEnabled  bool           `json:"screenshotEnabled"`
+	// ScreenshotIncludeChat is the default for the chat toolbar's screenshot
+	// button and the hide/show choice of its menu.
+	ScreenshotIncludeChat bool `json:"screenshotIncludeChat"`
 	// ScreenshotIncludeShortcut captures the screen with the chat window in
 	// it, and ScreenshotExcludeShortcut hides the chat window first.
 	ScreenshotIncludeShortcut string `json:"screenshotIncludeShortcut,omitempty"`
@@ -58,6 +61,7 @@ func defaultSettings() settings {
 		SharePort:                 42230,
 		ShareOnStart:              false,
 		ScreenshotEnabled:         true,
+		ScreenshotIncludeChat:     true,
 		ScreenshotIncludeShortcut: "Ctrl+F1",
 		ScreenshotExcludeShortcut: "Ctrl+F2",
 		ScreenshotDir:             filepath.Join(pictures, appFolderName),

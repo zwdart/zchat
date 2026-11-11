@@ -556,7 +556,7 @@ func (a *app) clearAllHistory() {
 	if a.store != nil {
 		_ = a.store.ClearMessages()
 	}
-	a.rows = nil
+	a.resetRows()
 	a.updateBadge()
 	a.refreshDBStats()
 	a.scheduleSave()

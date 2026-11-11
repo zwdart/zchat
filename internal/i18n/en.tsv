@@ -450,3 +450,17 @@ zchat 文件共享	zchat File Sharing
 贴图已恢复鼠标交互	Pins respond to the mouse again
 贴图已开启鼠标穿透	Pins are now click-through
 截图与贴图	Screenshots and pins
+截图选项	Screenshot options
+显示窗口截图	Include window in screenshot
+隐藏窗口截图	Hide window in screenshot
+默认包含聊天页面	Include the chat window by default
+点击聊天工具栏的截图按钮时，默认把当前聊天页面一起截入	Include the current chat window by default when taking a screenshot from the chat toolbar
+包含当前聊天窗口	Include the current chat window
+不包含当前聊天窗口	Do not include the current chat window
+包含聊天窗口的快捷键	Shortcut with the chat window
+不包含聊天窗口的快捷键	Shortcut without the chat window
+连当前聊天窗口一起截取；留空或填 off 可关闭	Include the chat window; leave empty or enter off to disable
+先隐藏 zchat 再截取；留空或填 off 可关闭	Hide zchat first; leave empty or enter off to disable
+截图…	Screenshot…
+快捷键	Shortcuts
+未设置	Not set

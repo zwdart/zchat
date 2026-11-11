@@ -77,9 +77,9 @@ func (a *app) settingsView(c *ui.Context) {
 		ui.Text(c, tr("设置")).FontSize(26).FontWeight(750).LetterSpacing(-0.4).Margin(0, 0, 6, 2)
 		ui.Text(c, tr("这些设置只影响这台设备。")).FontSize(12).TextColor(p.muted).Margin(0, 0, 0, 8)
 
-		group := func(title string, rows func()) {
+		group := func(title string, rows func()) ui.Element {
 			ui.Text(c, title).FontSize(12).FontWeight(650).TextColor(p.muted).Margin(14, 4, 4, 4)
-			ui.Column(c).Radius(12).Background(p.bg).Border(1, p.hair).Dividers(1, p.hair).Children(rows)
+			return ui.Column(c).Radius(12).Background(p.bg).Border(1, p.hair).Dividers(1, p.hair).Children(rows)
 		}
 		row := func(label, desc string, control func()) {
 			ui.Row(c).Padding(12, 15).Gap(16).AlignItems(ui.Center).MinHeight(48).Children(func() {
@@ -279,13 +279,18 @@ func (a *app) settingsView(c *ui.Context) {
 			})
 		})
 
-		group(tr("截图"), func() {
+		shotGroup := group(tr("截图"), func() {
 			row(tr("启用截图"), tr("在聊天工具栏、菜单和快捷键中使用截图"), func() {
 				if ui.Switch(c.Key("shot-enabled"), &s.ScreenshotEnabled).Label(tr("启用截图")).Changed() {
 					a.settingsChanged()
 					a.applyScreenshotShortcut()
 					a.setMenu()
 					a.rebuildTray()
+				}
+			})
+			row(tr("默认包含聊天页面"), tr("点击聊天工具栏的截图按钮时，默认把当前聊天页面一起截入"), func() {
+				if ui.Switch(c.Key("shot-include-chat"), &s.ScreenshotIncludeChat).Label(tr("默认包含聊天页面")).Changed() {
+					a.settingsChanged()
 				}
 			})
 			row(tr("包含聊天窗口的快捷键"), tr("连当前聊天窗口一起截取；留空或填 off 可关闭"), func() {
@@ -326,6 +331,10 @@ func (a *app) settingsView(c *ui.Context) {
 				}
 			})
 		})
+		if a.shotSettingsFocus {
+			a.shotSettingsFocus = false
+			shotGroup.ScrollIntoView()
+		}
 
 		group(tr("聊天记录"), func() {
 			st := a.dbStats

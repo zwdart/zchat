@@ -103,6 +103,31 @@ func (a *app) openScreenshotChooser() {
 	a.redraw()
 }
 
+// setScreenshotIncludeChat changes whether the composer's screenshot button
+// starts by including the chat window, and keeps the choice for the next
+// launch.
+func (a *app) setScreenshotIncludeChat(include bool) {
+	if a.settings.ScreenshotIncludeChat == include {
+		return
+	}
+	a.settings.ScreenshotIncludeChat = include
+	_ = a.settings.save()
+	a.redraw()
+}
+
+// openScreenshotSettings opens the settings window scrolled to the
+// screenshot group, where the chat window default lives.
+func (a *app) openScreenshotSettings() {
+	a.shotSettingsFocus = true
+	a.openSettings()
+	if a.settingsWin != nil {
+		a.settingsWin.Show()
+		a.settingsWin.Focus()
+		mygo.App.Focus()
+	}
+	a.redraw()
+}
+
 // startScreenshot captures the display under the pointer. Unless includeChat
 // is set zchat and its pins hide first, so they are left out of the shot.
 func (a *app) startScreenshot(includeChat bool) {

@@ -162,6 +162,7 @@ type app struct {
 	shotChooserAnchored bool
 	shotPending         bool
 	shotReveal          func()
+	shotSettingsFocus   bool
 }
 
 // post runs fn on the main thread and redraws the window. Without a
@@ -586,7 +587,7 @@ func (a *app) openConv(id string) {
 	a.active = id
 	a.msgQuery = ""
 	a.msgSearchShown = false
-	a.rows = nil
+	a.resetRows()
 	a.input = c.Draft
 	c.Unread = 0
 	a.updateBadge()
@@ -683,10 +684,23 @@ func (a *app) confirm(title, text string, action func()) {
 
 func (a *app) msgSearchOpen() bool { return a.msgSearchShown }
 
+// resetRows forgets the laid-out rows. Clearing only a.rows would leave the
+// cache keys matching, so rebuildRows would return early and the list would
+// stay empty until a new message changed its length.
+func (a *app) resetRows() {
+	a.rows = nil
+	a.rowsConv = ""
+	a.rowsLen = -1
+	a.rowsQuery = ""
+}
+
 func (a *app) clearMsgSearch() {
 	a.msgQuery = ""
 	a.msgSearchShown = false
-	a.rows = nil
+	a.resetRows()
+	if conv := a.currentConv(); conv != nil {
+		a.rebuildRows(conv)
+	}
 	a.redraw()
 }
 

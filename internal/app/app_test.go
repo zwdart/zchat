@@ -49,6 +49,37 @@ func TestRebuildRowsFiltersAndGroups(t *testing.T) {
 	}
 }
 
+// Closing a message search shows the whole history again instead of leaving
+// the list empty until the next message arrives.
+func TestClearMsgSearchRestoresRows(t *testing.T) {
+	day := time.Date(2026, 11, 5, 10, 0, 0, 0, time.Local)
+	conv := &model.Conversation{ID: "u_peer", Kind: model.KindDirect, PeerID: "u_peer"}
+	a := &app{
+		active: conv.ID,
+		convs:  map[string]*model.Conversation{conv.ID: conv},
+		msgs: map[string][]model.Message{
+			conv.ID: {
+				{ID: "m_1", Text: "hello", SentAt: day},
+				{ID: "m_2", Text: "needle", SentAt: day},
+			},
+		},
+	}
+	a.msgQuery = "needle"
+	a.msgSearchShown = true
+	a.rebuildRows(conv)
+	if len(a.rows) != 2 { // one heading and one message
+		t.Fatalf("searched rows = %+v", a.rows)
+	}
+
+	a.clearMsgSearch()
+	if a.msgSearchShown || a.msgQuery != "" {
+		t.Fatal("search state was not cleared")
+	}
+	if len(a.rows) != 3 { // one heading and both messages
+		t.Fatalf("rows after clearing = %+v", a.rows)
+	}
+}
+
 // The HTTP fallback token is the path segment after /t/, not the file name.
 func TestShareToken(t *testing.T) {
 	cases := map[string]string{

@@ -24,6 +24,37 @@ func TestEnglishTranslations(t *testing.T) {
 	}
 }
 
+// Every string the screenshot settings and its menu show has an English
+// translation, so switching the language changes them too.
+func TestScreenshotSettingsTranslations(t *testing.T) {
+	old := Current()
+	defer Set(old)
+	Set(English)
+	for _, key := range []string{
+		"截图",
+		"截图…",
+		"截图选项",
+		"显示窗口截图",
+		"隐藏窗口截图",
+		"设置…",
+		"默认包含聊天页面",
+		"点击聊天工具栏的截图按钮时，默认把当前聊天页面一起截入",
+		"包含当前聊天窗口",
+		"不包含当前聊天窗口",
+		"包含聊天窗口的快捷键",
+		"不包含聊天窗口的快捷键",
+		"连当前聊天窗口一起截取；留空或填 off 可关闭",
+		"先隐藏 zchat 再截取；留空或填 off 可关闭",
+		"快捷键",
+		"未设置",
+		"发送",
+	} {
+		if got := T(key); got == key {
+			t.Errorf("T(%q) has no English translation", key)
+		}
+	}
+}
+
 func TestResolve(t *testing.T) {
 	if Resolve(English) != English || Resolve(Chinese) != Chinese {
 		t.Fatal("explicit languages did not resolve")

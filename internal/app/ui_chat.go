@@ -642,11 +642,27 @@ func (a *app) composer(c *ui.Context, conv *model.Conversation) {
 					a.pickImages()
 				}
 				if a.settings.ScreenshotEnabled {
-					b := iconButton(c, iconScreenshot, 16, p.muted, tr("截图"))
-					if b.Clicked() {
-						a.shotChooserOpen = !a.shotChooserOpen
-					}
-					a.screenshotChooserPopover(c, b)
+					// The button takes the shot straight away, including the
+					// chat window unless the default says otherwise. The small
+					// arrow beside it toggles that default and opens settings.
+					ui.Row(c).Gap(0).AlignItems(ui.Center).Children(func() {
+						if b := iconButton(c, iconScreenshot, 16, p.muted, tr("截图")); b.Clicked() {
+							a.startScreenshot(a.settings.ScreenshotIncludeChat)
+						}
+						opts := iconButton(c, iconChevron, 10, p.muted, tr("截图选项"))
+						opts.PopoverMenu(func(m *ui.Menu) {
+							if m.Item(tr("显示窗口截图")).Radio(a.settings.ScreenshotIncludeChat).Chosen() {
+								a.setScreenshotIncludeChat(true)
+							}
+							if m.Item(tr("隐藏窗口截图")).Radio(!a.settings.ScreenshotIncludeChat).Chosen() {
+								a.setScreenshotIncludeChat(false)
+							}
+							m.Separator()
+							if m.Item(tr("设置…")).Chosen() {
+								a.openScreenshotSettings()
+							}
+						})
+					})
 				}
 				if b := iconButton(c, iconClip, 16, p.muted, tr("发送文件")); b.Clicked() {
 					a.pickFiles()
@@ -655,7 +671,9 @@ func (a *app) composer(c *ui.Context, conv *model.Conversation) {
 					a.sendShareLink()
 				}
 				ui.Spacer(c)
-				send := ui.ButtonBase(c).Size(38, 38).Radius(999).Center().FocusRing(false).Label(tr("发送"))
+				// Match the toolbar icons' height; the wider pill keeps the
+				// send button recognisable beside them.
+				send := ui.ButtonBase(c).Size(54, 30).Radius(999).Center().FocusRing(false).Label(tr("发送"))
 				fill := p.accent
 				if strings.TrimSpace(a.input) == "" {
 					fill = p.press
