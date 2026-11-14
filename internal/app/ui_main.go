@@ -156,10 +156,9 @@ func (a *app) profileRow(c *ui.Context) {
 				ui.Text(c, presenceLabel(a.profile.Status)).FontSize(11.5).TextColor(p.muted).SingleLine()
 			})
 		})
-		ui.Icon(c, iconSettings).Size(15, 15).TextColor(p.faint)
 	})
 	if b.Clicked() {
-		a.openSettings()
+		a.openUserInfo(a.profile.ID)
 	}
 	b.ContextMenu(func(m *ui.Menu) {
 		if m.Item(tr("查看资料")).Chosen() {
@@ -341,19 +340,25 @@ func shortCount(n int) string {
 }
 
 func (a *app) statusRow(c *ui.Context) {
-	ui.Row(c).Padding(8, 8).AlignItems(ui.Center).Gap(8).Children(func() {
-		dot(c, a.profile.Status, 8)
-		ui.PopoverMenuButton(c, presenceLabel(a.profile.Status), func(m *ui.Menu) {
-			for _, o := range model.PresenceOptions {
-				if m.Item(tr(o.Label)).Checked(a.profile.Status == o.Value).Chosen() {
-					a.setStatus(o.Value)
-				}
-			}
-			m.Separator()
-			if m.Item(tr("设置…")).Chosen() {
-				a.openSettings()
-			}
-		}).Grow(1).Justify(ui.Start)
+	p := a.pal
+	ui.Row(c).Padding(4, 4).AlignItems(ui.Center).Gap(4).Children(func() {
+		b := ui.ButtonBase(c).Key("open-settings").Height(34).Grow(1).PaddingX(10).Gap(9).Radius(9).
+			AlignItems(ui.Center).Justify(ui.Start).FocusRing(false).Label(tr("设置"))
+		bg := ui.Transparent
+		if b.Hovered() {
+			bg = p.hover
+		}
+		b.Background(b.AnimateColor("bg", bg, ui.Animation{Duration: 120 * time.Millisecond}))
+		b.Children(func() {
+			ui.Icon(c, iconSettings).Size(16, 16).TextColor(p.muted)
+			ui.Text(c, tr("设置")).FontSize(13).FontWeight(500).TextColor(p.muted)
+		})
+		if b.Clicked() {
+			a.openSettings()
+		}
+		if about := iconButton(c, iconInfo, 16, p.muted, tr("关于")).Key("open-about"); about.Clicked() {
+			a.openAbout()
+		}
 	})
 }
 

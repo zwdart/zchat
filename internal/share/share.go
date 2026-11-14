@@ -278,11 +278,13 @@ func (s *Server) serveTransfer(w http.ResponseWriter, r *http.Request) {
 	tok, _, _ := strings.Cut(rest, "/")
 	tr, ok := s.TransferFor(tok)
 	if !ok {
+		w.Header().Set("X-Zchat-Error-Code", "not_found")
 		http.NotFound(w, r)
 		return
 	}
 	f, err := os.Open(tr.Path)
 	if err != nil {
+		w.Header().Set("X-Zchat-Error-Code", "file_missing")
 		http.Error(w, i18n.T("文件已不存在"), http.StatusNotFound)
 		return
 	}

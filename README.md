@@ -56,6 +56,8 @@ mygo build -platform darwin/universal,windows/amd64,linux/amd64
 ## 文档
 
 - [设计说明](docs/DESIGN.md)
+- [协议接口文档](docs/PROTOCOL.md)
+- [协议对比：LocalSend / IPMSG](docs/PROTOCOL-COMPARISON.md)
 - [功能清单](docs/FEATURES.md)
 - [构建指南](docs/BUILD.md)
 - [发布流程](docs/RELEASE.md)

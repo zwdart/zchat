@@ -59,7 +59,20 @@ func (a *app) userInfoDialog(c *ui.Context) {
 				})
 				ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
 					dot(c, status, 7)
-					ui.Text(c, presenceLabel(status)).FontSize(12).TextColor(p.muted)
+					if self {
+						// Clicking the status opens the same menu as the
+						// menu bar, so the profile dialog is where presence
+						// changes now.
+						ui.PopoverMenuButton(c, presenceLabel(status), func(m *ui.Menu) {
+							for _, o := range model.PresenceOptions {
+								if m.Item(tr(o.Label)).Checked(status == o.Value).Chosen() {
+									a.setStatus(o.Value)
+								}
+							}
+						}).Label(tr("切换状态"))
+					} else {
+						ui.Text(c, presenceLabel(status)).FontSize(12).TextColor(p.muted)
+					}
 				})
 			})
 		})
@@ -74,8 +87,8 @@ func (a *app) userInfoDialog(c *ui.Context) {
 			})
 		}
 		ui.Column(c).FillWidth().Padding(12, 14).Radius(12).Background(p.panel).Gap(7).Children(func() {
-			detail(tr("状态"), presenceLabel(status))
 			if peer != nil {
+				detail(tr("状态"), presenceLabel(status))
 				detail(tr("名称"), peer.Name)
 				if peer.Alias != "" {
 					detail(tr("备注"), peer.Alias)

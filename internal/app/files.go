@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"image"
 	_ "image/gif"
@@ -650,6 +651,10 @@ func (a *app) downloadHTTP(convID, msgID, url, dest string, want int64, imageOnl
 			a.finishDownload(convID, msgID, dest, offset, fmt.Errorf("HTTP %s", resp.Status), imageOnly)
 			return
 		default:
+			if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusGone {
+				a.finishDownload(convID, msgID, dest, offset, errors.New(tr("文件不存在或已过期")), imageOnly)
+				return
+			}
 			a.finishDownload(convID, msgID, dest, offset, fmt.Errorf("HTTP %s", resp.Status), imageOnly)
 			return
 		}
@@ -733,7 +738,7 @@ func (a *app) finishDownload(convID, msgID, dest string, done int64, err error, 
 		st.Working = false
 		st.Done = done
 		if err != nil {
-			st.Err = err.Error()
+			st.Err = downloadErrorText(err)
 			return
 		}
 		delete(a.transfers, msgID)

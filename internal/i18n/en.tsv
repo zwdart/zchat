@@ -464,3 +464,17 @@ zchat 文件共享	zchat File Sharing
 截图…	Screenshot…
 快捷键	Shortcuts
 未设置	Not set
+切换状态	Change status
+下载链接	Download link
+可以复制到浏览器，或直接打开发布页面。	Copy it into a browser, or open the release page.
+复制链接	Copy link
+打开发布页面	Open release page
+这个版本无法自动更新，请从发布页面下载新版本。	This build cannot update itself. Download the new version from the release page.
+手动更新	Manual update
+局域网聊天工具，支持文字、图片、文件与目录共享，不经过服务器。	LAN chat for text, images, files and shared folders, with no server in between.
+传输请求无效	Invalid transfer request
+发送方无法读取文件	The sender cannot read the file
+发送方正忙，请稍后再试	The sender is busy; try again later
+文件校验失败	File checksum mismatch
+文件已发生变化，请重新下载	The file changed; download it again
+文件不存在或已过期	The file is gone or has expired

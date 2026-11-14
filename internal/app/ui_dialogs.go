@@ -15,6 +15,7 @@ func (a *app) dialogs(c *ui.Context) {
 	a.groupAddDialog(c)
 	a.aliasDialog(c)
 	a.userInfoDialog(c)
+	a.aboutDialog(c)
 	a.confirmDialog(c)
 	// The chooser opens above the composer's screenshot button; only when
 	// that button did not render this frame (another page, or no

@@ -104,12 +104,21 @@ type app struct {
 
 	userInfoOpen bool
 	userInfoID   string
+	aboutOpen    bool
 
 	profileName  string
 	profileSig   string
 	portEdit     float64
 	transferEdit float64
 	shareEdit    float64
+
+	// settingsSection is the section the settings page should scroll to on
+	// its next layout; settingsNav is the highlighted item of its menu.
+	settingsSection string
+	settingsNav     string
+	// updateSupported says whether this build and install can replace
+	// itself; otherwise the UI offers the release page instead.
+	updateSupported bool
 
 	node          *lan.Node
 	share         *share.Server
@@ -268,6 +277,7 @@ func Run() error {
 		setLocale()
 		a.settings.applyAppearance()
 		a.version = mygo.App.Version()
+		a.updateSupported = mygo.Updater.Enabled()
 		a.openStore()
 		a.loadData()
 		a.rebuildSendTokens()

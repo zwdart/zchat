@@ -123,6 +123,33 @@ func transferErrorText(err error) string {
 	return msg
 }
 
+// downloadErrorText explains a refused download by its stable code, so the
+// message follows the receiver's language rather than the sender's. Older
+// senders that omit the code fall back to their text.
+func downloadErrorText(err error) string {
+	switch transfer.CodeOf(err) {
+	case transfer.CodeNotFound:
+		return tr("文件不存在或发送方已重启")
+	case transfer.CodeFileMissing:
+		return tr("文件已被移动或删除")
+	case transfer.CodeBadOffset:
+		return tr("续传位置无效")
+	case transfer.CodeFileChanged:
+		return tr("文件已发生变化，请重新下载")
+	case transfer.CodeBadRequest:
+		return tr("传输请求无效")
+	case transfer.CodeIOError:
+		return tr("发送方无法读取文件")
+	case transfer.CodeTooLarge:
+		return tr("文件过大")
+	case transfer.CodeBusy:
+		return tr("发送方正忙，请稍后再试")
+	case transfer.CodeChecksumMismatch:
+		return tr("文件校验失败")
+	}
+	return transferErrorText(err)
+}
+
 // rebuildSendTokens maps both attachment tokens of outgoing messages back
 // to their message, so progress from either transport reaches the card.
 func (a *app) rebuildSendTokens() {

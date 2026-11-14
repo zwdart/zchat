@@ -30,6 +30,40 @@ const (
 	bufferSize     = 256 << 10
 )
 
+// Stable codes of refused transfers. Programs should switch on these rather
+// than the localized message, which is only a hint for people. Servers of
+// older versions sent no code, so a missing code falls back to the message.
+const (
+	CodeBadRequest       = "bad_request"
+	CodeNotFound         = "not_found"
+	CodeFileMissing      = "file_missing"
+	CodeBadOffset        = "bad_offset"
+	CodeFileChanged      = "file_changed"
+	CodeIOError          = "io_error"
+	CodeChecksumMismatch = "checksum_mismatch"
+	CodeTooLarge         = "too_large"
+	CodeBusy             = "busy"
+)
+
+// Error is a transfer a server refused, with a stable code and a message in
+// the server's language.
+type Error struct {
+	Code    string
+	Message string
+}
+
+func (e *Error) Error() string { return e.Message }
+
+// CodeOf returns the stable code of a refused transfer, or "" for other
+// errors such as a broken connection.
+func CodeOf(err error) string {
+	var e *Error
+	if errors.As(err, &e) {
+		return e.Code
+	}
+	return ""
+}
+
 // Entry is a file the sender offers.
 type Entry struct {
 	Token   string    `json:"token"`
@@ -50,6 +84,7 @@ type response struct {
 	Size  int64  `json:"size,omitempty"`
 	Name  string `json:"name,omitempty"`
 	MIME  string `json:"mime,omitempty"`
+	Code  string `json:"code,omitempty"`
 	Error string `json:"error,omitempty"`
 }
 
@@ -302,32 +337,32 @@ func (s *Server) serve(conn net.Conn) {
 	}
 	var req request
 	if json.Unmarshal(line, &req) != nil {
-		_ = writeResponse(conn, response{Error: i18n.T("请求格式错误")})
+		_ = writeResponse(conn, response{Code: CodeBadRequest, Error: i18n.T("请求格式错误")})
 		return
 	}
 	s.mu.RLock()
 	e, ok := s.files[req.Token]
 	s.mu.RUnlock()
 	if !ok {
-		_ = writeResponse(conn, response{Error: i18n.T("文件不存在或发送方已重启")})
+		_ = writeResponse(conn, response{Code: CodeNotFound, Error: i18n.T("文件不存在或发送方已重启")})
 		return
 	}
 	if _, err := os.Stat(e.Path); err != nil {
-		_ = writeResponse(conn, response{Error: i18n.T("文件已被移动或删除")})
+		_ = writeResponse(conn, response{Code: CodeFileMissing, Error: i18n.T("文件已被移动或删除")})
 		return
 	}
 	if req.Offset < 0 || req.Offset > e.Size {
-		_ = writeResponse(conn, response{Error: i18n.T("续传位置无效")})
+		_ = writeResponse(conn, response{Code: CodeBadOffset, Error: i18n.T("续传位置无效")})
 		return
 	}
 	f, err := os.Open(e.Path)
 	if err != nil {
-		_ = writeResponse(conn, response{Error: i18n.T("无法读取文件")})
+		_ = writeResponse(conn, response{Code: CodeIOError, Error: i18n.T("无法读取文件")})
 		return
 	}
 	defer f.Close()
 	if _, err := f.Seek(req.Offset, io.SeekStart); err != nil {
-		_ = writeResponse(conn, response{Error: i18n.T("无法定位文件")})
+		_ = writeResponse(conn, response{Code: CodeIOError, Error: i18n.T("无法定位文件")})
 		return
 	}
 	if err := writeResponse(conn, response{OK: true, Size: e.Size, Name: e.Name, MIME: e.MIME}); err != nil {
@@ -402,7 +437,7 @@ func Download(addr, token string, offset int64, w io.Writer, progress func(done,
 		if resp.Error == "" {
 			resp.Error = i18n.T("无法传输文件")
 		}
-		return offset, errors.New(resp.Error)
+		return offset, &Error{Code: resp.Code, Message: resp.Error}
 	}
 	_ = conn.SetDeadline(time.Time{})
 	total := resp.Size

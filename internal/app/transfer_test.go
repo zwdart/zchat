@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"xin.dart.zchat/internal/i18n"
+	"xin.dart.zchat/internal/transfer"
 )
 
 // Sender-side progress moves from sending to sent, reports a speed, and
@@ -71,5 +72,34 @@ func TestTransferErrorText(t *testing.T) {
 	}
 	if got := transferErrorText(errors.New("boom")); got != "boom" {
 		t.Fatalf("unknown text = %q", got)
+	}
+}
+
+// A refused download is shown in the receiver's language, chosen by the
+// stable code rather than the sender's text.
+func TestDownloadErrorText(t *testing.T) {
+	old := i18n.Current()
+	i18n.Set(i18n.English)
+	defer i18n.Set(old)
+
+	cases := []struct {
+		code string
+		want string
+	}{
+		{transfer.CodeNotFound, "File is gone or the sender restarted"},
+		{transfer.CodeFileMissing, "File was moved or deleted"},
+		{transfer.CodeBadOffset, "Invalid resume position"},
+		{transfer.CodeIOError, "The sender cannot read the file"},
+	}
+	for _, tc := range cases {
+		err := &transfer.Error{Code: tc.code, Message: "发送方的文本"}
+		if got := downloadErrorText(err); got != tc.want {
+			t.Fatalf("code %q text = %q, want %q", tc.code, got, tc.want)
+		}
+	}
+
+	// An older sender sends no code: its text is all there is.
+	if got := downloadErrorText(&transfer.Error{Message: "旧版文本"}); got != "旧版文本" {
+		t.Fatalf("codeless text = %q", got)
 	}
 }

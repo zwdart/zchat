@@ -1,7 +1,11 @@
 package transfer
 
 import (
+	"bufio"
 	"bytes"
+	"encoding/json"
+	"io"
+	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -120,7 +124,7 @@ func TestServerProgress(t *testing.T) {
 	}
 }
 
-// A bad token is refused without reading a file.
+// A bad token is refused without reading a file, with a stable code.
 func TestBadToken(t *testing.T) {
 	s := New("")
 	if err := s.Start(0); err != nil {
@@ -130,6 +134,66 @@ func TestBadToken(t *testing.T) {
 	_, err := Download("127.0.0.1:"+itoa(s.Port()), "t_missing", 0, &bytes.Buffer{}, nil)
 	if err == nil || !strings.Contains(err.Error(), "存在") {
 		t.Fatalf("error = %v", err)
+	}
+	if got := CodeOf(err); got != CodeNotFound {
+		t.Fatalf("code = %q, want %q", got, CodeNotFound)
+	}
+}
+
+// Refusals carry codes that do not depend on the server's language.
+func TestErrorCodes(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "note.txt")
+	content := []byte("hello over tcp")
+	if err := os.WriteFile(path, content, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	s := New("")
+	if err := s.Start(0); err != nil {
+		t.Fatal(err)
+	}
+	defer s.Stop()
+	e, err := s.Add(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	addr := "127.0.0.1:" + itoa(s.Port())
+
+	if _, err := Download(addr, e.Token, int64(len(content))+1, &bytes.Buffer{}, nil); CodeOf(err) != CodeBadOffset {
+		t.Fatalf("bad offset code = %q, want %q", CodeOf(err), CodeBadOffset)
+	}
+	if _, err := Download(addr, e.Token, -1, &bytes.Buffer{}, nil); CodeOf(err) != CodeBadOffset {
+		t.Fatalf("negative offset code = %q, want %q", CodeOf(err), CodeBadOffset)
+	}
+
+	// The token is still known, but the file behind it is gone.
+	if err := os.Remove(path); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Download(addr, e.Token, 0, &bytes.Buffer{}, nil); CodeOf(err) != CodeFileMissing {
+		t.Fatalf("missing file code = %q, want %q", CodeOf(err), CodeFileMissing)
+	}
+
+	// A request line that is not JSON.
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close()
+	if _, err := io.WriteString(conn, "not json\n"); err != nil {
+		t.Fatal(err)
+	}
+	br := bufio.NewReaderSize(conn, 4096)
+	line, err := br.ReadBytes('\n')
+	if err != nil {
+		t.Fatal(err)
+	}
+	var resp response
+	if err := json.Unmarshal(line, &resp); err != nil {
+		t.Fatal(err)
+	}
+	if resp.OK || resp.Code != CodeBadRequest {
+		t.Fatalf("response = %+v, want code %q", resp, CodeBadRequest)
 	}
 }
 
