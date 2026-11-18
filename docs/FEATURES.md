@@ -61,6 +61,21 @@
 - 重名文件自动追加序号，不覆盖已有文件。
 - 发送者的本地路径不会泄露给接收方。
 
+## 安装包图标
+
+- 从「安装包图标」页面选择一张 PNG、JPG、WebP 或 GIF 图片。
+- 可多选 Android、iOS、Windows、Linux、macOS，默认全选。
+- 自动按平台创建 `android/`、`ios/`、`windows/`、`linux/`、`macos/` 输出目录。
+- Android：传统/圆形启动图标、自适应图标前景、Google Play 商店图标和 `mipmap-anydpi-v26` XML。
+- iOS：完整 `AppIcon.appiconset`，所有 PNG 去除 Alpha 通道，并生成 `Contents.json`。
+- Windows：多尺寸 `app.ico`，以及 MSIX / WinUI 的方形、宽磁贴、商店、启动画面和徽章资源。
+- Linux：Freedesktop hicolor 图标主题（16–512 px）和 `.desktop` 启动器。
+- macOS：`AppIcon.appiconset`、`AppIcon.icns`，兼容 Xcode 与常见打包工具。
+- 生成前检查 ImageMagick、源图片、输出目录和背景色，缺失时给出安装提示。
+- 生成过程中显示总数、当前文件、进度条、日志和已用时；完成后显示状态、文件数、用时和输出目录，可直接打开。
+- 「平台要求」页用 Markdown 展示各平台官方尺寸与格式，可复制单个平台或全部说明。
+- 中文和 English 界面均完整支持，生成的 README.txt 也会跟随界面语言。
+
 ## 局域网文件共享
 
 - 一键开启或停止 HTTP 文件共享。

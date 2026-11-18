@@ -478,3 +478,182 @@ zchat 文件共享	zchat File Sharing
 文件校验失败	File checksum mismatch
 文件已发生变化，请重新下载	The file changed; download it again
 文件不存在或已过期	The file is gone or has expired
+ 说明已复制	 documentation copied
+.desktop 文件里的 Icon= 必须是图标文件的基础名（不含扩展名）。	The Icon= in the .desktop file must be the icon's base name without the extension.
+.desktop 文本文件	.desktop text file
+108dp 画布，72dp 可见，66dp 安全区	108dp canvas, 72dp visible, 66dp safe zone
+16/32/128/256/512 pt 的 @1x、@2x	16/32/128/256/512 pt at @1x and @2x
+20/29/40/60 pt 的 @2x、@3x	20/29/40/60 pt at @2x and @3x
+20/29/40/76/83.5 pt 的 @1x、@2x	20/29/40/76/83.5 pt at @1x and @2x
+256 × 256 或 512 × 512 px	256 × 256 or 512 × 512 px
+Android 7.1+ 圆形启动器	Android 7.1+ round launcher
+Android 自适应图标	Android adaptive icons
+App Store Connect 与 Xcode 营销图标	App Store Connect and the Xcode marketing icon
+App Store Connect 营销图标	App Store Connect marketing icon
+App Store 图标	App Store icon
+App Store 的 1024×1024 营销图标不能带 Alpha；如审核提示，请单独导出不透明版本。	The 1024×1024 App Store marketing icon must not have alpha; if review flags it, export an opaque version separately.
+App Store 要求图标为 PNG，且不能带 Alpha 通道；本工具已按背景色压平透明区域。	The App Store requires PNG icons with no alpha channel; this tool flattens transparency onto the chosen background color.
+AppIcon.appiconset、ICNS 与 App Store 1024 图标	AppIcon.appiconset, ICNS and the 1024 App Store icon
+AppIcon.icns 由 ImageMagick 生成；失败时自动改用内置 ICNS 写入器。	AppIcon.icns is written by ImageMagick; if that fails, the built-in ICNS writer is used.
+AppImage 图标	AppImage icon
+AppImage 通常使用 256×256 或 512×512 的 PNG 作为 .DirIcon。	AppImage usually uses a 256×256 or 512×512 PNG as .DirIcon.
+Apple 人机界面指南 · App 图标	Apple Human Interface Guidelines · App icons
+Apple 人机界面指南 · macOS 图标	Apple Human Interface Guidelines · macOS icons
+BadgeLogo 必须是单色（通常为白色 + 透明），本工具只是缩放原图，请自行确认颜色。	BadgeLogo must be monochrome (usually white on transparent); this tool only resizes the source, so check the color yourself.
+Desktop Entry 规范	Desktop Entry specification
+Freedesktop hicolor 图标主题与 .desktop 启动器	Freedesktop hicolor icon theme and .desktop launcher
+Freedesktop 图标主题规范	Freedesktop icon theme specification
+Google Play 商店图标	Google Play store icon
+Google Play 商店图标 512×512、32-bit PNG、不超过 1 MB。	Google Play store icon: 512×512, 32-bit PNG, no more than 1 MB.
+Google Play 图标规范	Google Play icon requirements
+ICNS 多尺寸	ICNS multi-size
+ICO 内含 16/24/32/48/64/128/256 多个尺寸，Windows 会按 DPI 自动选择。	The ICO contains 16/24/32/48/64/128/256 sizes; Windows picks one by DPI.
+ICO 多尺寸	ICO multi-size
+Icon= 使用文件名去掉 .png 后的名字	Icon= uses the file name without .png
+ImageMagick 已就绪	ImageMagick is ready
+ImageMagick 没有写出文件	ImageMagick did not write the output file
+ImageMagick 负责缩放和格式转换；所有图标都由同一张源图生成，不会上传到网络。	ImageMagick handles resizing and format conversion; every icon comes from the same source image and nothing is uploaded.
+MSIX 视觉资源	MSIX visual assets
+MSIX 资源默认输出 100% 和 200% 两个缩放级别，可删掉不用的文件。	MSIX assets are written at 100% and 200% scale; delete the files you do not use.
+PNG 32-bit，可透明	32-bit PNG, transparency allowed
+PNG 支持透明背景；系统会按面板/启动器需要的尺寸挑选最接近的一张。	PNG supports transparency; the system picks the closest size for panels and launchers.
+PNG，单色	PNG, monochrome
+PNG，可透明	PNG, transparency allowed
+PNG，无 Alpha	PNG, no alpha
+Windows 应用图标指南	Windows app icon guidelines
+Xcode 14+ 可用单张 1024×1024 图标，完整尺寸集兼容旧版 Xcode。	Xcode 14+ can use a single 1024×1024 icon; the full size set remains compatible with older Xcode.
+Xcode AppIcon 尺寸	Xcode AppIcon sizes
+exe 资源、任务栏、开始菜单快捷方式	exe resources, taskbar and Start menu shortcuts
+hicolor 图标	hicolor icons
+hicolor 是所有桌面环境都支持的图标主题，16 到 512 像素按目录名区分尺寸。	hicolor is supported by every desktop environment; 16 to 512 pixels are separated by directory name.
+iOS 系统会自动裁切圆角，请提供满幅方形图，不要在图片里预先画圆角。	iOS rounds the corners itself; supply a full square image and do not round the corners in the artwork.
+iPad 图标	iPad icons
+iPhone 图标	iPhone icons
+iPhone、iPad 与 App Store 的全套 AppIcon	Complete AppIcon set for iPhone, iPad and the App Store
+macOS 图标通常保留透明区域（圆角与阴影），本工具不会压平背景。	macOS icons usually keep transparency for rounded corners and shadows; this tool does not flatten the background.
+mipmap-anydpi-v26 XML 会让 Android 8.0+ 自动使用自适应图标，背景色可在 res/values 中修改。	The mipmap-anydpi-v26 XML makes Android 8.0+ use the adaptive icon; change the background color in res/values.
+上传一张图片，一键生成 Android、iOS、Windows、Linux、macOS 的标准图标与目录	Upload one image and generate the standard icons and folders for Android, iOS, Windows, Linux and macOS
+上传到 Play Console 商店信息	Upload under Store listing in Play Console
+下表按各平台当前官方规范整理。不同平台版本和打包工具可能略有差异，遇到审核或打包工具报错时，请以各平台官方文档为准。生成器会为每个平台建立独立目录，并附带 README.txt。	The table follows each platform's current official guidance. Versions and packaging tools can differ slightly; if review or a packaging tool complains, check the official documentation. The generator creates a separate folder per platform and includes a README.txt.
+不透明背景色（iOS）	Opaque background (iOS)
+个失败	failed
+个文件	files
+个文件失败	files failed
+会按平台自动创建 android、ios、windows、linux、macos 子目录。已有文件会被覆盖，说明文件和图标会一起写出。	Creates android, ios, windows, linux and macos subfolders. Existing files are overwritten; READMEs and icons are written together.
+传统启动图标 ic_launcher	Legacy launcher icon ic_launcher
+传统图标为 32-bit PNG，建议保留透明背景。	Legacy icons are 32-bit PNG; keeping transparent backgrounds is recommended.
+作为 AppDir 的 .DirIcon	as the AppDir .DirIcon
+使用这个目录	Use this folder
+使用这张图片	Use this image
+全部文件已生成	All files generated
+再次生成	Generate again
+准备输出目录	Preparing output folders
+取消生成	Cancel generation
+可多选	Multiple choices
+启动图标、自适应图标、圆形图标与 Google Play 商店图标	Launcher, adaptive and round icons plus the Google Play store icon
+图片不是正方形：会按比例缩放，四周按平台要求填充透明或背景色。	The image is not square: it is scaled proportionally and the margins are filled with transparency or the background color as each platform needs.
+圆形图标 ic_launcher_round	Round icon ic_launcher_round
+复制全部说明	Copy all documentation
+复制说明	Copy documentation
+多尺寸 ICO 与 MSIX / WinUI 磁贴、启动画面资源	Multi-size ICO and MSIX / WinUI tile and splash assets
+安装包图标	Installer icons
+安装包图标…	Installer icons…
+安装包图标要求	Installer icon requirements
+安装：brew install imagemagick	Install: brew install imagemagick
+安装：sudo apt install imagemagick  或  sudo dnf install ImageMagick	Install: sudo apt install imagemagick  or  sudo dnf install ImageMagick
+安装：winget install ImageMagick.ImageMagick  或  choco install imagemagick	Install: winget install ImageMagick.ImageMagick  or  choco install imagemagick
+官方尺寸与格式要求	Official sizes and formats
+官方文档	Official documentation
+小提示：生成的目录可以直接合并进工程；iOS 的 AppIcon.appiconset 拖进 Xcode，Windows 的 app.ico 用于安装包，Linux 的 .desktop 和 hicolor 图标放到对应系统目录即可。每个平台的 README.txt 写有具体步骤。	Tip: the generated folders can be merged into a project. Drag AppIcon.appiconset into Xcode, use app.ico for a Windows installer, and put the Linux .desktop and hicolor icons in the system folders. Each platform's README.txt has the exact steps.
+尺寸	Size
+已写出	Written
+已取消	Canceled
+已取消生成，已写入的文件会保留	Generation canceled; files already written are kept
+已复制全部平台说明	Copied all platform documentation
+已完成，输出目录中的平台子目录可以直接合并进工程。	Done. The platform folders in the output directory can be merged into your project.
+平台要求	Platform requirements
+应用列表与任务栏	App list and taskbar
+应用包 Contents/Resources 使用	Used by the app bundle's Contents/Resources
+应用名称	App name
+应用启动画面	App splash screen
+应用图标 app.ico	App icon app.ico
+建议 1024 × 1024 以上的正方形 PNG	A square PNG of at least 1024 × 1024 works best
+建议选择 1024 × 1024 以上的 PNG	Choose a PNG of at least 1024 × 1024
+开始生成	Generate
+开始菜单中等磁贴	Start menu medium tile
+开始菜单大磁贴	Start menu large tile
+开始菜单宽磁贴	Start menu wide tile
+成功生成的文件已保留；修复错误后可以再次生成，重复文件会被覆盖。	Successfully generated files are kept; fix the error and generate again, existing files will be overwritten.
+打开输出目录	Open output folder
+支持 PNG、JPG、WebP、GIF。透明区域会在 iOS 图标中填充为你选择的背景色。	Supports PNG, JPG, WebP and GIF. Transparent areas are filled with your background color in iOS icons.
+无法为 %s 找到 ICNS 源图标	Cannot find an ICNS source icon for %s
+无法读取这张图片，请换一张 PNG 或 JPG	Cannot read this image; try another PNG or JPG
+有	There are
+未安装 ImageMagick	ImageMagick is not installed
+未找到 ImageMagick	ImageMagick not found
+未找到 ImageMagick：	ImageMagick not found: 
+未知步骤	Unknown step
+未知的图标容器格式：	Unknown icon container format: 
+格式	Format
+桌面启动器	Desktop launcher
+检测通过。开始生成前会再次确认 ImageMagick 仍可用，避免生成到一半才失败。	Check passed. ImageMagick is checked again before generation so it cannot fail halfway.
+正在创建目录并写入图标…	Creating folders and writing icons…
+正在取消…	Canceling…
+正在检测 ImageMagick…	Checking ImageMagick…
+正在生成…	Generating…
+正在生成，已写入的文件会保留	Generating; files already written are kept
+毫秒	ms
+没有写出任何文件	No files were written
+没有可用于 ICNS 的 PNG	No PNGs available for ICNS
+没有生成文件，请检查 ImageMagick 和输出目录权限后重试。	No files were generated; check ImageMagick and output folder permissions and try again.
+源图片	Source image
+源图片不存在或已被移动，请重新选择	The source image is missing or was moved; choose it again
+源图片不存在或已被移动，请重新选择。	The source image is missing or was moved; choose it again.
+源图片不存在：	Source image not found: 
+源图片是一个目录	The source image is a folder
+源图短边小于 1024 像素，生成 1024 图标时可能变模糊，建议换更大的原图。	The short side is below 1024 pixels; the 1024 icon may look soft, so a larger source is better.
+生成	Generate
+生成中	Generating
+生成前会自动检查 ImageMagick、源图片和输出目录。	ImageMagick, the source image and the output folder are checked before generation.
+生成图标需要调用本机的 ImageMagick。	Generating icons uses the local ImageMagick installation.
+生成失败	Generation failed
+生成失败：没有写出任何文件	Generation failed: no files were written
+生成完成	Generation complete
+生成完成：	Generated: 
+生成已取消，成功写入的文件保留在输出目录中，可以重新生成覆盖。	Generation canceled; successfully written files stay in the output folder and can be overwritten by generating again.
+生成日志	Generation log
+用时	Time
+目标平台	Target platforms
+秒	s
+背景色请使用 #RRGGBB 格式	Use #RRGGBB for the background color
+自适应前景 ic_launcher_foreground	Adaptive foreground ic_launcher_foreground
+自适应图标画布 108dp，中心 72dp 可见，内容放在直径 66dp 的安全区内；本工具已将前景缩进 1/6。	Adaptive icons use a 108dp canvas with 72dp visible and a 66dp safe zone; this tool insets the foreground by 1/6.
+视图	View
+说明	Note
+请使用 #RGB 或 #RRGGBB	Use #RGB or #RRGGBB
+请先安装 ImageMagick，再点击「重新检测」。	Install ImageMagick first, then click Check again.
+请先选择一张源图片	Choose a source image first
+请至少选择一个平台	Choose at least one platform
+请选择一张源图片	Choose a source image
+请选择输出目录	Choose an output folder
+输出目录	Output folder
+输出设置	Output settings
+还有 %d 个错误，详见日志。	%d more errors; see the log.
+还没有选择图片	No image selected yet
+选择一个输出目录	Choose an output folder
+选择图片	Choose image
+选择源图片	Choose source image
+选择的平台没有可生成的文件	The selected platforms have no files to generate
+选择输出目录	Choose output folder
+部分完成	Partially complete
+部分文件生成失败	Some files failed
+重新检测	Check again
+锁屏徽章	Lock screen badge
+项目	Item
+%d 个文件	%d files
+已写出 %d 个文件	Wrote %d files
+有 %d 个文件失败	%d files failed
+生成完成：%d 个文件，%d 个失败	Generated %d files, %d failed
+生成完成：%d 个文件，%s	Generated %d files in %s
+ICNS 尺寸不完整，内置写入器也失败	The ICNS sizes are incomplete and the built-in writer failed too
+ 不是 ImageMagick	 is not ImageMagick

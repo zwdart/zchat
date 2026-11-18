@@ -58,4 +58,5 @@ var (
 	iconUndo        = strokeIcon(`<path d="M8 7H3v5"/><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/>`)
 	iconRedo        = strokeIcon(`<path d="M16 7h5v5"/><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/>`)
 	iconPin         = strokeIcon(`<path d="M9 4h6l-1 5 4 4H6l4-4z"/><path d="M12 13v8"/>`)
+	iconPackage     = strokeIcon(`<path d="m12 2 8 4.5v11L12 22l-8-4.5v-11z"/><path d="m4 6.5 8 4.5 8-4.5"/><path d="M12 11v11"/><path d="M8 4.25 16 8.75"/>`)
 )

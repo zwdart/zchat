@@ -10,6 +10,7 @@ zchat 是一个用 Go 和 [MyGo](https://github.com/egoist/mygo) 原生 UI 写�
 - **群聊**：创建、邀请、改名、添加或移出成员、退出与解散。
 - **局域网文件共享**：把本机目录通过 HTTP 只读共享，手机扫码即可用浏览器访问；也可以指定上传目录，让访客从网页上传文件。
 - **图片与文件**：拖入窗口、粘贴剪贴板图片、图片自动缓存、下载进度与另存为。
+- **安装包图标**：上传一张图片，多选 Android、iOS、Windows、Linux、macOS，一键生成各平台安装包所需的标准尺寸、格式和目录；内置官方要求说明，可复制单平台文档，生成过程显示进度与完成状态。需要本机安装 ImageMagick。
 - **桌面集成**：系统托盘、应用菜单、全局快捷键、未读角标、系统通知；点击消息头像或聊天标题头像可查看设备资料。
 - **外观**：跟随系统、浅色、深色主题；界面支持简体中文和 English，可在设置里切换或跟随系统。
 - **离线消息**：对方暂未在线时先保存在本机，连接后自动补发。
@@ -18,6 +19,17 @@ zchat 是一个用 Go 和 [MyGo](https://github.com/egoist/mygo) 原生 UI 写�
 ## 快速开始
 
 需要 Go 1.27.3 或更新版本。
+
+「安装包图标」功能需要本机安装 [ImageMagick](https://imagemagick.org/)（推荐 7.x；6.x 的 `convert` 也支持）：
+
+```bash
+# macOS
+brew install imagemagick
+# Debian / Ubuntu
+sudo apt install imagemagick
+# Windows
+winget install ImageMagick.ImageMagick
+```
 
 ```bash
 go test ./internal/...

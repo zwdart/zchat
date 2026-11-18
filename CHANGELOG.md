@@ -1,5 +1,13 @@
 # 更新日志
 
+## 未发布
+
+- 新增「安装包图标」功能：上传一张图片，多选 Android、iOS、Windows、Linux、macOS，一键生成各平台安装包所需的标准图标、格式和目录。
+- Android 生成传统/圆形启动图标、自适应图标前景、Play 商店图标和自适应图标 XML；iOS 生成完整 AppIcon 集合并去除 Alpha；Windows 生成多尺寸 ICO 与 MSIX/WinUI 资源；Linux 生成 hicolor 图标和 `.desktop`；macOS 生成 AppIcon 与 ICNS。
+- 生成前检测 ImageMagick、源图片和输出目录；生成中显示进度条、当前文件、日志和用时，完成后显示状态、文件数与输出目录，可直接打开。
+- 「平台要求」页以 Markdown 展示各平台官方尺寸与格式，支持复制单个平台或全部说明。
+- 安装包图标页面、平台要求文档和生成的 README.txt 均完整支持简体中文与 English。
+
 ## 0.1.4
 
 - 协议：TCP 附件响应新增稳定的错误码 `code`（`not_found`、`file_missing`、`bad_offset`、`io_error` 等），HTTP 回退在 404 时带 `X-Zchat-Error-Code`；跨语言实现不再需要解析本地化的 `error` 文本。

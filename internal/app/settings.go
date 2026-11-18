@@ -38,7 +38,12 @@ type settings struct {
 	ScreenshotExcludeShortcut string `json:"screenshotExcludeShortcut,omitempty"`
 	ScreenshotDir             string `json:"screenshotDir,omitempty"`
 	ScreenshotCursor          bool   `json:"screenshotCursor"`
-	path                      string
+	// Icon pack generator choices. The source image and platform picks are
+	// session state, but these three are worth keeping between launches.
+	IconName       string `json:"iconName,omitempty"`
+	IconOutputDir  string `json:"iconOutputDir,omitempty"`
+	IconBackground string `json:"iconBackground,omitempty"`
+	path           string
 }
 
 func defaultSettings() settings {
@@ -66,6 +71,9 @@ func defaultSettings() settings {
 		ScreenshotExcludeShortcut: "Ctrl+F2",
 		ScreenshotDir:             filepath.Join(pictures, appFolderName),
 		ScreenshotCursor:          true,
+		IconName:                  "zchat",
+		IconOutputDir:             filepath.Join(pictures, appFolderName, "icons"),
+		IconBackground:            "#ffffff",
 	}
 }
 
@@ -135,6 +143,18 @@ func loadSettings() settings {
 		s.UploadDir = d
 	} else {
 		s.UploadDir = ""
+		changed = true
+	}
+	if s.IconName == "" {
+		s.IconName = "zchat"
+	}
+	if s.IconBackground == "" {
+		s.IconBackground = "#ffffff"
+	}
+	if d, ok := normalizeDirForOS(s.IconOutputDir, runtime.GOOS); ok {
+		s.IconOutputDir = d
+	} else {
+		s.IconOutputDir = defaultSettings().IconOutputDir
 		changed = true
 	}
 	if changed {

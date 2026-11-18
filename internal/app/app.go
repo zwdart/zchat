@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -10,8 +11,10 @@ import (
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
+	"github.com/egoist/mygo/ui/markdown"
 
 	"xin.dart.zchat/internal/i18n"
+	"xin.dart.zchat/internal/iconkit"
 	"xin.dart.zchat/internal/lan"
 	"xin.dart.zchat/internal/model"
 	"xin.dart.zchat/internal/proto"
@@ -26,6 +29,7 @@ const (
 	pageChat pageKind = iota
 	pageDiscover
 	pageShare
+	pageIconKit
 )
 
 // typingState says when a peer was last seen typing in a conversation.
@@ -172,6 +176,22 @@ type app struct {
 	shotPending         bool
 	shotReveal          func()
 	shotSettingsFocus   bool
+
+	// Icon pack generator. The picks and source are view state; the name,
+	// output folder and background color live in settings so they survive
+	// a restart.
+	iconPicks        iconPicks
+	iconSource       string
+	iconSourceW      int
+	iconSourceH      int
+	iconTab          int
+	iconTool         iconkit.Tool
+	iconToolErr      string
+	iconToolChecked  bool
+	iconToolChecking bool
+	iconRun          *iconRun
+	iconCancel       context.CancelFunc
+	iconDocOpts      markdown.Options
 }
 
 // post runs fn on the main thread and redraws the window. Without a
@@ -249,6 +269,7 @@ func Run() error {
 		groupAddPicked: map[string]bool{},
 		saveDue:        map[string]bool{},
 		lastRead:       map[string]time.Time{},
+		iconPicks:      iconPicks{Android: true, IOS: true, Windows: true, Linux: true, MacOS: true},
 	}
 	globalApp = a
 	shotApp = a
@@ -334,6 +355,10 @@ func Run() error {
 	})
 	mygo.App.OnBeforeQuit(func(*mygo.QuitEvent) {
 		a.quitting = true
+		if a.iconCancel != nil {
+			a.iconCancel()
+			a.iconCancel = nil
+		}
 		for _, p := range append([]*pinWindow(nil), a.pins...) {
 			if p.win != nil && !p.win.IsDestroyed() {
 				p.win.Close()

@@ -70,6 +70,10 @@ func (a *app) setMenu() {
 			a.showMain()
 			a.setPage(pageShare)
 		})},
+		&mygo.MenuItem{Label: tr("安装包图标…"), Click: run(func() {
+			a.showMain()
+			a.setPage(pageIconKit)
+		})},
 	)
 
 	mygo.App.SetMenu(mygo.NewMenu([]*mygo.MenuItem{
