@@ -58,6 +58,11 @@ func (a *app) iconKitPage(c *ui.Context) {
 		}
 		ui.Column(c).FillWidth().Grow(1).Padding(32, 30, 32, 24).Gap(16).Children(func() {
 			ui.Row(c).FillWidth().AlignItems(ui.Start).Gap(16).DragWindow().Children(func() {
+				if a.magick.cap == magickIconCap {
+					if b := iconButton(c, iconBack, 17, p.muted, tr("返回能力列表")); b.Clicked() {
+						a.magickBack()
+					}
+				}
 				ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Children(func() {
 					sectionTitle(c, p, tr("安装包图标"), tr("上传一张图片，一键生成 Android、iOS、Windows、Linux、macOS 的标准图标与目录"))
 				})

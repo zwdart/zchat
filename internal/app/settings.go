@@ -43,7 +43,11 @@ type settings struct {
 	IconName       string `json:"iconName,omitempty"`
 	IconOutputDir  string `json:"iconOutputDir,omitempty"`
 	IconBackground string `json:"iconBackground,omitempty"`
-	path           string
+	// General ImageMagick toolkit choices.
+	MagickOutputDir string `json:"magickOutputDir,omitempty"`
+	MagickFormat    string `json:"magickFormat,omitempty"`
+	MagickQuality   int    `json:"magickQuality,omitempty"`
+	path            string
 }
 
 func defaultSettings() settings {
@@ -74,6 +78,9 @@ func defaultSettings() settings {
 		IconName:                  "zchat",
 		IconOutputDir:             filepath.Join(pictures, appFolderName, "icons"),
 		IconBackground:            "#ffffff",
+		MagickOutputDir:           filepath.Join(pictures, appFolderName, "magick"),
+		MagickFormat:              "keep",
+		MagickQuality:             90,
 	}
 }
 
@@ -155,6 +162,24 @@ func loadSettings() settings {
 		s.IconOutputDir = d
 	} else {
 		s.IconOutputDir = defaultSettings().IconOutputDir
+		changed = true
+	}
+	if d, ok := normalizeDirForOS(s.MagickOutputDir, runtime.GOOS); ok {
+		s.MagickOutputDir = d
+	} else {
+		s.MagickOutputDir = defaultSettings().MagickOutputDir
+		changed = true
+	}
+	if s.MagickOutputDir == "" {
+		s.MagickOutputDir = defaultSettings().MagickOutputDir
+		changed = true
+	}
+	if s.MagickFormat == "" {
+		s.MagickFormat = "keep"
+		changed = true
+	}
+	if s.MagickQuality < 1 || s.MagickQuality > 100 {
+		s.MagickQuality = 90
 		changed = true
 	}
 	if changed {

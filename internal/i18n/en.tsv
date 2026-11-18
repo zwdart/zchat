@@ -657,3 +657,121 @@ mipmap-anydpi-v26 XML 会让 Android 8.0+ 自动使用自适应图标，背景�
 生成完成：%d 个文件，%s	Generated %d files in %s
 ICNS 尺寸不完整，内置写入器也失败	The ICNS sizes are incomplete and the built-in writer failed too
  不是 ImageMagick	 is not ImageMagick
+GIF 会循环播放。图片会按列表顺序成为每一帧，尺寸不一致时以第一张为画布。	The GIF loops forever. Images become frames in list order; when sizes differ, the first image sets the canvas.
+GIF 动画	GIF animation
+ImageMagick 工具…	ImageMagick Tools…
+JPG 不支持透明，透明区域会填充为白色。质量只影响 JPG、WebP 等有损格式。	JPG does not support transparency; transparent areas become white. Quality only affects lossy formats such as JPG and WebP.
+PNG 或 JPG，建议使用透明背景	PNG or JPG; a transparent background works best
+一次处理多张图片，统一格式、尺寸与压缩质量	Process many images at once with one format, size and quality
+上传一张图片，生成各平台安装包所需的标准图标与目录	Upload one image to generate the standard icons and folders each platform needs
+上方	Top
+下方	Bottom
+位置	Position
+例如：© zchat	e.g. © zchat
+保持原格式	Keep original format
+全部文件已处理	All files processed
+再次处理	Process again
+加水印	Watermark
+压缩质量	Quality
+取消处理	Cancel processing
+只会缩小超过限制的图片，不会放大；宽高填 0 表示不限制。每张图输出到「原文件名-batch」。	Only images larger than the limit are shrunk, never enlarged. Leave width or height at 0 for no limit. Files are written as “name-batch”.
+可以一次选择多张图片，合成时按选择顺序排列	Select several images at once; composition uses the selection order.
+右上	Top right
+右下	Bottom right
+右侧	Right
+合成图像	Composite image
+合成方式	Composition
+图像合成	Composition
+图像合成至少需要两张图片	Composition needs at least two images
+图片不存在：	Image not found: 
+图片水印	Image watermark
+在 PNG、JPG、WebP、GIF、BMP、TIFF、PDF 之间互相转换	Convert between PNG, JPG, WebP, GIF, BMP, TIFF and PDF
+填充并裁剪	Fill and crop
+处理中	Processing
+处理失败	Processing failed
+处理失败：没有写出任何文件	Processing failed: no files were written
+处理完成	Processing complete
+处理完成：%d 个文件，%d 个失败	Processed %d files, %d failed
+处理完成：%d 个文件，%s	Processed %d files in %s
+处理日志	Processing log
+处理结果会写入这个目录，源文件保持不变；同名文件会被覆盖。	Results are written to this folder; source files stay unchanged. Files with the same name are overwritten.
+字号	Font size
+宽度或高度填 0 表示按比例自动计算。	Set width or height to 0 to calculate it from the aspect ratio.
+宽度（像素）	Width (px)
+居中	Center
+左上	Top left
+左下	Bottom left
+左侧	Left
+已取消处理，已写出的文件会保留	Processing canceled; files already written are kept
+已选择 %d 张	%d selected
+开始前会检查输入图片、输出目录和 ImageMagick。	Images, the output folder and ImageMagick are checked first.
+开始处理	Start processing
+所有处理都在本机调用 ImageMagick 完成，不会上传图片。源文件不会被修改，结果写入你选择的输出目录。	Everything runs locally through ImageMagick; no image is uploaded. Source files are not modified; results go to the folder you choose.
+批量处理	Batch processing
+批量设置	Batch settings
+拉伸	Stretch
+拼接后的图片默认保存为 PNG，可在「输出目录」中找到以 -merged 结尾的文件。	Stitched images are saved as PNG; look for files ending in -merged in the output folder.
+拼接和 GIF 动画会按上面的顺序合成，可清空后重新按需要添加。	Stitching and GIF animation follow the order above; clear the list and add images again to change it.
+按尺寸缩放、裁剪画面，适合缩略图与不同终端的图片	Resize or crop to a target size for thumbnails and different screens
+支持 PNG、JPG、WebP、GIF、BMP、TIFF、SVG、PDF	Supports PNG, JPG, WebP, GIF, BMP, TIFF, SVG and PDF
+文字水印	Text watermark
+文字颜色	Text color
+方式	Mode
+最大宽度	Max width
+最大高度	Max height
+未知的处理类型	Unknown processing type
+格式转换	Format conversion
+格式转换、缩放裁剪、批量处理、水印、合成与质量优化，全部在本机完成	Format conversion, resizing, cropping, batch processing, watermarks, composition and quality tuning, all on this device
+横向、纵向拼接多张图片，或合成 GIF 动画	Stitch images horizontally or vertically, or build a GIF animation
+横向拼接	Horizontal stitch
+正在处理…	Processing…
+正在处理图片…	Processing images…
+正在处理，已写出的文件会保留	Processing; files already written are kept
+每帧间隔（毫秒）	Frame delay (ms)
+水印图片	Watermark image
+水印图片不存在	Watermark image not found
+水印文字	Watermark text
+水印最大边长	Max watermark side
+水印设置	Watermark settings
+水印默认居中，可选择四角与边缘。建议先在一张图片上确认效果，再批量应用。	The watermark is centered by default; corners and edges are available. Try one image before applying it in bulk.
+没有可处理的内容	Nothing to process
+添加图片	Add images
+添加文字或图片水印，可设置位置、大小和透明度	Add a text or image watermark with position, size and opacity
+清空	Clear
+清除元数据	Strip metadata
+清除元数据（EXIF、ICC 等）	Strip metadata (EXIF, ICC, etc.)
+目标格式	Target format
+类型	Type
+纵向拼接	Vertical stitch
+结果已写入输出目录，源文件保持不变。	Results are in the output folder; source files are unchanged.
+缩放与裁剪	Resize and crop
+缩放或裁剪	Resize or crop
+缩放方式	Resize mode
+缩放需要填写宽度或高度	Enter a width or height to resize
+自动色阶	Auto level
+自动色阶会重新分布明暗，常用于偏灰的照片；清除元数据可以减小体积并保护位置信息。	Auto level redistributes tones, which helps flat-looking photos; stripping metadata reduces size and removes location data.
+裁剪	Crop
+裁剪以选定位置为基准，输出尺寸就是上面填写的宽高。	Crop uses the chosen position as its anchor; the output is exactly the width and height above.
+裁剪位置	Crop position
+裁剪需要填写宽度和高度	Enter a width and height to crop
+请先选择图片	Choose images first
+请输入水印文字	Enter watermark text
+请选择水印图片	Choose a watermark image
+调整压缩质量、自动色阶并清除元数据，减小图片体积	Adjust quality, auto level and strip metadata to reduce file size
+质量设置	Quality settings
+转换设置	Conversion settings
+输入图片	Input images
+输出格式	Output format
+返回能力列表	Back to capabilities
+还有 %d 张图片未显示	%d more images not shown
+还没有选择图片，点击右上角「添加图片」开始。	No images selected yet; click Add images above to start.
+这些工具需要调用本机的 ImageMagick。	These tools use the ImageMagick installed on this device.
+适应（保持比例）	Fit (keep aspect ratio)
+选择一项能力	Choose a capability
+选择水印图片	Choose watermark image
+选择的项目里包含文件夹	The selection contains a folder
+部分文件处理失败	Some files failed
+颜色与质量	Color and quality
+高度（像素）	Height (px)
+填充并裁剪需要同时填写宽度和高度	Fill and crop need both a width and a height
+能力列表	Capabilities

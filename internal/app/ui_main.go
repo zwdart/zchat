@@ -51,8 +51,8 @@ func (a *app) view(c *ui.Context) {
 					a.discoverPage(c)
 				case pageShare:
 					a.sharePage(c)
-				case pageIconKit:
-					a.iconKitPage(c)
+				case pageMagick:
+					a.magickPage(c)
 				default:
 					if a.currentConv() != nil {
 						a.chatPage(c)
@@ -118,7 +118,7 @@ func (a *app) sidebar(c *ui.Context) {
 		a.navItem(c, iconChatFill, tr("聊天"), pageChat)
 		a.navItem(c, iconCompass, tr("发现设备"), pageDiscover)
 		a.navItem(c, iconFolder, tr("文件共享"), pageShare)
-		a.navItem(c, iconPackage, tr("安装包图标"), pageIconKit)
+		a.navItem(c, iconWand, tr("ImageMagick"), pageMagick)
 		ui.Row(c).Padding(10, 10, 6, 10).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, tr("会话")).FontSize(11.5).FontWeight(700).TextColor(p.faint).LetterSpacing(0.6)
 			ui.Spacer(c)

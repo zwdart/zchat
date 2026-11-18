@@ -10,65 +10,20 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"sort"
 	"strings"
 	"time"
 
 	"xin.dart.zchat/internal/i18n"
+	"xin.dart.zchat/internal/magick"
 )
 
 // Tool is a detected ImageMagick installation.
-type Tool struct {
-	Path    string
-	Version string
-}
+type Tool = magick.Tool
 
-// Detect finds ImageMagick 7 ("magick") or ImageMagick 6 ("convert"). On
-// Windows the system convert.exe (a FAT-to-NTFS tool) is rejected because it
-// does not print an ImageMagick version.
+// Detect finds the installed ImageMagick.
 func Detect() (Tool, error) {
-	var candidates []string
-	if runtime.GOOS == "windows" {
-		candidates = []string{"magick.exe", "magick", "convert.exe", "convert"}
-	} else {
-		candidates = []string{"magick", "convert"}
-	}
-	var lastErr error
-	for _, name := range candidates {
-		path, err := exec.LookPath(name)
-		if err != nil {
-			lastErr = err
-			continue
-		}
-		tool, err := probeTool(path)
-		if err == nil {
-			return tool, nil
-		}
-		lastErr = err
-	}
-	if lastErr == nil || errors.Is(lastErr, exec.ErrNotFound) {
-		lastErr = errors.New(i18n.T("未找到 ImageMagick"))
-	}
-	return Tool{}, lastErr
-}
-
-func probeTool(path string) (Tool, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	out, err := exec.CommandContext(ctx, path, "-version").CombinedOutput()
-	if err != nil {
-		return Tool{}, fmt.Errorf("%s -version: %w", path, err)
-	}
-	text := strings.TrimSpace(string(out))
-	first := text
-	if i := strings.IndexByte(first, '\n'); i >= 0 {
-		first = first[:i]
-	}
-	if !strings.Contains(first, "ImageMagick") {
-		return Tool{}, fmt.Errorf("%s%s", path, i18n.T(" 不是 ImageMagick"))
-	}
-	return Tool{Path: path, Version: strings.TrimSpace(first)}, nil
+	return magick.Detect()
 }
 
 // Options are the choices for one generation run.

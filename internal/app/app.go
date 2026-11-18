@@ -29,7 +29,7 @@ const (
 	pageChat pageKind = iota
 	pageDiscover
 	pageShare
-	pageIconKit
+	pageMagick
 )
 
 // typingState says when a peer was last seen typing in a conversation.
@@ -192,6 +192,9 @@ type app struct {
 	iconRun          *iconRun
 	iconCancel       context.CancelFunc
 	iconDocOpts      markdown.Options
+
+	// ImageMagick toolkit page.
+	magick magickState
 }
 
 // post runs fn on the main thread and redraws the window. Without a
@@ -358,6 +361,10 @@ func Run() error {
 		if a.iconCancel != nil {
 			a.iconCancel()
 			a.iconCancel = nil
+		}
+		if a.magick.cancel != nil {
+			a.magick.cancel()
+			a.magick.cancel = nil
 		}
 		for _, p := range append([]*pinWindow(nil), a.pins...) {
 			if p.win != nil && !p.win.IsDestroyed() {
@@ -605,6 +612,15 @@ func (a *app) ensureDirect(p *model.Peer) *model.Conversation {
 }
 
 func (a *app) setPage(p pageKind) {
+	if p == pageMagick {
+		// The sidebar and the menu are the toolkit's front door: they
+		// always show the capability list, not the last tool.
+		if a.magickRunning() {
+			a.cancelMagickRun()
+		}
+		a.magick.cap = ""
+		a.magick.run = nil
+	}
 	a.page = p
 	a.redraw()
 }
