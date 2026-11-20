@@ -13,6 +13,7 @@ import (
 	"github.com/egoist/mygo/ui"
 	"github.com/egoist/mygo/ui/markdown"
 
+	"xin.dart.zchat/internal/ffmpeg"
 	"xin.dart.zchat/internal/i18n"
 	"xin.dart.zchat/internal/iconkit"
 	"xin.dart.zchat/internal/lan"
@@ -30,6 +31,7 @@ const (
 	pageDiscover
 	pageShare
 	pageMagick
+	pageFFmpeg
 )
 
 // typingState says when a peer was last seen typing in a conversation.
@@ -109,6 +111,12 @@ type app struct {
 	userInfoOpen bool
 	userInfoID   string
 	aboutOpen    bool
+
+	// fileInfo is the shared metadata dialog for the ImageMagick and FFmpeg
+	// input lists. Entries are cached by kind and path.
+	fileInfoOpen  bool
+	fileInfoKey   string
+	fileInfoCache map[string]*fileInfoEntry
 
 	profileName  string
 	profileSig   string
@@ -195,6 +203,14 @@ type app struct {
 
 	// ImageMagick toolkit page.
 	magick magickState
+
+	// FFmpeg toolkit page. The tool check is kept apart from ImageMagick
+	// because a machine may have one without the other.
+	ffTool         ffmpeg.Tool
+	ffToolErr      string
+	ffToolChecked  bool
+	ffToolChecking bool
+	ffmpeg         ffmpegState
 }
 
 // post runs fn on the main thread and redraws the window. Without a
@@ -366,6 +382,10 @@ func Run() error {
 			a.magick.cancel()
 			a.magick.cancel = nil
 		}
+		if a.ffmpeg.cancel != nil {
+			a.ffmpeg.cancel()
+			a.ffmpeg.cancel = nil
+		}
 		for _, p := range append([]*pinWindow(nil), a.pins...) {
 			if p.win != nil && !p.win.IsDestroyed() {
 				p.win.Close()
@@ -408,7 +428,7 @@ func (a *app) openStore() {
 	}
 	a.store, err = store.Open(dir)
 	if err != nil {
-		mygo.Dialog.Error("zchat", tr("无法打开数据目录：")+err.Error())
+		mygo.Dialog.Error("zchat", tr("app.common.could_not_open_data_folder")+err.Error())
 		return
 	}
 	a.refreshDBStats()
@@ -430,13 +450,13 @@ func (a *app) loadData() {
 	}
 	st, err := a.store.Load()
 	if err != nil {
-		mygo.Dialog.Error("zchat", tr("无法读取数据：")+err.Error())
+		mygo.Dialog.Error("zchat", tr("app.common.could_not_read_data")+err.Error())
 	}
 	a.profile = st.Profile
 	if a.profile.ID == "" {
 		name, _ := os.Hostname()
 		if strings.TrimSpace(name) == "" || name == "localhost" {
-			name = tr("我的 zchat")
+			name = tr("app.common.my_zchat")
 		}
 		a.profile = model.Profile{ID: model.NewID("u"), Name: name, Status: a.settings.Status}
 	}
@@ -444,7 +464,7 @@ func (a *app) loadData() {
 		a.profile.Status = a.settings.Status
 	}
 	if a.profile.Name == "" {
-		a.profile.Name = tr("我的 zchat")
+		a.profile.Name = tr("app.common.my_zchat")
 	}
 	a.settings.Status = a.profile.Status
 	for id, p := range st.Peers {
@@ -577,12 +597,12 @@ func (a *app) convTitle(c *model.Conversation) string {
 		if c.Title != "" {
 			return c.Title
 		}
-		return tr("群聊")
+		return tr("app.common.group")
 	}
 	if p := a.peers[c.PeerID]; p != nil {
 		return tr(p.Title())
 	}
-	return tr("未知设备")
+	return tr("app.common.unknown_device")
 }
 
 func (a *app) convPeer(c *model.Conversation) *model.Peer {
@@ -620,6 +640,13 @@ func (a *app) setPage(p pageKind) {
 		}
 		a.magick.cap = ""
 		a.magick.run = nil
+	}
+	if p == pageFFmpeg {
+		if a.ffmpegRunning() {
+			a.cancelFFmpegRun()
+		}
+		a.ffmpeg.cap = ""
+		a.ffmpeg.run = nil
 	}
 	a.page = p
 	a.redraw()
@@ -700,7 +727,7 @@ func (a *app) updateBadge() {
 		// The tooltip is the only badge many Linux panels show.
 		tip := "zchat"
 		if total > 0 {
-			tip = "zchat · " + itoa(total) + tr(" 条未读")
+			tip = "zchat · " + itoa(total) + tr("app.common.unread")
 		}
 		a.tray.SetToolTip(tip)
 	}

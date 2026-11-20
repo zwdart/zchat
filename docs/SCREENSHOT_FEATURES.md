@@ -516,7 +516,7 @@
 
 ## 14. 国际化
 
-所有新增文案使用现有 `tr()` 机制，中文为源字符串，英文写入 `internal/i18n/en.tsv`。
+所有新增文案使用现有 `tr()` 机制，键采用点号分隔的 `app.area.name` 格式；中文写入 `internal/i18n/locales/zh.tsv`，英文写入 `internal/i18n/locales/en.tsv`，两个文件的键与顺序保持一一对应。
 
 首版需要覆盖的文案类别：
 

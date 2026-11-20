@@ -50,7 +50,7 @@ func Detect() (Tool, error) {
 		lastErr = err
 	}
 	if lastErr == nil || errors.Is(lastErr, exec.ErrNotFound) {
-		lastErr = errors.New(i18n.T("未找到 ImageMagick"))
+		lastErr = errors.New(i18n.T("app.common.imagemagick_not_found"))
 	}
 	return Tool{}, lastErr
 }
@@ -68,7 +68,7 @@ func probeTool(path string) (Tool, error) {
 		first = first[:i]
 	}
 	if !strings.Contains(first, "ImageMagick") {
-		return Tool{}, fmt.Errorf("%s%s", path, i18n.T(" 不是 ImageMagick"))
+		return Tool{}, fmt.Errorf("%s%s", path, i18n.T("app.image.is_not_imagemagick"))
 	}
 	return Tool{Path: path, Version: strings.TrimSpace(first)}, nil
 }
@@ -152,51 +152,51 @@ type Options struct {
 func Validate(opt Options) error {
 	inputs := cleanInputs(opt.Inputs)
 	if len(inputs) == 0 {
-		return errors.New(i18n.T("请先选择图片"))
+		return errors.New(i18n.T("app.image.choose_images_first"))
 	}
 	for _, in := range inputs {
 		info, err := os.Stat(in)
 		if err != nil {
-			return fmt.Errorf("%s%v", i18n.T("图片不存在："), err)
+			return fmt.Errorf("%s%v", i18n.T("app.common.image_not_found"), err)
 		}
 		if info.IsDir() {
-			return errors.New(i18n.T("选择的项目里包含文件夹"))
+			return errors.New(i18n.T("app.common.selection_contains_folder"))
 		}
 	}
 	switch opt.Kind {
 	case KindCompose:
 		if len(inputs) < 2 {
-			return errors.New(i18n.T("图像合成至少需要两张图片"))
+			return errors.New(i18n.T("app.image.composition_needs_at_least_two_images"))
 		}
 	case KindConvert, KindGeometry, KindBatch, KindWatermark, KindOptimize:
 	default:
-		return errors.New(i18n.T("未知的处理类型"))
+		return errors.New(i18n.T("app.common.unknown_processing_type"))
 	}
 	if strings.TrimSpace(opt.OutputDir) == "" {
-		return errors.New(i18n.T("请选择输出目录"))
+		return errors.New(i18n.T("app.common.choose_output_folder"))
 	}
 	switch opt.Kind {
 	case KindGeometry:
 		if opt.GeometryMode == GeometryCrop {
 			if opt.Width <= 0 || opt.Height <= 0 {
-				return errors.New(i18n.T("裁剪需要填写宽度和高度"))
+				return errors.New(i18n.T("app.common.enter_width_and_height_to_crop"))
 			}
 		} else if opt.Width <= 0 && opt.Height <= 0 {
-			return errors.New(i18n.T("缩放需要填写宽度或高度"))
+			return errors.New(i18n.T("app.image.enter_width_or_height_to_resize"))
 		}
 		if opt.GeometryMode != GeometryCrop && opt.ResizeMode == ResizeFill && (opt.Width <= 0 || opt.Height <= 0) {
-			return errors.New(i18n.T("填充并裁剪需要同时填写宽度和高度"))
+			return errors.New(i18n.T("app.image.fill_and_crop_need_both_width"))
 		}
 	case KindWatermark:
 		if opt.WatermarkMode == WatermarkImage {
 			if strings.TrimSpace(opt.WatermarkImage) == "" {
-				return errors.New(i18n.T("请选择水印图片"))
+				return errors.New(i18n.T("app.common.choose_watermark_image"))
 			}
 			if info, err := os.Stat(opt.WatermarkImage); err != nil || info.IsDir() {
-				return errors.New(i18n.T("水印图片不存在"))
+				return errors.New(i18n.T("app.common.watermark_image_not_found"))
 			}
 		} else if strings.TrimSpace(opt.WatermarkText) == "" {
-			return errors.New(i18n.T("请输入水印文字"))
+			return errors.New(i18n.T("app.common.enter_watermark_text"))
 		}
 	}
 	return nil
@@ -222,7 +222,7 @@ type Plan struct {
 // does not run anything, so it is cheap and safe to test.
 func Build(tool Tool, opt Options) (*Plan, error) {
 	if strings.TrimSpace(tool.Path) == "" {
-		return nil, errors.New(i18n.T("未安装 ImageMagick"))
+		return nil, errors.New(i18n.T("app.common.imagemagick_is_not_installed"))
 	}
 	if err := Validate(opt); err != nil {
 		return nil, err
@@ -385,7 +385,7 @@ func Build(tool Tool, opt Options) (*Plan, error) {
 		out := targetPath(root, plan.Inputs[0], suffix, outFormat)
 		args = append(args, out)
 		plan.Steps = append(plan.Steps, Step{
-			Label: fmt.Sprintf("%s → %s", i18n.T("合成图像"), filepath.Base(out)),
+			Label: fmt.Sprintf("%s → %s", i18n.T("app.image.composite_image"), filepath.Base(out)),
 			Out:   out,
 			Args:  args,
 		})
@@ -409,7 +409,7 @@ func Build(tool Tool, opt Options) (*Plan, error) {
 		}
 	}
 	if len(plan.Steps) == 0 {
-		return nil, errors.New(i18n.T("没有可处理的内容"))
+		return nil, errors.New(i18n.T("app.common.nothing_to_process"))
 	}
 	return plan, nil
 }
@@ -439,7 +439,7 @@ func (p *Plan) Run(ctx context.Context, report func(Progress)) Result {
 	res := Result{}
 	total := len(p.Steps)
 	if report != nil {
-		report(Progress{Done: 0, Total: total, Label: i18n.T("准备输出目录"), Running: true})
+		report(Progress{Done: 0, Total: total, Label: i18n.T("app.common.preparing_output_folders"), Running: true})
 	}
 	for i, step := range p.Steps {
 		if ctx.Err() != nil {
@@ -476,7 +476,7 @@ func (p *Plan) runMagick(ctx context.Context, step Step) error {
 		if _, statErr := os.Stat(step.Out); statErr == nil {
 			return nil
 		}
-		err = errors.New(i18n.T("ImageMagick 没有写出文件"))
+		err = errors.New(i18n.T("app.common.imagemagick_did_not_write_output_file"))
 	}
 	msg := strings.TrimSpace(string(out))
 	if len(msg) > 400 {

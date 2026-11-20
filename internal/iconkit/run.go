@@ -77,22 +77,22 @@ type Plan struct {
 // It does not run anything, so it is cheap and safe to test.
 func Build(tool Tool, opt Options) (*Plan, error) {
 	if strings.TrimSpace(tool.Path) == "" {
-		return nil, errors.New(i18n.T("未安装 ImageMagick"))
+		return nil, errors.New(i18n.T("app.common.imagemagick_is_not_installed"))
 	}
 	input := strings.TrimSpace(opt.Input)
 	if input == "" {
-		return nil, errors.New(i18n.T("请选择一张源图片"))
+		return nil, errors.New(i18n.T("app.icon.choose_source_image"))
 	}
 	info, err := os.Stat(input)
 	if err != nil {
-		return nil, fmt.Errorf("%s%v", i18n.T("源图片不存在："), err)
+		return nil, fmt.Errorf("%s%v", i18n.T("app.icon.source_image_not_found"), err)
 	}
 	if info.IsDir() {
-		return nil, errors.New(i18n.T("源图片是一个目录"))
+		return nil, errors.New(i18n.T("app.icon.source_image_is_folder"))
 	}
 	root := strings.TrimSpace(opt.OutputRoot)
 	if root == "" {
-		return nil, errors.New(i18n.T("请选择输出目录"))
+		return nil, errors.New(i18n.T("app.common.choose_output_folder"))
 	}
 	root, err = filepath.Abs(root)
 	if err != nil {
@@ -105,7 +105,7 @@ func Build(tool Tool, opt Options) (*Plan, error) {
 	}
 	plats := Selected(opt.Platforms)
 	if len(plats) == 0 {
-		return nil, errors.New(i18n.T("请至少选择一个平台"))
+		return nil, errors.New(i18n.T("app.icon.choose_at_least_one_platform"))
 	}
 
 	plan := &Plan{
@@ -187,14 +187,14 @@ func Build(tool Tool, opt Options) (*Plan, error) {
 				}
 				sort.Slice(step.Sources, func(i, j int) bool { return step.Sources[i].Size < step.Sources[j].Size })
 				if len(step.Sources) == 0 {
-					return nil, fmt.Errorf(i18n.T("无法为 %s 找到 ICNS 源图标"), platform.Name)
+					return nil, fmt.Errorf(i18n.T("app.icon.cannot_find_icns_source_icon_for"), platform.Name)
 				}
 				for _, src := range step.Sources {
 					step.Args = append(step.Args, src.Path)
 				}
 				step.Args = append(step.Args, "-strip", "ICNS:"+out)
 			default:
-				return nil, fmt.Errorf("%s%s", i18n.T("未知的图标容器格式："), b.Format)
+				return nil, fmt.Errorf("%s%s", i18n.T("app.icon.unknown_icon_container_format"), b.Format)
 			}
 			plan.Steps = append(plan.Steps, step)
 		}
@@ -220,7 +220,7 @@ func Build(tool Tool, opt Options) (*Plan, error) {
 		}
 	}
 	if len(plan.Steps) == 0 {
-		return nil, errors.New(i18n.T("选择的平台没有可生成的文件"))
+		return nil, errors.New(i18n.T("app.icon.selected_platforms_have_no_files_to"))
 	}
 	return plan, nil
 }
@@ -276,7 +276,7 @@ func (p *Plan) Run(ctx context.Context, report func(Progress)) Result {
 	res := Result{}
 	total := len(p.Steps)
 	if report != nil {
-		report(Progress{Done: 0, Total: total, Label: i18n.T("准备输出目录"), Running: true})
+		report(Progress{Done: 0, Total: total, Label: i18n.T("app.common.preparing_output_folders"), Running: true})
 	}
 	for i, step := range p.Steps {
 		if ctx.Err() != nil {
@@ -294,7 +294,7 @@ func (p *Plan) Run(ctx context.Context, report func(Progress)) Result {
 			case StepIcon, StepBundle:
 				err = p.runMagick(ctx, step)
 			default:
-				err = errors.New(i18n.T("未知步骤"))
+				err = errors.New(i18n.T("app.icon.unknown_step"))
 			}
 		}
 		if err != nil {
@@ -324,13 +324,13 @@ func (p *Plan) runMagick(ctx context.Context, step Step) error {
 				// really holds several sizes.
 				if icnsEntries(step.Out) < 4 {
 					if fallbackErr := writeICNS(step.Out, step.Sources); fallbackErr != nil {
-						return fmt.Errorf("%s：%v", i18n.T("ICNS 尺寸不完整，内置写入器也失败"), fallbackErr)
+						return fmt.Errorf("%s：%v", i18n.T("app.icon.icns_sizes_are_incomplete_and_built"), fallbackErr)
 					}
 				}
 			}
 			return nil
 		}
-		err = errors.New(i18n.T("ImageMagick 没有写出文件"))
+		err = errors.New(i18n.T("app.common.imagemagick_did_not_write_output_file"))
 	}
 	// ImageMagick builds are not always compiled with the ICNS writer.
 	// The iconset PNGs are already on disk, so build the container here.
@@ -403,7 +403,7 @@ func writeICNS(path string, sources []Source) error {
 		added++
 	}
 	if added == 0 {
-		return errors.New(i18n.T("没有可用于 ICNS 的 PNG"))
+		return errors.New(i18n.T("app.icon.no_pngs_available_for_icns"))
 	}
 	var out bytes.Buffer
 	out.WriteString("icns")

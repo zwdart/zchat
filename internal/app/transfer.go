@@ -24,11 +24,11 @@ func (a *app) startTransfer() {
 		return
 	}
 	if err := a.transfer.Start(a.settings.TransferPort); err != nil {
-		a.setToast(tr("无法启动文件传输服务：") + err.Error())
+		a.setToast(tr("app.common.could_not_start_file_transfer_service") + err.Error())
 		return
 	}
 	if port := a.transfer.Port(); port != a.settings.TransferPort {
-		a.setToast(tr("文件传输端口 ") + itoa(a.settings.TransferPort) + tr(" 已被占用，改用 ") + itoa(port))
+		a.setToast(tr("app.common.file_transfer_port_2") + itoa(a.settings.TransferPort) + tr("app.common.is_busy_using") + itoa(port))
 	}
 }
 
@@ -109,16 +109,16 @@ func transferErrorText(err error) string {
 		return ""
 	}
 	if errors.Is(err, context.Canceled) {
-		return tr("对方已取消")
+		return tr("app.common.other_side_cancelled")
 	}
 	if errors.Is(err, context.DeadlineExceeded) {
-		return tr("连接已断开")
+		return tr("app.common.connection_lost")
 	}
 	msg := err.Error()
 	if strings.Contains(msg, "broken pipe") || strings.Contains(msg, "connection reset") ||
 		strings.Contains(msg, "EOF") || strings.Contains(msg, "context canceled") ||
 		strings.Contains(msg, "deadline exceeded") {
-		return tr("连接已断开")
+		return tr("app.common.connection_lost")
 	}
 	return msg
 }
@@ -129,23 +129,23 @@ func transferErrorText(err error) string {
 func downloadErrorText(err error) string {
 	switch transfer.CodeOf(err) {
 	case transfer.CodeNotFound:
-		return tr("文件不存在或发送方已重启")
+		return tr("app.common.file_is_gone_or_sender_restarted")
 	case transfer.CodeFileMissing:
-		return tr("文件已被移动或删除")
+		return tr("app.common.file_was_moved_or_deleted")
 	case transfer.CodeBadOffset:
-		return tr("续传位置无效")
+		return tr("app.common.invalid_resume_position")
 	case transfer.CodeFileChanged:
-		return tr("文件已发生变化，请重新下载")
+		return tr("app.common.file_changed_download_it_again")
 	case transfer.CodeBadRequest:
-		return tr("传输请求无效")
+		return tr("app.common.invalid_transfer_request")
 	case transfer.CodeIOError:
-		return tr("发送方无法读取文件")
+		return tr("app.common.sender_cannot_read_file")
 	case transfer.CodeTooLarge:
-		return tr("文件过大")
+		return tr("app.common.file_too_large")
 	case transfer.CodeBusy:
-		return tr("发送方正忙，请稍后再试")
+		return tr("app.common.sender_is_busy_try_again_later")
 	case transfer.CodeChecksumMismatch:
-		return tr("文件校验失败")
+		return tr("app.common.file_checksum_mismatch")
 	}
 	return transferErrorText(err)
 }

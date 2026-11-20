@@ -50,7 +50,7 @@ func (a *app) startNetwork() {
 	})
 	a.node = n
 	if err := n.Start(); err != nil {
-		a.setToast(tr("无法监听端口：") + err.Error())
+		a.setToast(tr("app.network.could_not_listen_on_port") + err.Error())
 	}
 }
 
@@ -179,7 +179,7 @@ func (a *app) peerName(id string) string {
 	if p := a.peers[id]; p != nil {
 		return tr(p.Title())
 	}
-	return tr("未知设备")
+	return tr("app.common.unknown_device")
 }
 
 func (a *app) receiveMessage(from string, m model.Message) {
@@ -492,7 +492,7 @@ func (a *app) recallMessage(convID, msgID string) {
 			continue
 		}
 		if time.Since(msgs[i].SentAt) > 2*time.Minute {
-			a.setToast(tr("超过 2 分钟的消息不能撤回"))
+			a.setToast(tr("app.network.messages_older_than_2_minutes_cannot"))
 			return
 		}
 		msgs[i].Recalled = true
@@ -560,7 +560,7 @@ func (a *app) clearAllHistory() {
 	a.updateBadge()
 	a.refreshDBStats()
 	a.scheduleSave()
-	a.setToast(tr("聊天记录已清空"))
+	a.setToast(tr("app.network.chat_history_cleared"))
 	a.redraw()
 }
 

@@ -89,36 +89,36 @@ func (a *app) trayMenu() *mygo.Menu {
 	}
 	shots := []*mygo.MenuItem{}
 	if a.settings.ScreenshotEnabled {
-		shots = append(shots, &mygo.MenuItem{Label: tr("截图…"), Click: run(a.openScreenshotChooser)})
+		shots = append(shots, &mygo.MenuItem{Label: tr("app.common.screenshot_2"), Click: run(a.openScreenshotChooser)})
 	}
 	shots = append(shots,
-		&mygo.MenuItem{Label: tr("显示全部贴图"), Click: run(a.showAllPins)},
-		&mygo.MenuItem{Label: tr("恢复贴图鼠标交互"), Click: run(func() { a.setPinsInteractive(true) })},
-		&mygo.MenuItem{Label: tr("关闭全部贴图"), Click: run(a.closeAllPins)},
+		&mygo.MenuItem{Label: tr("app.common.show_all_pins"), Click: run(a.showAllPins)},
+		&mygo.MenuItem{Label: tr("app.common.restore_pin_interaction"), Click: run(func() { a.setPinsInteractive(true) })},
+		&mygo.MenuItem{Label: tr("app.common.close_all_pins"), Click: run(a.closeAllPins)},
 	)
 
 	return mygo.NewMenu([]*mygo.MenuItem{
-		{Label: tr("打开 zchat"), Click: run(a.showMain)},
+		{Label: tr("app.common.open_zchat"), Click: run(a.showMain)},
 		mygo.Separator(),
-		{Label: tr("状态"), Submenu: statusItems},
+		{Label: tr("app.common.status"), Submenu: statusItems},
 		mygo.Separator(),
-		{Label: tr("新建群聊…"), Click: run(func() {
+		{Label: tr("app.common.new_group_2"), Click: run(func() {
 			a.showMain()
 			a.openNewGroup()
 		})},
-		{Label: tr("发现设备"), Click: run(func() {
+		{Label: tr("app.common.discover"), Click: run(func() {
 			a.showMain()
 			a.setPage(pageDiscover)
 		})},
-		{Label: tr("文件共享"), Click: run(func() {
+		{Label: tr("app.common.file_sharing"), Click: run(func() {
 			a.showMain()
 			a.setPage(pageShare)
 		})},
-		{Label: tr("截图与贴图"), Submenu: shots},
+		{Label: tr("app.common.screenshots_and_pins"), Submenu: shots},
 		mygo.Separator(),
-		{Label: tr("设置…"), Click: run(a.openSettings)},
-		{Label: tr("检查更新…"), Click: run(checkForUpdates)},
+		{Label: tr("app.common.settings_2"), Click: run(a.openSettings)},
+		{Label: tr("app.common.check_for_updates_2"), Click: run(checkForUpdates)},
 		mygo.Separator(),
-		{Label: tr("退出 zchat"), Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
+		{Label: tr("app.common.quit_zchat"), Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
 	})
 }

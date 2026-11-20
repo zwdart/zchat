@@ -35,13 +35,13 @@ func (a *app) startShare(announce bool) {
 	}
 	if a.settings.ShareDir != "" {
 		if info, err := os.Stat(a.settings.ShareDir); err != nil || !info.IsDir() {
-			a.setToast(tr("共享目录不存在"))
+			a.setToast(tr("app.common.shared_folder_does_not_exist"))
 			return
 		}
 	}
 	if a.settings.UploadDir != "" {
 		if info, err := os.Stat(a.settings.UploadDir); err != nil || !info.IsDir() {
-			a.setToast(tr("上传目录不存在"))
+			a.setToast(tr("app.common.upload_folder_does_not_exist"))
 			return
 		}
 	}
@@ -49,7 +49,7 @@ func (a *app) startShare(announce bool) {
 	a.share.SetUploadDir(a.settings.UploadDir)
 	if err := a.share.Start(a.settings.SharePort); err != nil {
 		a.shareExplicit = false
-		a.setToast(tr("无法开启文件共享：") + err.Error())
+		a.setToast(tr("app.common.could_not_start_file_sharing") + err.Error())
 		return
 	}
 	a.shareExplicit = true
@@ -60,7 +60,7 @@ func (a *app) startShare(announce bool) {
 	}
 	a.generateShareQR()
 	if announce {
-		a.setToast(tr("文件共享已开启"))
+		a.setToast(tr("app.common.file_sharing_is_on"))
 	}
 	a.redraw()
 }
@@ -144,7 +144,7 @@ func (a *app) generateShareQR() {
 func (a *app) sendFiles(paths []string) {
 	c := a.currentConv()
 	if c == nil {
-		a.setToast(tr("先打开一个聊天"))
+		a.setToast(tr("app.common.open_chat_first"))
 		return
 	}
 	if len(paths) == 0 {
@@ -156,7 +156,7 @@ func (a *app) sendFiles(paths []string) {
 	tcpReady := a.transfer != nil && a.transfer.Running()
 	httpReady := a.ensureShareServer()
 	if !tcpReady && !httpReady {
-		a.setToast(tr("文件传输服务未启动，无法发送文件"))
+		a.setToast(tr("app.common.file_transfer_service_is_not_running_2"))
 		return
 	}
 	added := 0
@@ -232,7 +232,7 @@ func (a *app) sendFiles(paths []string) {
 		added++
 	}
 	if added == 0 {
-		a.setToast(tr("没有可发送的文件"))
+		a.setToast(tr("app.common.no_files_to_send"))
 	}
 }
 
@@ -241,12 +241,12 @@ func (a *app) sendClipboardImage() {
 		a.startTransfer()
 	}
 	if (a.transfer == nil || !a.transfer.Running()) && !a.ensureShareServer() {
-		a.setToast(tr("文件传输服务未启动，无法发送图片"))
+		a.setToast(tr("app.common.file_transfer_service_is_not_running"))
 		return
 	}
 	data := mygo.Clipboard.ReadImage()
 	if len(data) == 0 {
-		a.setToast(tr("剪贴板里没有图片"))
+		a.setToast(tr("app.common.no_image_in_clipboard"))
 		return
 	}
 	c := a.currentConv()
@@ -257,7 +257,7 @@ func (a *app) sendClipboardImage() {
 	_ = os.MkdirAll(dir, 0o700)
 	path := filepath.Join(dir, model.NewID("img")+".png")
 	if err := os.WriteFile(path, data, 0o600); err != nil {
-		a.setToast(tr("无法保存粘贴的图片"))
+		a.setToast(tr("app.common.could_not_save_pasted_image"))
 		return
 	}
 	a.sendFiles([]string{path})
@@ -266,15 +266,15 @@ func (a *app) sendClipboardImage() {
 func (a *app) sendShareLink() {
 	c := a.currentConv()
 	if c == nil {
-		a.setToast(tr("先打开一个聊天"))
+		a.setToast(tr("app.common.open_chat_first"))
 		return
 	}
 	url := a.shareURL()
 	if url == "" {
-		a.setToast(tr("文件共享还没有开启"))
+		a.setToast(tr("app.common.file_sharing_is_off"))
 		return
 	}
-	a.sendTextTo(c.ID, tr("我在 zchat 共享了一个目录：")+url)
+	a.sendTextTo(c.ID, tr("app.common.i_shared_folder_with_zchat")+url)
 }
 
 // autoDownloadImage fetches an incoming image into the cache.
@@ -323,9 +323,9 @@ func (a *app) saveMessageAs(convID, msgID string) {
 	go func() {
 		path, err := mygo.Dialog.Save(mygo.SaveDialogOptions{
 			Parent:      a.win,
-			Title:       tr("保存文件"),
+			Title:       tr("app.common.save_file"),
 			DefaultPath: defaultPath,
-			ButtonLabel: tr("保存"),
+			ButtonLabel: tr("app.common.save"),
 		})
 		if err != nil || path == "" {
 			return
@@ -337,16 +337,16 @@ func (a *app) saveMessageAs(convID, msgID string) {
 // pickImages sends images chosen in a file dialog.
 func (a *app) pickImages() {
 	if a.currentConv() == nil {
-		a.setToast(tr("先打开一个聊天"))
+		a.setToast(tr("app.common.open_chat_first"))
 		return
 	}
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:      a.win,
-			Title:       tr("发送图片"),
+			Title:       tr("app.common.send_image"),
 			Multiple:    true,
-			ButtonLabel: tr("发送"),
-			Filters:     []mygo.FileFilter{{Name: tr("图片"), Extensions: []string{"png", "jpg", "jpeg", "gif", "webp", "bmp"}}},
+			ButtonLabel: tr("app.common.send"),
+			Filters:     []mygo.FileFilter{{Name: tr("app.common.images"), Extensions: []string{"png", "jpg", "jpeg", "gif", "webp", "bmp"}}},
 		})
 		if err != nil || len(paths) == 0 {
 			return
@@ -359,7 +359,7 @@ func (a *app) downloadMessage(convID, msgID string, path string) {
 	if path == "" {
 		dir, err := a.ensureDownloadDir()
 		if err != nil {
-			a.setToast(tr("无法创建下载目录：") + err.Error())
+			a.setToast(tr("app.common.could_not_create_download_folder_2") + err.Error())
 			return
 		}
 		path = a.suggestName(convID, msgID, dir)
@@ -410,7 +410,7 @@ func (a *app) downloadTo(convID, msgID, dest string, imageOnly bool) {
 		return
 	}
 	delete(a.transfers, msgID)
-	a.setToast(tr("无法下载：发送方离线，或不支持文件传输"))
+	a.setToast(tr("app.common.cannot_download_sender_is_offline_or"))
 	a.redraw()
 }
 
@@ -430,7 +430,7 @@ func (a *app) downloadSocket(convID, msgID string, m *model.Message, dest, addr 
 	}
 	go func() {
 		if err := os.MkdirAll(filepath.Dir(part), 0o700); err != nil {
-			fail(0, fmt.Errorf("%s", tf("无法创建缓存目录 %s：%v", filepath.Dir(part), err)))
+			fail(0, fmt.Errorf("%s", tf("app.common.could_not_create_cache_folder", filepath.Dir(part), err)))
 			return
 		}
 		var offset int64
@@ -483,7 +483,7 @@ func (a *app) downloadSocket(convID, msgID string, m *model.Message, dest, addr 
 		}
 		if want > 0 && done != want {
 			_ = os.Remove(part)
-			fail(done, fmt.Errorf(tr("文件大小不一致：收到 %d，预期 %d"), done, want))
+			fail(done, fmt.Errorf(tr("app.common.size_mismatch_received_expected"), done, want))
 			return
 		}
 		a.completeTransfer(convID, msgID, part, dest, done, imageOnly)
@@ -511,11 +511,11 @@ func (a *app) startHTTPFallback(convID, msgID, url, dest string, want int64, ima
 func (a *app) completeTransfer(convID, msgID, part, dest string, done int64, imageOnly bool) {
 	final := uniquePath(dest)
 	if err := os.MkdirAll(filepath.Dir(final), 0o700); err != nil {
-		a.finishDownload(convID, msgID, part, done, fmt.Errorf("%s", tf("无法创建下载目录 %s：%v", filepath.Dir(final), err)), imageOnly)
+		a.finishDownload(convID, msgID, part, done, fmt.Errorf("%s", tf("app.common.could_not_create_download_folder", filepath.Dir(final), err)), imageOnly)
 		return
 	}
 	if err := moveFile(part, final); err != nil {
-		a.finishDownload(convID, msgID, part, done, fmt.Errorf("%s", tf("无法保存到 %s：%v", final, err)), imageOnly)
+		a.finishDownload(convID, msgID, part, done, fmt.Errorf("%s", tf("app.common.could_not_save_to", final, err)), imageOnly)
 		return
 	}
 	a.finishDownload(convID, msgID, final, done, nil, imageOnly)
@@ -606,7 +606,7 @@ func messageKey(id string) string {
 func (a *app) downloadHTTP(convID, msgID, url, dest string, want int64, imageOnly bool) {
 	go func() {
 		if err := os.MkdirAll(filepath.Dir(dest), 0o700); err != nil {
-			a.finishDownload(convID, msgID, dest, 0, fmt.Errorf("%s", tf("无法创建下载目录 %s：%v", filepath.Dir(dest), err)), imageOnly)
+			a.finishDownload(convID, msgID, dest, 0, fmt.Errorf("%s", tf("app.common.could_not_create_download_folder", filepath.Dir(dest), err)), imageOnly)
 			return
 		}
 		tmp := dest + ".part"
@@ -652,7 +652,7 @@ func (a *app) downloadHTTP(convID, msgID, url, dest string, want int64, imageOnl
 			return
 		default:
 			if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusGone {
-				a.finishDownload(convID, msgID, dest, offset, errors.New(tr("文件不存在或已过期")), imageOnly)
+				a.finishDownload(convID, msgID, dest, offset, errors.New(tr("app.common.file_is_gone_or_has_expired")), imageOnly)
 				return
 			}
 			a.finishDownload(convID, msgID, dest, offset, fmt.Errorf("HTTP %s", resp.Status), imageOnly)
@@ -721,7 +721,7 @@ func (a *app) downloadHTTP(convID, msgID, url, dest string, want int64, imageOnl
 		}
 		if want > 0 && done != want {
 			_ = os.Remove(tmp)
-			a.finishDownload(convID, msgID, dest, done, fmt.Errorf(tr("文件大小不一致：收到 %d，预期 %d"), done, want), imageOnly)
+			a.finishDownload(convID, msgID, dest, done, fmt.Errorf(tr("app.common.size_mismatch_received_expected"), done, want), imageOnly)
 			return
 		}
 		a.completeTransfer(convID, msgID, tmp, dest, done, imageOnly)
@@ -749,7 +749,7 @@ func (a *app) finishDownload(convID, msgID, dest string, done int64, err error, 
 				a.loadImage(dest)
 			}
 			if !imageOnly {
-				a.setToast(tr("已保存到 ") + dest)
+				a.setToast(tr("app.common.saved_to") + dest)
 			}
 		}
 	})
@@ -828,11 +828,11 @@ func (a *app) openPath(path string) {
 		return
 	}
 	if _, err := os.Stat(path); err != nil {
-		a.setToast(tr("文件不存在或已被移动"))
+		a.setToast(tr("app.common.file_is_missing_or_was_moved"))
 		return
 	}
 	if err := mygo.Shell.OpenPath(path); err != nil {
-		a.setToast(tr("无法打开文件：") + err.Error())
+		a.setToast(tr("app.common.could_not_open_file") + err.Error())
 	}
 }
 

@@ -894,7 +894,7 @@ func (s *shotSession) paintSizeLabel(p *ui.Painter, sel ui.Rect) {
 func (s *shotSession) paintHint(p *ui.Painter, r ui.Rect) {
 	hint := s.notice
 	if hint == "" {
-		hint = tr("拖动选择区域，按 Esc 取消")
+		hint = tr("app.screenshot.drag_to_select_area_or_press")
 	}
 	w, h := p.MeasureText(0, ui.Span{Text: hint, Size: 13})
 	x := (r.W - w) / 2

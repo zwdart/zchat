@@ -285,7 +285,7 @@ func (s *Server) serveTransfer(w http.ResponseWriter, r *http.Request) {
 	f, err := os.Open(tr.Path)
 	if err != nil {
 		w.Header().Set("X-Zchat-Error-Code", "file_missing")
-		http.Error(w, i18n.T("文件已不存在"), http.StatusNotFound)
+		http.Error(w, i18n.T("app.share.file_is_gone"), http.StatusNotFound)
 		return
 	}
 	defer f.Close()
@@ -482,24 +482,24 @@ func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		if uploadEnabled {
 			_ = listing.Execute(w, dirPage{
-				Title:        i18n.T("zchat 文件共享"),
-				Count:        i18n.T("共享目录未设置，但可以上传文件"),
+				Title:        i18n.T("app.share.zchat_file_sharing"),
+				Count:        i18n.T("app.share.no_shared_folder_is_set_but"),
 				Lang:         pageLang(),
 				Upload:       true,
-				UploadAction: i18n.T("上传"),
-				UploadHint:   i18n.T("选择文件后上传到共享者的上传目录"),
+				UploadAction: i18n.T("app.common.upload"),
+				UploadHint:   i18n.T("app.share.choose_files_to_upload_to_sharer"),
 				Next:         "/",
-				Footer:       i18n.T("由 zchat 在局域网共享"),
+				Footer:       i18n.T("app.share.shared_by_zchat_on_lan"),
 			})
 			return
 		}
-		io.WriteString(w, `<!doctype html><html lang="`+pageLang()+`"><head><meta charset="utf-8"><title>zchat</title></head><body style="font:16px system-ui;padding:48px"><h1>`+template.HTMLEscapeString(i18n.T("zchat 文件共享"))+`</h1><p>`+template.HTMLEscapeString(i18n.T("这个服务正在运行，但还没有选择共享目录。"))+`</p></body></html>`)
+		io.WriteString(w, `<!doctype html><html lang="`+pageLang()+`"><head><meta charset="utf-8"><title>zchat</title></head><body style="font:16px system-ui;padding:48px"><h1>`+template.HTMLEscapeString(i18n.T("app.share.zchat_file_sharing"))+`</h1><p>`+template.HTMLEscapeString(i18n.T("app.share.this_service_is_running_but_no"))+`</p></body></html>`)
 		return
 	}
 	rel := strings.TrimPrefix(r.URL.Path, "/")
 	full, err := safeJoin(root, rel)
 	if err != nil {
-		http.Error(w, i18n.T("无效的路径"), http.StatusBadRequest)
+		http.Error(w, i18n.T("app.share.invalid_path"), http.StatusBadRequest)
 		return
 	}
 	info, err := os.Stat(full)
@@ -522,7 +522,7 @@ func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 	}
 	entries, err := os.ReadDir(full)
 	if err != nil {
-		http.Error(w, i18n.T("无法读取目录"), http.StatusForbidden)
+		http.Error(w, i18n.T("app.share.could_not_read_folder"), http.StatusForbidden)
 		return
 	}
 	q := strings.TrimSpace(r.URL.Query().Get("q"))
@@ -544,7 +544,7 @@ func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 		if ei != nil {
 			row.Added = ei.ModTime().Format("2006-01-02 15:04")
 			if e.IsDir() {
-				row.Size = i18n.T("文件夹")
+				row.Size = i18n.T("app.common.folder")
 			} else {
 				row.Size = humanSize(ei.Size())
 			}
@@ -566,29 +566,29 @@ func (s *Server) serveDir(w http.ResponseWriter, r *http.Request) {
 			parent = "/" + escapePath(dir) + "/"
 		}
 	}
-	title := i18n.T("共享目录")
+	title := i18n.T("app.common.shared_folder")
 	if strings.Trim(rel, "/") != "" {
 		title = path.Base(strings.Trim(rel, "/"))
 	}
-	count := i18n.TF("%d 个文件", len(rows))
+	count := i18n.TF("app.common.files_2", len(rows))
 	if q != "" {
-		count = i18n.TF("搜索 “%s” · %d 个结果", q, len(rows))
+		count = i18n.TF("app.share.search_results", q, len(rows))
 	}
 	notice := ""
 	if n, err := strconv.Atoi(r.URL.Query().Get("uploaded")); err == nil && n > 0 {
-		notice = i18n.TF("已上传 %d 个文件", n)
+		notice = i18n.TF("app.share.uploaded_file_s", n)
 	}
-	footer := i18n.T("由 zchat 在局域网共享 · 只读")
+	footer := i18n.T("app.share.shared_by_zchat_on_lan_read")
 	if uploadEnabled {
-		footer = i18n.T("由 zchat 在局域网共享 · 可上传")
+		footer = i18n.T("app.share.shared_by_zchat_on_lan_uploads")
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	_ = listing.Execute(w, dirPage{
 		Title: title, Rel: rel, Entries: rows, Parent: parent, Query: q, Count: count,
-		Lang: pageLang(), Search: i18n.T("搜索"), SearchPlaceholder: i18n.T("在共享目录中搜索"),
-		Back: i18n.T("返回上一级"), Empty: i18n.T("这个目录是空的"),
+		Lang: pageLang(), Search: i18n.T("app.common.search"), SearchPlaceholder: i18n.T("app.share.search_in_shared_folder"),
+		Back: i18n.T("app.share.back"), Empty: i18n.T("app.share.this_folder_is_empty"),
 		Footer: footer, ShowSearch: true, Upload: uploadEnabled,
-		UploadAction: i18n.T("上传"), UploadHint: i18n.T("选择文件后上传到共享者的上传目录"),
+		UploadAction: i18n.T("app.common.upload"), UploadHint: i18n.T("app.share.choose_files_to_upload_to_sharer"),
 		UploadNotice: notice, Next: r.URL.Path,
 	})
 }
@@ -607,26 +607,26 @@ const maxUploadSize int64 = 8 << 30
 func (s *Server) serveUpload(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
-		http.Error(w, i18n.T("请求格式错误"), http.StatusMethodNotAllowed)
+		http.Error(w, i18n.T("app.common.bad_request"), http.StatusMethodNotAllowed)
 		return
 	}
 	dir := s.UploadDir()
 	if dir == "" {
-		http.Error(w, i18n.T("未开启上传"), http.StatusForbidden)
+		http.Error(w, i18n.T("app.share.uploads_off"), http.StatusForbidden)
 		return
 	}
 	if info, err := os.Stat(dir); err != nil || !info.IsDir() {
-		http.Error(w, i18n.T("上传目录不存在"), http.StatusForbidden)
+		http.Error(w, i18n.T("app.common.upload_folder_does_not_exist"), http.StatusForbidden)
 		return
 	}
 	if r.ContentLength > maxUploadSize {
-		http.Error(w, i18n.T("文件过大"), http.StatusRequestEntityTooLarge)
+		http.Error(w, i18n.T("app.common.file_too_large"), http.StatusRequestEntityTooLarge)
 		return
 	}
 	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
 	mr, err := r.MultipartReader()
 	if err != nil {
-		http.Error(w, i18n.T("请求格式错误"), http.StatusBadRequest)
+		http.Error(w, i18n.T("app.common.bad_request"), http.StatusBadRequest)
 		return
 	}
 	next := "/"
@@ -647,9 +647,9 @@ func (s *Server) serveUpload(w http.ResponseWriter, r *http.Request) {
 		}
 		if err != nil {
 			if uploadTooLarge(err) {
-				http.Error(w, i18n.T("文件过大"), http.StatusRequestEntityTooLarge)
+				http.Error(w, i18n.T("app.common.file_too_large"), http.StatusRequestEntityTooLarge)
 			} else {
-				http.Error(w, i18n.T("请求格式错误"), http.StatusBadRequest)
+				http.Error(w, i18n.T("app.common.bad_request"), http.StatusBadRequest)
 			}
 			return
 		}
@@ -665,7 +665,7 @@ func (s *Server) serveUpload(w http.ResponseWriter, r *http.Request) {
 		f, path, err := createUpload(dir, name)
 		if err != nil {
 			_ = part.Close()
-			http.Error(w, i18n.T("无法保存文件"), http.StatusInternalServerError)
+			http.Error(w, i18n.T("app.share.could_not_save_file"), http.StatusInternalServerError)
 			return
 		}
 		_, copyErr := io.Copy(f, part)
@@ -674,16 +674,16 @@ func (s *Server) serveUpload(w http.ResponseWriter, r *http.Request) {
 		if copyErr != nil || closeErr != nil {
 			_ = os.Remove(path)
 			if uploadTooLarge(copyErr) {
-				http.Error(w, i18n.T("文件过大"), http.StatusRequestEntityTooLarge)
+				http.Error(w, i18n.T("app.common.file_too_large"), http.StatusRequestEntityTooLarge)
 			} else {
-				http.Error(w, i18n.T("无法保存文件"), http.StatusInternalServerError)
+				http.Error(w, i18n.T("app.share.could_not_save_file"), http.StatusInternalServerError)
 			}
 			return
 		}
 		saved = append(saved, path)
 	}
 	if len(saved) == 0 {
-		http.Error(w, i18n.T("没有选择文件"), http.StatusBadRequest)
+		http.Error(w, i18n.T("app.common.no_files_selected"), http.StatusBadRequest)
 		return
 	}
 	ok = true

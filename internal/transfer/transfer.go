@@ -337,32 +337,32 @@ func (s *Server) serve(conn net.Conn) {
 	}
 	var req request
 	if json.Unmarshal(line, &req) != nil {
-		_ = writeResponse(conn, response{Code: CodeBadRequest, Error: i18n.T("请求格式错误")})
+		_ = writeResponse(conn, response{Code: CodeBadRequest, Error: i18n.T("app.common.bad_request")})
 		return
 	}
 	s.mu.RLock()
 	e, ok := s.files[req.Token]
 	s.mu.RUnlock()
 	if !ok {
-		_ = writeResponse(conn, response{Code: CodeNotFound, Error: i18n.T("文件不存在或发送方已重启")})
+		_ = writeResponse(conn, response{Code: CodeNotFound, Error: i18n.T("app.common.file_is_gone_or_sender_restarted")})
 		return
 	}
 	if _, err := os.Stat(e.Path); err != nil {
-		_ = writeResponse(conn, response{Code: CodeFileMissing, Error: i18n.T("文件已被移动或删除")})
+		_ = writeResponse(conn, response{Code: CodeFileMissing, Error: i18n.T("app.common.file_was_moved_or_deleted")})
 		return
 	}
 	if req.Offset < 0 || req.Offset > e.Size {
-		_ = writeResponse(conn, response{Code: CodeBadOffset, Error: i18n.T("续传位置无效")})
+		_ = writeResponse(conn, response{Code: CodeBadOffset, Error: i18n.T("app.common.invalid_resume_position")})
 		return
 	}
 	f, err := os.Open(e.Path)
 	if err != nil {
-		_ = writeResponse(conn, response{Code: CodeIOError, Error: i18n.T("无法读取文件")})
+		_ = writeResponse(conn, response{Code: CodeIOError, Error: i18n.T("app.common.could_not_read_file")})
 		return
 	}
 	defer f.Close()
 	if _, err := f.Seek(req.Offset, io.SeekStart); err != nil {
-		_ = writeResponse(conn, response{Code: CodeIOError, Error: i18n.T("无法定位文件")})
+		_ = writeResponse(conn, response{Code: CodeIOError, Error: i18n.T("app.transfer.could_not_seek_in_file")})
 		return
 	}
 	if err := writeResponse(conn, response{OK: true, Size: e.Size, Name: e.Name, MIME: e.MIME}); err != nil {
@@ -435,7 +435,7 @@ func Download(addr, token string, offset int64, w io.Writer, progress func(done,
 	}
 	if !resp.OK {
 		if resp.Error == "" {
-			resp.Error = i18n.T("无法传输文件")
+			resp.Error = i18n.T("app.transfer.could_not_transfer_file")
 		}
 		return offset, &Error{Code: resp.Code, Message: resp.Error}
 	}

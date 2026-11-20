@@ -1,18 +1,19 @@
-// Package i18n keeps the app's small translation table. Chinese source
-// strings are the keys; missing English entries fall back to Chinese, so
-// adding a string never breaks the UI.
+// Package i18n keeps the app's translation catalogs. Each language lives in
+// its own file under locales. Catalogs use dot-separated message IDs such as
+// "app.ffmpeg.compress_video"; a missing entry falls back to Chinese and then
+// to the ID itself instead of breaking the UI.
 package i18n
 
 import (
-	_ "embed"
+	"embed"
 	"fmt"
 	"os"
 	"strings"
 	"sync"
 )
 
-//go:embed en.tsv
-var englishTable string
+//go:embed locales/*.tsv
+var localeFiles embed.FS
 
 // Language settings accepted by Set.
 const (
@@ -21,7 +22,40 @@ const (
 	English = "en"
 )
 
-var english = parseTable(englishTable)
+type catalog struct {
+	keys       []string
+	values     map[string]string
+	duplicates []string
+}
+
+var catalogs = map[string]*catalog{
+	Chinese: loadCatalog(Chinese),
+	English: loadCatalog(English),
+}
+
+// sourceKeys indexes Chinese display labels that are stored in model/spec
+// data and translated when they are rendered. It keeps those runtime labels
+// working while the catalogs themselves use message IDs.
+var sourceKeys = buildSourceKeys()
+
+func buildSourceKeys() map[string]string {
+	c := catalogs[Chinese]
+	if c == nil {
+		return nil
+	}
+	index := make(map[string]string, len(c.keys))
+	for _, key := range c.keys {
+		source := c.values[key]
+		if source == "" {
+			continue
+		}
+		if _, exists := index[source]; !exists {
+			index[source] = key
+		}
+	}
+	return index
+}
+
 var (
 	mu      sync.RWMutex
 	current = Chinese
@@ -50,16 +84,32 @@ func Current() string {
 	return current
 }
 
-// T translates a Chinese source string.
+// T translates a message ID. Missing entries fall back to Chinese and then to
+// the input, so a new string never leaves a blank label. Chinese runtime
+// labels are resolved through sourceKeys before the fallback.
 func T(s string) string {
 	mu.RLock()
 	lang := current
 	mu.RUnlock()
-	if lang != English {
-		return s
+	key := s
+	if c := catalogs[lang]; c != nil {
+		if _, ok := c.values[key]; !ok {
+			if resolved, ok := sourceKeys[s]; ok {
+				key = resolved
+			}
+		}
 	}
-	if v, ok := english[s]; ok {
-		return v
+	if c := catalogs[lang]; c != nil {
+		if v, ok := c.values[key]; ok {
+			return v
+		}
+	}
+	if lang != Chinese {
+		if c := catalogs[Chinese]; c != nil {
+			if v, ok := c.values[key]; ok {
+				return v
+			}
+		}
 	}
 	return s
 }
@@ -78,9 +128,9 @@ type Option struct {
 // Options lists the settings choices. Labels are translated at call time.
 func Options() []Option {
 	return []Option{
-		{System, "跟随系统"},
-		{Chinese, "简体中文"},
-		{English, "English"},
+		{System, "app.common.use_system_setting"},
+		{Chinese, "app.common.simplified_chinese"},
+		{English, "app.common.english"},
 	}
 }
 
@@ -111,8 +161,16 @@ func systemLanguage() string {
 	return Chinese
 }
 
-func parseTable(s string) map[string]string {
-	out := make(map[string]string)
+func loadCatalog(lang string) *catalog {
+	data, err := localeFiles.ReadFile("locales/" + lang + ".tsv")
+	if err != nil {
+		return &catalog{values: map[string]string{}}
+	}
+	return parseCatalog(string(data))
+}
+
+func parseCatalog(s string) *catalog {
+	c := &catalog{values: make(map[string]string)}
 	for _, line := range strings.Split(s, "\n") {
 		line = strings.TrimSuffix(line, "\r")
 		if line == "" || strings.HasPrefix(line, "#") {
@@ -122,9 +180,15 @@ func parseTable(s string) map[string]string {
 		if !ok {
 			continue
 		}
-		out[unescape(key)] = unescape(value)
+		key, value = unescape(key), unescape(value)
+		if _, exists := c.values[key]; exists {
+			c.duplicates = append(c.duplicates, key)
+		} else {
+			c.keys = append(c.keys, key)
+		}
+		c.values[key] = value
 	}
-	return out
+	return c
 }
 
 func unescape(s string) string {

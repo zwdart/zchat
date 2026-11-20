@@ -41,7 +41,7 @@ func (a *app) openSettings() {
 		a.settingsNav = "profile"
 	}
 	a.settingsWin = mygo.NewWindow(mygo.WindowOptions{
-		Title:           tr("zchat 设置"),
+		Title:           tr("app.common.zchat_settings"),
 		Width:           720,
 		Height:          760,
 		MinWidth:        620,
@@ -116,16 +116,16 @@ func (a *app) releaseLinkRow(c *ui.Context, p palette, key string) {
 	url := releasePageURL()
 	ui.Column(c).FillWidth().Padding(12, 15).Gap(8).Children(func() {
 		ui.Column(c).Gap(3).Children(func() {
-			ui.Text(c, tr("下载链接")).FontSize(13.5).FontWeight(500)
-			ui.Text(c, tr("可以复制到浏览器，或直接打开发布页面。")).FontSize(11.5).TextColor(p.muted)
+			ui.Text(c, tr("app.common.download_link")).FontSize(13.5).FontWeight(500)
+			ui.Text(c, tr("app.settings.copy_it_into_browser_or_open")).FontSize(11.5).TextColor(p.muted)
 		})
 		ui.Text(c, url).FontSize(11.5).TextColor(p.text).Selectable()
 		ui.Row(c).Gap(8).Children(func() {
-			if ui.Button(c.Key(key+"-copy-release"), tr("复制链接")).Clicked() {
+			if ui.Button(c.Key(key+"-copy-release"), tr("app.common.copy_link")).Clicked() {
 				c.WriteClipboard(url)
-				a.setToast(tr("已复制下载链接"))
+				a.setToast(tr("app.common.download_link_copied"))
 			}
-			if ui.Button(c.Key(key+"-open-release"), tr("打开发布页面")).Clicked() {
+			if ui.Button(c.Key(key+"-open-release"), tr("app.common.open_release_page")).Clicked() {
 				a.openExternal(url)
 			}
 		})
@@ -155,8 +155,8 @@ func (a *app) settingsView(c *ui.Context) {
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
 		a.settingsMenu(c, p)
 		ui.Scroll(c).Grow(1).Padding(24, 26, 30, 26).Gap(6).Children(func() {
-			ui.Text(c, tr("设置")).FontSize(26).FontWeight(750).LetterSpacing(-0.4).Margin(0, 0, 6, 2)
-			ui.Text(c, tr("这些设置只影响这台设备。")).FontSize(12).TextColor(p.muted).Margin(0, 0, 0, 8)
+			ui.Text(c, tr("app.common.settings")).FontSize(26).FontWeight(750).LetterSpacing(-0.4).Margin(0, 0, 6, 2)
+			ui.Text(c, tr("app.settings.these_settings_only_affect_this_device")).FontSize(12).TextColor(p.muted).Margin(0, 0, 0, 8)
 
 			group := func(title string, rows func()) ui.Element {
 				ui.Text(c, title).FontSize(12).FontWeight(650).TextColor(p.muted).Margin(14, 4, 4, 4)
@@ -174,35 +174,35 @@ func (a *app) settingsView(c *ui.Context) {
 				})
 			}
 
-			groups["profile"] = group(tr("个人资料"), func() {
-				row(tr("名称"), tr("其他设备在局域网里看到的名字"), func() {
-					ui.TextInput(c.Key("profile-name"), &a.profileName).Label(tr("名称")).Width(210).
-						Placeholder(tr("我的 zchat")).OnSubmit(a.applyProfile)
+			groups["profile"] = group(tr("app.common.profile"), func() {
+				row(tr("app.common.name"), tr("app.settings.name_other_devices_see_on_lan"), func() {
+					ui.TextInput(c.Key("profile-name"), &a.profileName).Label(tr("app.common.name")).Width(210).
+						Placeholder(tr("app.common.my_zchat")).OnSubmit(a.applyProfile)
 				})
-				row(tr("签名"), tr("一句介绍，显示在设备卡片里"), func() {
-					ui.TextInput(c.Key("profile-signature"), &a.profileSig).Label(tr("签名")).Width(210).
-						Placeholder(tr("可选")).OnSubmit(a.applyProfile)
+				row(tr("app.common.bio"), tr("app.settings.short_bio_shown_on_your_device"), func() {
+					ui.TextInput(c.Key("profile-signature"), &a.profileSig).Label(tr("app.common.bio")).Width(210).
+						Placeholder(tr("app.common.optional")).OnSubmit(a.applyProfile)
 				})
 				ui.Row(c).Padding(12, 15).Gap(12).AlignItems(ui.Center).Children(func() {
 					ui.Avatar(c, a.profileName, a.avatarBitmap(a.profile.Avatar)).Size(46, 46)
 					ui.Column(c).Grow(1).Gap(3).Children(func() {
-						ui.Text(c, tr("头像")).FontSize(13.5).FontWeight(500)
-						ui.Text(c, tr("选择一张图片，会缩放到小尺寸后保存在本机")).FontSize(11.5).TextColor(p.muted)
+						ui.Text(c, tr("app.settings.avatar")).FontSize(13.5).FontWeight(500)
+						ui.Text(c, tr("app.settings.choose_image_it_is_scaled_down")).FontSize(11.5).TextColor(p.muted)
 					})
 					if a.profile.Avatar != "" {
-						if ui.Button(c.Key("remove-avatar"), tr("移除")).Clicked() {
+						if ui.Button(c.Key("remove-avatar"), tr("app.common.remove")).Clicked() {
 							a.profile.Avatar = ""
 							a.applyProfile()
 						}
 					}
-					if ui.Button(c.Key("pick-avatar"), tr("选择…")).Clicked() {
+					if ui.Button(c.Key("pick-avatar"), tr("app.common.select")).Clicked() {
 						a.pickAvatar()
 					}
-					if ui.PrimaryButton(c.Key("save-profile"), tr("保存资料")).Clicked() {
+					if ui.PrimaryButton(c.Key("save-profile"), tr("app.settings.save_profile")).Clicked() {
 						a.applyProfile()
 					}
 				})
-				row(tr("状态"), tr("在线状态会广播给已连接的设备"), func() {
+				row(tr("app.common.status"), tr("app.settings.your_status_is_broadcast_to_connected"), func() {
 					labels := make([]string, len(model.PresenceOptions))
 					chosen := presenceLabel(a.profile.Status)
 					for i, o := range model.PresenceOptions {
@@ -211,7 +211,7 @@ func (a *app) settingsView(c *ui.Context) {
 							chosen = tr(o.Label)
 						}
 					}
-					if ui.Select(c.Key("status"), &chosen, labels).Label(tr("状态")).Width(140).Changed() {
+					if ui.Select(c.Key("status"), &chosen, labels).Label(tr("app.common.status")).Width(140).Changed() {
 						for _, o := range model.PresenceOptions {
 							if tr(o.Label) == chosen {
 								a.setStatus(o.Value)
@@ -221,8 +221,8 @@ func (a *app) settingsView(c *ui.Context) {
 				})
 			})
 
-			groups["appearance"] = group(tr("外观"), func() {
-				row(tr("语言"), tr("界面语言，切换后立即生效"), func() {
+			groups["appearance"] = group(tr("app.settings.appearance"), func() {
+				row(tr("app.settings.language"), tr("app.settings.interface_language_changes_apply_immediately"), func() {
 					opts := i18n.Options()
 					labels := make([]string, len(opts))
 					chosen := ""
@@ -235,7 +235,7 @@ func (a *app) settingsView(c *ui.Context) {
 					if chosen == "" {
 						chosen = labels[0]
 					}
-					if ui.Select(c.Key("language"), &chosen, labels).Label(tr("语言")).Width(160).Changed() {
+					if ui.Select(c.Key("language"), &chosen, labels).Label(tr("app.settings.language")).Width(160).Changed() {
 						for i, label := range labels {
 							if label == chosen {
 								s.Language = opts[i].Value
@@ -245,8 +245,8 @@ func (a *app) settingsView(c *ui.Context) {
 						a.applyLanguage()
 					}
 				})
-				row(tr("主题"), tr("跟随系统，或固定浅色、深色"), func() {
-					labels := []string{tr("跟随系统"), tr("浅色"), tr("深色")}
+				row(tr("app.common.theme"), tr("app.settings.follow_system_or_fix_light_or"), func() {
+					labels := []string{tr("app.common.use_system_setting"), tr("app.settings.light"), tr("app.settings.dark")}
 					values := []string{"system", "light", "dark"}
 					chosen := labels[0]
 					for i, v := range values {
@@ -254,7 +254,7 @@ func (a *app) settingsView(c *ui.Context) {
 							chosen = labels[i]
 						}
 					}
-					if ui.Select(c.Key("appearance"), &chosen, labels).Label(tr("主题")).Width(140).Changed() {
+					if ui.Select(c.Key("appearance"), &chosen, labels).Label(tr("app.common.theme")).Width(140).Changed() {
 						for i, label := range labels {
 							if label == chosen {
 								s.Appearance = values[i]
@@ -265,84 +265,84 @@ func (a *app) settingsView(c *ui.Context) {
 				})
 			})
 
-			groups["notifications"] = group(tr("通知"), func() {
-				row(tr("新消息通知"), tr("窗口不在前台时显示系统通知"), func() {
-					if ui.Switch(c.Key("notifications"), &s.Notifications).Label(tr("新消息通知")).Changed() {
+			groups["notifications"] = group(tr("app.settings.notifications"), func() {
+				row(tr("app.settings.message_notifications"), tr("app.settings.show_system_notifications_when_window_is"), func() {
+					if ui.Switch(c.Key("notifications"), &s.Notifications).Label(tr("app.settings.message_notifications")).Changed() {
 						a.settingsChanged()
 					}
 				})
-				row(tr("自动下载图片"), tr("收到图片后自动缓存到本机，打开聊天即可查看"), func() {
-					if ui.Switch(c.Key("auto-images"), &s.AutoDownloadImages).Label(tr("自动下载图片")).Changed() {
+				row(tr("app.settings.auto_download_images"), tr("app.settings.cache_received_images_locally_open_chat"), func() {
+					if ui.Switch(c.Key("auto-images"), &s.AutoDownloadImages).Label(tr("app.settings.auto_download_images")).Changed() {
 						a.settingsChanged()
 						if s.AutoDownloadImages {
 							a.queueActiveImages()
 						}
 					}
 				})
-				row(tr("关闭窗口时留在托盘"), tr("关闭窗口后继续接收消息，可从菜单栏或通知区重新打开"), func() {
-					if ui.Switch(c.Key("close-tray"), &s.CloseToTray).Label(tr("关闭窗口时留在托盘")).Changed() {
+				row(tr("app.settings.keep_running_in_tray_when_window"), tr("app.settings.keep_receiving_messages_after_closing_window"), func() {
+					if ui.Switch(c.Key("close-tray"), &s.CloseToTray).Label(tr("app.settings.keep_running_in_tray_when_window")).Changed() {
 						a.settingsChanged()
 					}
 				})
 			})
 
-			groups["network"] = group(tr("网络"), func() {
-				row(tr("自动发现设备"), tr("通过 UDP 组播和广播在局域网里寻找其他 zchat"), func() {
-					if ui.Switch(c.Key("discovery"), &s.Discovery).Label(tr("自动发现设备")).Changed() {
+			groups["network"] = group(tr("app.common.network"), func() {
+				row(tr("app.settings.discover_devices_automatically"), tr("app.settings.find_other_zchat_devices_on_lan"), func() {
+					if ui.Switch(c.Key("discovery"), &s.Discovery).Label(tr("app.settings.discover_devices_automatically")).Changed() {
 						a.settingsChanged()
 						a.restartNetwork()
 					}
 				})
-				row(tr("监听端口"), tr("TCP 端口，默认 42224；修改后重启网络生效"), func() {
-					if ui.NumberInput(c.Key("tcp-port"), &a.portEdit, 1024, 65535, 1).Label(tr("监听端口")).Width(110).Changed() {
+				row(tr("app.common.listen_port"), tr("app.settings.tcp_port_default_42224_restart_network"), func() {
+					if ui.NumberInput(c.Key("tcp-port"), &a.portEdit, 1024, 65535, 1).Label(tr("app.common.listen_port")).Width(110).Changed() {
 						s.Port = int(a.portEdit)
 						_ = s.save()
 					}
 				})
-				row(tr("文件传输端口"), tr("聊天附件通过这个 TCP 端口直连传输，默认 42225"), func() {
-					if ui.NumberInput(c.Key("transfer-port"), &a.transferEdit, 1024, 65535, 1).Label(tr("文件传输端口")).Width(110).Changed() {
+				row(tr("app.common.file_transfer_port"), tr("app.settings.chat_attachments_transfer_directly_over_this"), func() {
+					if ui.NumberInput(c.Key("transfer-port"), &a.transferEdit, 1024, 65535, 1).Label(tr("app.common.file_transfer_port")).Width(110).Changed() {
 						s.TransferPort = int(a.transferEdit)
 						_ = s.save()
 					}
 				})
-				row(tr("本机地址"), tr("把这些地址告诉无法自动发现的设备"), func() {
+				row(tr("app.settings.local_address"), tr("app.settings.give_these_addresses_to_devices_that"), func() {
 					ip := netutil.PrimaryIP()
 					if ip == "" {
-						ip = tr("未连接局域网")
+						ip = tr("app.settings.not_connected_to_lan")
 					}
 					ui.Text(c, ip+":"+itoa(a.nodePort())).FontSize(12).TextColor(p.muted).FontFeatures("tnum")
 				})
-				row(tr("重新启动网络"), tr("让端口、文件传输或发现设置立即生效"), func() {
-					if ui.Button(c.Key("restart-network"), tr("重启网络")).Clicked() {
+				row(tr("app.settings.restart_network_2"), tr("app.settings.apply_port_file_transfer_or_discovery"), func() {
+					if ui.Button(c.Key("restart-network"), tr("app.settings.restart_network")).Clicked() {
 						s.Port = int(a.portEdit)
 						s.TransferPort = int(a.transferEdit)
 						_ = s.save()
 						a.restartNetwork()
-						a.setToast(tr("网络已重启"))
+						a.setToast(tr("app.settings.network_restarted"))
 					}
 				})
 			})
 
-			groups["files"] = group(tr("文件"), func() {
-				row(tr("下载目录"), a.settings.DownloadDir, func() {
-					if ui.Button(c.Key("choose-downloads"), tr("选择…")).Clicked() {
+			groups["files"] = group(tr("app.common.files"), func() {
+				row(tr("app.common.downloads"), a.settings.DownloadDir, func() {
+					if ui.Button(c.Key("choose-downloads"), tr("app.common.select")).Clicked() {
 						a.chooseDownloadDir()
 					}
 				})
-				row(tr("共享目录"), tr("在「文件共享」页面开启后，访客可以浏览这个目录"), func() {
-					if ui.Button(c.Key("open-share-page"), tr("打开共享")).Clicked() {
+				row(tr("app.common.shared_folder"), tr("app.settings.enable_it_on_file_sharing_page"), func() {
+					if ui.Button(c.Key("open-share-page"), tr("app.settings.open_sharing")).Clicked() {
 						a.showMain()
 						a.setPage(pageShare)
 					}
 				})
-				row(tr("上传目录"), tr("在「文件共享」页面开启后，访客可以通过网页上传文件到这个目录"), func() {
-					if ui.Button(c.Key("open-upload-page"), tr("打开共享")).Clicked() {
+				row(tr("app.common.upload_folder"), tr("app.settings.after_sharing_is_enabled_on_file"), func() {
+					if ui.Button(c.Key("open-upload-page"), tr("app.settings.open_sharing")).Clicked() {
 						a.showMain()
 						a.setPage(pageShare)
 					}
 				})
-				row(tr("共享端口"), tr("HTTP 服务端口，默认 42230"), func() {
-					if ui.NumberInput(c.Key("share-port"), &a.shareEdit, 1024, 65535, 1).Label(tr("共享端口")).Width(110).Changed() {
+				row(tr("app.settings.share_port"), tr("app.settings.http_service_port_default_42230"), func() {
+					if ui.NumberInput(c.Key("share-port"), &a.shareEdit, 1024, 65535, 1).Label(tr("app.settings.share_port")).Width(110).Changed() {
 						s.SharePort = int(a.shareEdit)
 						_ = s.save()
 						// Do not turn the attachment fallback server into an
@@ -353,146 +353,146 @@ func (a *app) settingsView(c *ui.Context) {
 						}
 					}
 				})
-				row(tr("启动时自动共享"), tr("打开 zchat 后自动开启上一个共享目录"), func() {
-					if ui.Switch(c.Key("share-start"), &s.ShareOnStart).Label(tr("启动时自动共享")).Changed() {
+				row(tr("app.settings.share_automatically_on_startup"), tr("app.settings.reopen_last_shared_folder_when_zchat"), func() {
+					if ui.Switch(c.Key("share-start"), &s.ShareOnStart).Label(tr("app.settings.share_automatically_on_startup")).Changed() {
 						a.settingsChanged()
 					}
 				})
 			})
 
-			groups["screenshot"] = group(tr("截图"), func() {
-				row(tr("启用截图"), tr("在聊天工具栏、菜单和快捷键中使用截图"), func() {
-					if ui.Switch(c.Key("shot-enabled"), &s.ScreenshotEnabled).Label(tr("启用截图")).Changed() {
+			groups["screenshot"] = group(tr("app.common.screenshot"), func() {
+				row(tr("app.settings.enable_screenshots"), tr("app.settings.use_screenshots_from_chat_toolbar_menus"), func() {
+					if ui.Switch(c.Key("shot-enabled"), &s.ScreenshotEnabled).Label(tr("app.settings.enable_screenshots")).Changed() {
 						a.settingsChanged()
 						a.applyScreenshotShortcut()
 						a.setMenu()
 						a.rebuildTray()
 					}
 				})
-				row(tr("默认包含聊天页面"), tr("点击聊天工具栏的截图按钮时，默认把当前聊天页面一起截入"), func() {
-					if ui.Switch(c.Key("shot-include-chat"), &s.ScreenshotIncludeChat).Label(tr("默认包含聊天页面")).Changed() {
+				row(tr("app.settings.include_chat_window_by_default"), tr("app.settings.include_current_chat_window_by_default"), func() {
+					if ui.Switch(c.Key("shot-include-chat"), &s.ScreenshotIncludeChat).Label(tr("app.settings.include_chat_window_by_default")).Changed() {
 						a.settingsChanged()
 					}
 				})
-				row(tr("包含聊天窗口的快捷键"), tr("连当前聊天窗口一起截取；留空或填 off 可关闭"), func() {
+				row(tr("app.settings.shortcut_with_chat_window"), tr("app.settings.include_chat_window_leave_empty_or"), func() {
 					ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 						ui.TextInput(c.Key("shot-include-shortcut"), &a.shotIncludeEdit).Width(170).
 							Placeholder("Ctrl+F1")
-						if ui.Button(c.Key("shot-include-apply"), tr("应用")).Clicked() {
+						if ui.Button(c.Key("shot-include-apply"), tr("app.common.apply")).Clicked() {
 							if a.setScreenshotShortcut(a.shotIncludeEdit, true) {
-								a.setToast(tr("截图快捷键已更新"))
+								a.setToast(tr("app.settings.screenshot_shortcut_updated"))
 							}
 						}
 					})
 				})
-				row(tr("不包含聊天窗口的快捷键"), tr("先隐藏 zchat 再截取；留空或填 off 可关闭"), func() {
+				row(tr("app.settings.shortcut_without_chat_window"), tr("app.settings.hide_zchat_first_leave_empty_or"), func() {
 					ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 						ui.TextInput(c.Key("shot-exclude-shortcut"), &a.shotExcludeEdit).Width(170).
 							Placeholder("Ctrl+F2")
-						if ui.Button(c.Key("shot-exclude-apply"), tr("应用")).Clicked() {
+						if ui.Button(c.Key("shot-exclude-apply"), tr("app.common.apply")).Clicked() {
 							if a.setScreenshotShortcut(a.shotExcludeEdit, false) {
-								a.setToast(tr("截图快捷键已更新"))
+								a.setToast(tr("app.settings.screenshot_shortcut_updated"))
 							}
 						}
 					})
 				})
-				row(tr("保存目录"), a.screenshotDir(), func() {
-					if ui.Button(c.Key("choose-screenshot-dir"), tr("选择…")).Clicked() {
+				row(tr("app.common.save_folder"), a.screenshotDir(), func() {
+					if ui.Button(c.Key("choose-screenshot-dir"), tr("app.common.select")).Clicked() {
 						a.chooseScreenshotDir()
 					}
 				})
-				row(tr("捕获鼠标指针"), tr("截图时把鼠标指针一起截取下来"), func() {
-					if ui.Switch(c.Key("shot-cursor"), &s.ScreenshotCursor).Label(tr("捕获鼠标指针")).Changed() {
+				row(tr("app.settings.capture_mouse_pointer"), tr("app.settings.include_mouse_pointer_in_screenshot"), func() {
+					if ui.Switch(c.Key("shot-cursor"), &s.ScreenshotCursor).Label(tr("app.settings.capture_mouse_pointer")).Changed() {
 						a.settingsChanged()
 					}
 				})
-				row(tr("立即截图"), tr("选择区域后可以标注、复制、保存、贴图或发送到聊天"), func() {
-					if ui.Button(c.Key("shot-now"), tr("截图")).Clicked() {
+				row(tr("app.settings.take_screenshot_now"), tr("app.settings.select_area_to_annotate_copy_save"), func() {
+					if ui.Button(c.Key("shot-now"), tr("app.common.screenshot")).Clicked() {
 						a.openScreenshotChooser()
 					}
 				})
 			})
 
-			groups["history"] = group(tr("聊天记录"), func() {
+			groups["history"] = group(tr("app.common.chat_history"), func() {
 				st := a.dbStats
-				row(tr("SQLite 数据库"), tr("记录按会话和时间建立索引，保存在数据目录的 zchat.db 中"), func() {
+				row(tr("app.settings.sqlite_database"), tr("app.settings.records_are_indexed_by_chat_and"), func() {
 					ui.Column(c).AlignItems(ui.End).Gap(2).Children(func() {
-						ui.Text(c, itoa(st.Messages)+tr(" 条消息")).FontSize(12).TextColor(p.muted).FontFeatures("tnum")
-						ui.Text(c, itoa(st.Conversations)+tr(" 个会话 · ")+model.HumanSize(st.Bytes)).FontSize(10.5).TextColor(p.faint).FontFeatures("tnum")
+						ui.Text(c, itoa(st.Messages)+tr("app.settings.messages")).FontSize(12).TextColor(p.muted).FontFeatures("tnum")
+						ui.Text(c, itoa(st.Conversations)+tr("app.settings.conversations")+model.HumanSize(st.Bytes)).FontSize(10.5).TextColor(p.faint).FontFeatures("tnum")
 					})
 				})
-				row(tr("打开数据库位置"), tr("可以在文件管理器里备份 zchat.db"), func() {
-					if ui.Button(c.Key("open-db-dir"), tr("打开")).Clicked() {
+				row(tr("app.settings.open_database_location"), tr("app.settings.you_can_back_up_zchat_db"), func() {
+					if ui.Button(c.Key("open-db-dir"), tr("app.common.open")).Clicked() {
 						if a.store != nil {
 							a.openPath(a.store.Dir())
 						}
 					}
 				})
-				row(tr("整理数据库"), tr("删除聊天记录后回收磁盘空间，记录很多时可能需要几秒"), func() {
-					if ui.Button(c.Key("vacuum-db"), tr("整理")).Clicked() {
+				row(tr("app.settings.compact_database"), tr("app.settings.reclaim_disk_space_after_deleting_chat"), func() {
+					if ui.Button(c.Key("vacuum-db"), tr("app.common.compact")).Clicked() {
 						if a.store != nil {
 							if err := a.store.Vacuum(); err != nil {
-								a.setToast(tr("整理失败：") + err.Error())
+								a.setToast(tr("app.settings.compaction_failed") + err.Error())
 							} else {
 								a.refreshDBStats()
-								a.setToast(tr("数据库已整理"))
+								a.setToast(tr("app.settings.database_compacted"))
 							}
 							a.redraw()
 						}
 					}
 				})
-				row(tr("清空全部聊天记录"), tr("删除所有会话的消息，保留会话、资料和离线队列"), func() {
-					if ui.Button(c.Key("clear-all-history"), tr("清空…")).Clicked() {
-						a.confirm(tr("清空全部聊天记录"), tr("这会删除这台设备上所有会话的消息，且无法恢复。"), a.clearAllHistory)
+				row(tr("app.settings.clear_all_chat_history"), tr("app.settings.delete_messages_in_all_chats_keeping"), func() {
+					if ui.Button(c.Key("clear-all-history"), tr("app.settings.clear")).Clicked() {
+						a.confirm(tr("app.settings.clear_all_chat_history"), tr("app.settings.this_deletes_messages_in_every_chat"), a.clearAllHistory)
 					}
 				})
 			})
 
-			groups["update"] = group(tr("更新"), func() {
+			groups["update"] = group(tr("app.common.update"), func() {
 				if !a.updateSupported {
 					// Builds that cannot replace themselves, such as a .deb in
 					// /opt, an AppImage or a development build, link to the
 					// release page instead of pretending to update.
-					row(tr("当前版本 ")+a.version, tr("这个版本无法自动更新，请从发布页面下载新版本。"), func() {
-						ui.Text(c, tr("手动更新")).FontSize(11.5).TextColor(p.faint)
+					row(tr("app.settings.current_version")+a.version, tr("app.common.this_build_cannot_update_itself_download"), func() {
+						ui.Text(c, tr("app.settings.manual_update")).FontSize(11.5).TextColor(p.faint)
 					})
 					a.releaseLinkRow(c, p, "update")
 					return
 				}
-				desc := tr("每天检查一次是否有新版本")
+				desc := tr("app.settings.check_for_updates_once_day")
 				if t := lastUpdateCheck(); !t.IsZero() {
-					desc += tr("；上次检查：") + shortStamp(t, time.Now())
+					desc += tr("app.settings.last_checked") + shortStamp(t, time.Now())
 				}
-				row(tr("自动检查更新"), desc, func() {
+				row(tr("app.settings.check_for_updates_automatically"), desc, func() {
 					on := updateChecks()
-					if ui.Switch(c.Key("update-checks"), &on).Label(tr("自动检查更新")).Changed() {
+					if ui.Switch(c.Key("update-checks"), &on).Label(tr("app.settings.check_for_updates_automatically")).Changed() {
 						setUpdateChecks(on)
 					}
 				})
-				row(tr("自动下载并安装"), tr("在后台下载新版本，下次打开时生效"), func() {
+				row(tr("app.settings.download_and_install_automatically"), tr("app.settings.download_new_versions_in_background_they"), func() {
 					on := updateDownloads()
-					if ui.Switch(c.Key("update-downloads"), &on).Label(tr("自动下载并安装")).Disabled(!updateChecks()).Changed() {
+					if ui.Switch(c.Key("update-downloads"), &on).Label(tr("app.settings.download_and_install_automatically")).Disabled(!updateChecks()).Changed() {
 						setUpdateDownloads(on)
 					}
 				})
-				row(tr("当前版本 ")+a.version, tr("从 GitHub Releases 获取更新"), func() {
-					if ui.Button(c.Key("check-updates"), tr("检查更新")).Clicked() {
+				row(tr("app.settings.current_version")+a.version, tr("app.settings.get_updates_from_github_releases"), func() {
+					if ui.Button(c.Key("check-updates"), tr("app.common.check_for_updates")).Clicked() {
 						checkForUpdates()
 					}
 				})
 			})
 
-			groups["about"] = group(tr("关于"), func() {
-				row("zchat", tr("局域网聊天 · 不经过服务器"), func() {
+			groups["about"] = group(tr("app.common.about"), func() {
+				row("zchat", tr("app.settings.lan_chat_no_server_involved"), func() {
 					ui.Text(c, "v"+a.version).FontSize(12).TextColor(p.muted)
 				})
-				row(tr("项目主页"), "github.com/zwdart/zchat", func() {
-					if ui.Button(c.Key("project-home"), tr("打开")).Clicked() {
+				row(tr("app.common.project_page"), "github.com/zwdart/zchat", func() {
+					if ui.Button(c.Key("project-home"), tr("app.common.open")).Clicked() {
 						a.openExternal("https://github.com/zwdart/zchat")
 					}
 				})
-				row(tr("数据目录"), tr("资料、聊天记录和文件缓存都保存在这里"), func() {
-					if ui.Button(c.Key("open-data"), tr("打开")).Clicked() {
+				row(tr("app.common.data_folder"), tr("app.settings.your_profile_chat_history_and_file"), func() {
+					if ui.Button(c.Key("open-data"), tr("app.common.open")).Clicked() {
 						if a.store != nil {
 							a.openPath(a.store.Dir())
 						}
@@ -522,7 +522,7 @@ func (a *app) settingsView(c *ui.Context) {
 func (a *app) applyProfile() {
 	name := strings.TrimSpace(a.profileName)
 	if name == "" {
-		name = tr("我的 zchat")
+		name = tr("app.common.my_zchat")
 		a.profileName = name
 	}
 	a.profile.Name = name
@@ -539,7 +539,7 @@ func (a *app) applyProfile() {
 		a.node.SetProfile(a.profile)
 	}
 	a.scheduleSave()
-	a.setToast(tr("资料已保存"))
+	a.setToast(tr("app.settings.profile_saved"))
 	a.redraw()
 }
 
@@ -547,16 +547,16 @@ func (a *app) pickAvatar() {
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:      a.settingsWin,
-			Title:       tr("选择头像"),
-			ButtonLabel: tr("使用"),
-			Filters:     []mygo.FileFilter{{Name: tr("图片"), Extensions: []string{"png", "jpg", "jpeg", "gif", "webp"}}},
+			Title:       tr("app.settings.choose_avatar"),
+			ButtonLabel: tr("app.common.use"),
+			Filters:     []mygo.FileFilter{{Name: tr("app.common.images"), Extensions: []string{"png", "jpg", "jpeg", "gif", "webp"}}},
 		})
 		if err != nil || len(paths) == 0 {
 			return
 		}
 		encoded, err := avatarBase64(paths[0])
 		if err != nil {
-			a.post(func() { a.setToast(tr("无法读取图片：") + err.Error()) })
+			a.post(func() { a.setToast(tr("app.settings.could_not_read_image") + err.Error()) })
 			return
 		}
 		a.post(func() {

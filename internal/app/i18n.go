@@ -33,7 +33,7 @@ func (a *app) applyLanguage() {
 	setLocale()
 	a.setMenu()
 	if a.settingsWin != nil {
-		a.settingsWin.SetTitle(tr("zchat 设置"))
+		a.settingsWin.SetTitle(tr("app.common.zchat_settings"))
 	}
 	if a.tray != nil {
 		a.applyTray()
@@ -49,15 +49,15 @@ func presenceLabel(p model.Presence) string {
 // dayLabel names a message-list day in the current language.
 func dayLabel(t, now time.Time) string {
 	if model.SameDay(t, now) {
-		return tr("今天")
+		return tr("app.common.today")
 	}
 	if model.SameDay(t, now.AddDate(0, 0, -1)) {
-		return tr("昨天")
+		return tr("app.common.yesterday")
 	}
 	if t.Year() == now.Year() {
-		return t.Format(tr("1月2日"))
+		return t.Format(tr("app.common.date_format_md"))
 	}
-	return t.Format(tr("2006年1月2日"))
+	return t.Format(tr("app.common.date_format_ymd"))
 }
 
 // messagePreview is model.Message.Preview with localized placeholders.
@@ -66,19 +66,19 @@ func messagePreview(m *model.Message) string {
 		return ""
 	}
 	if m.Recalled {
-		return tr("消息已撤回")
+		return tr("app.common.message_unsent")
 	}
 	switch m.Kind {
 	case model.KindImage:
 		if strings.TrimSpace(m.Text) != "" {
-			return tr("[图片] ") + m.Text
+			return tr("app.common.image_2") + m.Text
 		}
-		return tr("[图片]")
+		return tr("app.common.image")
 	case model.KindFile:
 		if m.File != nil && m.File.Name != "" {
-			return tr("[文件] ") + m.File.Name
+			return tr("app.common.file_2") + m.File.Name
 		}
-		return tr("[文件]")
+		return tr("app.common.file")
 	case model.KindSystem:
 		return m.Text
 	default:

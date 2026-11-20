@@ -1,0 +1,983 @@
+# 简体中文翻译表。键使用点号分隔的消息 ID（app.area.name）。
+# 新增文案时请与 en.tsv 使用相同的键和顺序；内容里的换行写成 \n。
+app.chat.downloaded	 · 已下载
+app.chat.last_seen	 · 最后在线 
+app.share.port	 · 端口 
+app.network.auto_discovery_off	 · 自动发现已关闭
+app.settings.conversations	 个会话 · 
+app.common.people	 人
+app.chat.online	 人在线
+app.common.members	 位成员
+app.common.members_2	 位成员 · 
+app.common.members_owner	 位成员 · 群主 
+app.network.devices	 台设备
+app.network.online	 在线
+app.common.is_busy_using	 已被占用，改用 
+app.common.unread	 条未读
+app.settings.messages	 条消息
+app.chat.results	 条结果
+app.common.typing	 正在输入…
+app.common.was_removed_from_group	 被移出了群聊
+app.common.left_group	 退出了群聊
+app.common.invited_you_to_group	 邀请你加入群聊
+app.common.date_format_numeric_ymd	%d年%d月%d日
+app.common.date_format_numeric_md	%d月%d日
+app.common.example_lan_address	192.168.1.8 或 192.168.1.8:42224
+app.common.date_format_md	1月2日
+app.settings.http_service_port_default_42230	HTTP 服务端口，默认 42230
+app.common.ip_address	IP 地址
+app.settings.sqlite_database	SQLite 数据库
+app.settings.tcp_port_default_42224_restart_network	TCP 端口，默认 42224；修改后重启网络生效
+app.common.image	[图片]
+app.common.image_2	[图片] 
+app.common.file	[文件]
+app.common.file_2	[文件] 
+app.common.zchat_settings	zchat 设置
+app.common.zchat_project_page	zchat 项目主页
+app.common.closing_quote_question	」吗？
+app.network.chat_history_will_be_kept	」吗？聊天记录会保留。
+app.common.was_dissolved	」已解散
+app.common.from_group	」移出群聊吗？
+app.settings.short_bio_shown_on_your_device	一句介绍，显示在设备卡片里
+app.common.download	下载
+app.chat.download_failed	下载失败：
+app.common.downloads	下载目录
+app.share.download_folder_updated	下载目录已更新
+app.common.profile	个人资料
+app.common.theme	主题
+app.common.today	今天
+app.settings.get_updates_from_github_releases	从 GitHub Releases 获取更新
+app.network.remove_from_device_list	从设备列表移除
+app.common.chats	会话
+app.common.you	你
+app.common.you_created_group	你创建了群聊「
+app.common.you_joined_group	你加入了群聊「
+app.common.you_were_removed_from_group	你已被移出群聊「
+app.common.use	使用
+app.common.e_g_meeting_room_3	例如：三号会议室
+app.common.save	保存
+app.common.save_file	保存文件
+app.settings.save_profile	保存资料
+app.share.stop_sharing	停止共享
+app.common.open_chat_first	先打开一个聊天
+app.common.select_none	全不选
+app.common.select_all	全选
+app.common.show_all	全部显示
+app.common.share	共享
+app.share.sharing	共享中
+app.share.sharing_is_off	共享未开启
+app.common.shared_folder	共享目录
+app.common.shared_folder_does_not_exist	共享目录不存在
+app.share.shared_folder_updated	共享目录已更新
+app.common.shared_folder_is_read_only_visitors	共享目录是只读的，访客不能上传或修改文件。\n\n消息里的文件通过一次性地址发送，收件人下载后才能保存到本地。\n\n关闭 zchat 后链接会失效。
+app.settings.share_port	共享端口
+app.common.about	关于
+app.common.about_zchat	关于 zchat
+app.common.close	关闭
+app.chat.close_search	关闭搜索
+app.settings.keep_receiving_messages_after_closing_window	关闭窗口后继续接收消息，可从菜单栏或通知区重新打开
+app.settings.keep_running_in_tray_when_window	关闭窗口时留在托盘
+app.settings.name_other_devices_see_on_lan	其他设备在局域网里看到的名字
+app.common.create	创建
+app.common.delete	删除
+app.common.delete_chat	删除会话
+app.common.delete_current_chat	删除当前会话
+app.settings.delete_messages_in_all_chats_keeping	删除所有会话的消息，保留会话、资料和离线队列
+app.settings.reclaim_disk_space_after_deleting_chat	删除聊天记录后回收磁盘空间，记录很多时可能需要几秒
+app.network.refresh	刷新
+app.common.bring_all_to_front	前置全部窗口
+app.common.cut	剪切
+app.common.no_image_in_clipboard	剪贴板里没有图片
+app.common.message	发消息
+app.common.discover	发现设备
+app.common.send	发送
+app.chat.send_share_link	发送共享链接
+app.common.send_clipboard_image	发送剪贴板图片
+app.common.send_image	发送图片
+app.chat.send_failed	发送失败
+app.chat.send_interrupted	发送中断：
+app.chat.waiting_for_other_side	等待对方接收
+app.chat.sending	发送中
+app.common.send_file	发送文件
+app.common.send_file_2	发送文件…
+app.network.send_message	发送消息
+app.share.send_link	发送链接
+app.common.cancel	取消
+app.chat.save_as	另存为…
+app.common.only_records_on_this_device_will	只会删除这台设备上的记录。
+app.share.read_only_access	只读访问
+app.settings.you_can_back_up_zchat_db	可以在文件管理器里备份 zchat.db
+app.common.optional	可选
+app.network.devices_running_zchat_on_same_lan	同一局域网里运行 zchat 的设备会自动出现
+app.common.name	名称
+app.settings.share_automatically_on_startup	启动时自动共享
+app.common.images	图片
+app.settings.enable_it_on_file_sharing_page	在「文件共享」页面开启后，访客可以浏览这个目录
+app.share.open_in_browser_on_same_lan	在同一局域网的浏览器打开
+app.settings.download_new_versions_in_background_they	在后台下载新版本，下次打开时生效
+app.share.open_it_in_browser_on_lan	在局域网里用浏览器打开，就能下载共享目录里的文件
+app.share.open_on_phone	在手机上打开
+app.common.show_in_folder	在文件夹中显示
+app.common.online	在线
+app.common.online_2	在线 
+app.settings.your_status_is_broadcast_to_connected	在线状态会广播给已连接的设备
+app.network.address_unknown	地址未知
+app.common.alias	备注
+app.common.aliases_are_stored_only_on_this	备注只保存在这台设备上，会替换设备原来的名称。
+app.common.alias_saved	备注已保存
+app.common.copy	复制
+app.common.copy_ip_address	复制 IP 地址
+app.common.copy_download_link	复制下载链接
+app.chat.copy_text	复制文本
+app.network.copy_bio	复制签名
+app.settings.appearance	外观
+app.common.several_people_are_typing	多人正在输入…
+app.settings.avatar	头像
+app.share.if_you_cannot_connect_allow_zchat	如果无法访问，请检查系统防火墙是否允许 zchat 接收入站连接，并确认访问设备和本机在同一个网段。
+app.common.done	完成
+app.common.tip	小提示
+app.chat.peer_to_peer_on_your_lan	局域网内点对点发送 · 文件通过 TCP 直连传输
+app.settings.lan_chat_no_server_involved	局域网聊天 · 不经过服务器
+app.common.lan_chat_guide	局域网聊天使用说明
+app.common.lan_chat_without_server	局域网聊天，不经过服务器
+app.common.saved_to	已保存到 
+app.share.stopped	已停止
+app.chat.sent	已发送
+app.common.copied	已复制
+app.common.copied_2	已复制 
+app.common.download_link_copied	已复制下载链接
+app.network.bio_copied	已复制签名
+app.share.link_copied	已复制链接
+app.share.shared_folder_cleared	已清除共享目录
+app.chat.read	已读
+app.common.connected_to	已连接 
+app.common.you_left_group	已退出群聊「
+app.chat.delivered	已送达
+app.common.help	帮助
+app.common.on	开启
+app.share.start_sharing	开启共享
+app.common.when_enabled_this_device_serves_read	开启后，本机会在局域网提供一个只读的网页，手机和其他电脑都能访问。
+app.settings.current_version	当前版本 
+app.model.busy	忙碌
+app.common.members_3	成员
+app.common.me	我
+app.common.i_shared_folder_with_zchat	我在 zchat 共享了一个目录：
+app.common.my_zchat	我的 zchat
+app.common.me_2	我：
+app.common.manual	手动
+app.common.open	打开
+app.common.open_zchat	打开 zchat
+app.settings.reopen_last_shared_folder_when_zchat	打开 zchat 后自动开启上一个共享目录
+app.settings.open_sharing	打开共享
+app.settings.open_database_location	打开数据库位置
+app.share.open_page_to_browse	打开网页即可浏览
+app.settings.give_these_addresses_to_devices_that	把这些地址告诉无法自动发现的设备
+app.common.copy_2	拷贝
+app.common.search_chats	搜索会话
+app.common.search_chats_or_messages	搜索会话或消息
+app.common.search_chat_history	搜索聊天记录
+app.common.unsend	撤回
+app.chat.unsent_message	撤回了一条消息
+app.common.undo	撤销
+app.settings.cache_received_images_locally_open_chat	收到图片后自动缓存到本机，打开聊天即可查看
+app.settings.database_compacted	数据库已整理
+app.common.data_folder	数据目录
+app.common.compact	整理
+app.settings.compaction_failed	整理失败：
+app.settings.compact_database	整理数据库
+app.common.files	文件
+app.common.file_is_missing_or_was_moved	文件不存在或已被移动
+app.common.file_transfer_service_is_not_running	文件传输服务未启动，无法发送图片
+app.common.file_transfer_service_is_not_running_2	文件传输服务未启动，无法发送文件
+app.common.file_transfer_port	文件传输端口
+app.common.file_transfer_port_2	文件传输端口 
+app.common.file_sharing	文件共享
+app.common.file_sharing_2	文件共享…
+app.common.file_sharing_is_on	文件共享已开启
+app.common.file_sharing_is_off	文件共享还没有开启
+app.common.size_mismatch_received_expected	文件大小不一致：收到 %d，预期 %d
+app.common.files_are_sent_through_this_device	文件通过本机 HTTP 服务发送，不经过任何服务器。
+app.common.added	新增了 
+app.common.new_group	新建群聊
+app.common.new_group_2	新建群聊…
+app.settings.message_notifications	新消息通知
+app.common.cannot_download_sender_is_offline_or	无法下载：发送方离线，或不支持文件传输
+app.common.could_not_save_to	无法保存到 %s：%v
+app.common.could_not_save_pasted_image	无法保存粘贴的图片
+app.common.could_not_create_download_folder	无法创建下载目录 %s：%v
+app.common.could_not_create_download_folder_2	无法创建下载目录：
+app.common.could_not_create_cache_folder	无法创建缓存目录 %s：%v
+app.common.could_not_start_file_transfer_service	无法启动文件传输服务：
+app.common.could_not_start_file_sharing	无法开启文件共享：
+app.common.could_not_open_data_folder	无法打开数据目录：
+app.common.could_not_open_file	无法打开文件：
+app.common.could_not_open_link	无法打开链接：
+app.network.could_not_listen_on_port	无法监听端口：
+app.settings.could_not_read_image	无法读取图片：
+app.common.could_not_read_data	无法读取数据：
+app.common.could_not_connect	无法连接：
+app.common.yesterday	昨天
+app.chat.more	更多
+app.common.update	更新
+app.common.minimize	最小化
+app.common.services	服务
+app.common.unnamed_group	未命名群聊
+app.common.unknown_member	未知成员
+app.common.unknown_device	未知设备
+app.settings.not_connected_to_lan	未连接局域网
+app.common.this_device	本机
+app.settings.local_address	本机地址
+app.common.check_for_updates	检查更新
+app.common.check_for_updates_2	检查更新…
+app.chat.downloading	正在下载…
+app.common.connecting_to	正在连接 
+app.network.searching_lan_again	正在重新搜索局域网设备
+app.settings.check_for_updates_once_day	每天检查一次是否有新版本
+app.common.no_other_devices_found_you_can	没有发现其他设备，也可以先创建一个只有自己的群聊。
+app.common.no_devices_available_to_invite	没有可以邀请的设备。
+app.common.no_files_to_send	没有可发送的文件
+app.share.no_usable_lan_address_found	没有找到可用的局域网地址。
+app.settings.light	浅色
+app.common.messages	消息
+app.common.mute_chat	消息免打扰
+app.common.message_unsent	消息已撤回
+app.settings.dark	深色
+app.common.add	添加
+app.common.add_members	添加成员
+app.chat.add_members	添加成员…
+app.settings.clear	清空…
+app.settings.clear_all_chat_history	清空全部聊天记录
+app.common.clear_chat_history	清空聊天记录
+app.common.clear	清除
+app.common.clear_alias	清除备注
+app.chat.click_to_download_image	点击下载图片
+app.common.status	状态
+app.share.scan_qr_code_with_camera_or	用相机或浏览器扫描二维码，就能浏览共享目录。
+app.common.listen_port	监听端口
+app.common.ok	确定
+app.common.delete_2	确定删除「
+app.common.remove_2	确定把「
+app.network.remove	确定移除「
+app.model.away	离开
+app.common.offline	离线
+app.common.remove_member	移出成员
+app.common.remove_from_group	移出群聊
+app.common.remove	移除
+app.network.remove_device	移除设备
+app.common.window	窗口
+app.settings.show_system_notifications_when_window_is	窗口不在前台时显示系统通知
+app.common.port	端口 
+app.common.bio	签名
+app.common.paste	粘贴
+app.common.edit	编辑
+app.common.zoom	缩放
+app.common.network	网络
+app.settings.network_restarted	网络已重启
+app.network.network_settings	网络设置
+app.common.pin_chat	置顶会话
+app.common.owner	群主
+app.common.group	群聊
+app.common.group_2	群聊「
+app.common.group_info	群聊信息
+app.common.groups_send_only_to_joined_members	群聊只在加入的成员之间发送，消息会分别送达每台在线设备。
+app.common.group_name	群聊名称
+app.common.group_renamed_to	群聊改名为「
+app.common.chat	聊天
+app.common.chat_history	聊天记录
+app.network.chat_history_cleared	聊天记录已清空
+app.settings.chat_attachments_transfer_directly_over_this	聊天附件通过这个 TCP 端口直连传输，默认 42225
+app.settings.auto_download_images	自动下载图片
+app.settings.download_and_install_automatically	自动下载并安装
+app.common.if_discovery_is_blocked_by_network	自动发现被网络屏蔽时，输入对方的 IP 地址或 IP:端口。
+app.settings.discover_devices_automatically	自动发现设备
+app.settings.check_for_updates_automatically	自动检查更新
+app.common.dissolve	解散
+app.common.dissolve_group	解散群聊
+app.settings.apply_port_file_transfer_or_discovery	让端口、文件传输或发现设置立即生效
+app.settings.records_are_indexed_by_chat_and	记录按会话和时间建立索引，保存在数据目录的 zchat.db 中
+app.common.devices	设备
+app.common.settings	设置
+app.common.settings_2	设置…
+app.common.set_alias	设置备注
+app.common.set_alias_2	设置备注…
+app.share.access_address	访问地址
+app.model.do_not_disturb	请勿打扰
+app.network.make_sure_other_device_also_has	请确认对方也打开了 zchat，并且两台设备在同一个 Wi-Fi 或局域网内。\n如果网络屏蔽了广播，可以用 IP 地址直接连接。
+app.settings.your_profile_chat_history_and_file	资料、聊天记录和文件缓存都保存在这里
+app.settings.profile_saved	资料已保存
+app.network.messages_older_than_2_minutes_cannot	超过 2 分钟的消息不能撤回
+app.common.use_system_setting	跟随系统
+app.settings.follow_system_or_fix_light_or	跟随系统，或固定浅色、深色
+app.chat.type_message_enter_sends_shift_plus	输入消息，Enter 发送，Shift+Enter 换行
+app.share.running	运行中
+app.common.no_chats_yet_nfind_someone_in	还没有会话\n在「发现设备」里找人聊聊
+app.network.no_devices_found_yet	还没有发现设备
+app.common.no_messages_yet	还没有消息
+app.share.no_folder_selected_attachments_can_still	还没有选择目录，附件仍然可以发送
+app.settings.these_settings_only_affect_this_device	这些设置只影响这台设备。
+app.settings.this_deletes_messages_in_every_chat	这会删除这台设备上所有会话的消息，且无法恢复。
+app.common.connect	连接
+app.common.connection_lost	连接已断开
+app.common.other_side_cancelled	对方已取消
+app.common.quit	退出
+app.common.quit_zchat	退出 zchat
+app.common.leave_group	退出群聊
+app.chat.leave_group	退出群聊…
+app.common.select	选择…
+app.settings.choose_image_it_is_scaled_down	选择一张图片，会缩放到小尺寸后保存在本机
+app.share.choose_download_folder	选择下载目录
+app.share.choose_shared_folder	选择共享目录
+app.settings.choose_avatar	选择头像
+app.common.select_members	选择成员
+app.share.choose_folder	选择目录…
+app.settings.notifications	通知
+app.common.connect_by_ip	通过 IP 连接
+app.common.connect_by_ip_2	通过 IP 连接…
+app.settings.find_other_zchat_devices_on_lan	通过 UDP 组播和广播在局域网里寻找其他 zchat
+app.common.inviting_someone_sends_them_this_group	邀请后会把自己的群聊信息发送给新成员。
+app.common.redo	重做
+app.settings.restart_network	重启网络
+app.settings.restart_network_2	重新启动网络
+app.network.search_again	重新搜索
+app.common.hide	隐藏
+app.common.hide_others	隐藏其他
+app.model.invisible	隐身
+app.common.project_page	项目主页
+app.settings.last_checked	；上次检查：
+app.settings.language	语言
+app.settings.interface_language_changes_apply_immediately	界面语言，切换后立即生效
+app.common.simplified_chinese	简体中文
+app.common.closing_quote	」
+app.common.list_separator	、
+app.common.leave_group_2	确定退出群聊「
+app.common.dissolve_group_2	确定解散群聊「
+app.chat.user_id	用户 ID
+app.chat.off	未启用
+app.common.version	版本
+app.common.platform	平台
+app.chat.last_seen_2	最后在线
+app.chat.edit_profile	编辑资料
+app.common.view_profile	查看资料
+app.common.colon	：
+app.common.bad_request	请求格式错误
+app.common.file_is_gone_or_sender_restarted	文件不存在或发送方已重启
+app.common.file_was_moved_or_deleted	文件已被移动或删除
+app.common.invalid_resume_position	续传位置无效
+app.common.could_not_read_file	无法读取文件
+app.transfer.could_not_seek_in_file	无法定位文件
+app.transfer.could_not_transfer_file	无法传输文件
+app.network.zchat_cannot_connect_to_yourself	zchat: 不能连接自己
+app.common.date_format_ymd	2006年1月2日
+app.share.shared_folder_is_served_over_this	共享目录通过本机 HTTP 服务提供，不经过任何服务器。
+app.share.shared_folder_is_read_only_visitors	共享目录是只读的，访客不能上传或修改文件。\n\n聊天附件通过独立的 TCP 端口直连发送，不依赖这个共享目录。\n\n关闭 zchat 后共享链接会失效。
+app.share.file_is_gone	文件已不存在
+app.share.search_in_shared_folder	在共享目录中搜索
+app.common.search	搜索
+app.share.back	返回上一级
+app.share.this_folder_is_empty	这个目录是空的
+app.share.shared_by_zchat_on_lan_read	由 zchat 在局域网共享 · 只读
+app.share.zchat_file_sharing	zchat 文件共享
+app.share.this_service_is_running_but_no	这个服务正在运行，但还没有选择共享目录。
+app.share.invalid_path	无效的路径
+app.share.could_not_read_folder	无法读取目录
+app.common.folder	文件夹
+app.common.files_2	%d 个文件
+app.share.search_results	搜索 “%s” · %d 个结果
+app.common.upload_folder	上传目录
+app.common.upload_folder_does_not_exist	上传目录不存在
+app.share.upload_folder_updated	上传目录已更新
+app.share.upload_folder_cleared	已清除上传目录
+app.share.choose_upload_folder	选择上传目录
+app.share.browse_and_upload	浏览与上传
+app.share.uploads_off	未开启上传
+app.share.visitors_can_upload	允许访客上传
+app.share.takes_effect_when_sharing_starts	开启共享后生效
+app.share.anyone_on_lan_with_address_can	同一局域网内知道地址的访客都可以上传
+app.share.no_upload_folder_selected_visitors_can	还没有选择上传目录，访客只能浏览和下载
+app.share.open_it_in_browser_on_lan_2	在局域网里用浏览器打开，就能浏览共享目录并上传文件
+app.share.when_enabled_this_device_serves_file	开启后，本机会在局域网提供文件网页，手机和其他电脑都能访问。
+app.share.shared_and_upload_folders_are_served	共享目录和上传目录通过本机 HTTP 服务提供，不经过任何服务器。
+app.share.shared_folder_is_read_only_files	共享目录只读；访客上传的文件会保存到「上传目录」，不会修改共享目录。\n\n聊天附件通过独立的 TCP 端口直连发送，不依赖这个共享目录。\n\n关闭 zchat 后共享链接会失效。
+app.share.open_page_to_browse_or_upload	打开网页即可浏览或上传
+app.settings.after_sharing_is_enabled_on_file	在「文件共享」页面开启后，访客可以通过网页上传文件到这个目录
+app.share.no_shared_folder_is_set_but	共享目录未设置，但可以上传文件
+app.share.choose_files_to_upload_to_sharer	选择文件后上传到共享者的上传目录
+app.common.upload	上传
+app.share.uploaded_file_s	已上传 %d 个文件
+app.common.file_too_large	文件过大
+app.share.could_not_save_file	无法保存文件
+app.common.no_files_selected	没有选择文件
+app.share.shared_by_zchat_on_lan	由 zchat 在局域网共享
+app.share.shared_by_zchat_on_lan_uploads	由 zchat 在局域网共享 · 可上传
+app.common.screenshot	截图
+app.screenshot.screenshot_failed	截图失败
+app.screenshot.screenshot_copied_to_clipboard	截图已复制到剪贴板
+app.screenshot.screenshot_saved	截图已保存：
+app.screenshot.screenshot_folder_updated	截图保存目录已更新
+app.settings.screenshot_shortcut_updated	截图快捷键已更新
+app.screenshot.could_not_register_screenshot_shortcut	截图快捷键注册失败：
+app.screenshot.save_screenshot	保存截图
+app.screenshot.choose_screenshot_folder	选择截图保存目录
+app.screenshot.could_not_create_screenshot	无法生成截图
+app.screenshot.could_not_copy_screenshot	无法复制截图：
+app.screenshot.could_not_save_screenshot	无法保存截图：
+app.screenshot.could_not_create_save_folder	无法创建保存目录：
+app.screenshot.could_not_read_display_information	无法读取显示器信息
+app.screenshot.zchat_does_not_have_screen_recording	没有屏幕录制权限。请在系统设置中允许 zchat 录制屏幕后重试。
+app.screenshot.screen_captured_drag_to_select_area	已截取屏幕，请拖选区域后编辑
+app.screenshot.drag_to_select_area_or_press	拖动选择区域，按 Esc 取消
+app.common.pin	贴图
+app.common.save_2	保存…
+app.common.opacity	不透明度
+app.common.global_shortcut	全局快捷键
+app.common.capture_from_any_window_leave_empty	在其他窗口前面也能截图；留空或填 off 可关闭
+app.common.apply	应用
+app.common.save_folder	保存目录
+app.settings.capture_mouse_pointer	捕获鼠标指针
+app.settings.include_mouse_pointer_in_screenshot	截图时把鼠标指针一起截取下来
+app.settings.take_screenshot_now	立即截图
+app.settings.select_area_to_annotate_copy_save	选择区域后可以标注、复制、保存、贴图或发送到聊天
+app.common.choose	选择
+app.settings.enable_screenshots	启用截图
+app.settings.use_screenshots_from_chat_toolbar_menus	在聊天工具栏、菜单和快捷键中使用截图
+app.screenshot.save_as	保存为…
+app.screenshot.click_through	鼠标穿透
+app.common.show_all_pins	显示全部贴图
+app.common.restore_pin_interaction	恢复贴图鼠标交互
+app.common.close_all_pins	关闭全部贴图
+app.screenshot.pins_respond_to_mouse_again	贴图已恢复鼠标交互
+app.screenshot.pins_are_now_click_through	贴图已开启鼠标穿透
+app.common.screenshots_and_pins	截图与贴图
+app.chat.screenshot_options	截图选项
+app.chat.include_window_in_screenshot	显示窗口截图
+app.chat.hide_window_in_screenshot	隐藏窗口截图
+app.settings.include_chat_window_by_default	默认包含聊天页面
+app.settings.include_current_chat_window_by_default	点击聊天工具栏的截图按钮时，默认把当前聊天页面一起截入
+app.common.include_current_chat_window	包含当前聊天窗口
+app.common.do_not_include_current_chat_window	不包含当前聊天窗口
+app.settings.shortcut_with_chat_window	包含聊天窗口的快捷键
+app.settings.shortcut_without_chat_window	不包含聊天窗口的快捷键
+app.settings.include_chat_window_leave_empty_or	连当前聊天窗口一起截取；留空或填 off 可关闭
+app.settings.hide_zchat_first_leave_empty_or	先隐藏 zchat 再截取；留空或填 off 可关闭
+app.common.screenshot_2	截图…
+app.common.shortcuts	快捷键
+app.common.not_set	未设置
+app.chat.change_status	切换状态
+app.common.download_link	下载链接
+app.settings.copy_it_into_browser_or_open	可以复制到浏览器，或直接打开发布页面。
+app.common.copy_link	复制链接
+app.common.open_release_page	打开发布页面
+app.common.this_build_cannot_update_itself_download	这个版本无法自动更新，请从发布页面下载新版本。
+app.settings.manual_update	手动更新
+app.common.lan_chat_for_text_images_files	局域网聊天工具，支持文字、图片、文件与目录共享，不经过服务器。
+app.common.invalid_transfer_request	传输请求无效
+app.common.sender_cannot_read_file	发送方无法读取文件
+app.common.sender_is_busy_try_again_later	发送方正忙，请稍后再试
+app.common.file_checksum_mismatch	文件校验失败
+app.common.file_changed_download_it_again	文件已发生变化，请重新下载
+app.common.file_is_gone_or_has_expired	文件不存在或已过期
+app.icon.documentation_copied	 说明已复制
+app.icon.icon_in_desktop_file_must_be	.desktop 文件里的 Icon= 必须是图标文件的基础名（不含扩展名）。
+app.icon.desktop_text_file	.desktop 文本文件
+app.icon.n_108dp_canvas_72dp_visible_66dp_safe	108dp 画布，72dp 可见，66dp 安全区
+app.icon.n_16_32_128_256_512_pt	16/32/128/256/512 pt 的 @1x、@2x
+app.icon.n_20_29_40_60_pt_at	20/29/40/60 pt 的 @2x、@3x
+app.icon.n_20_29_40_76_83_5	20/29/40/76/83.5 pt 的 @1x、@2x
+app.icon.n_256_256_or_512_512_px	256 × 256 或 512 × 512 px
+app.icon.android_7_1_plus_round_launcher	Android 7.1+ 圆形启动器
+app.icon.android_adaptive_icons	Android 自适应图标
+app.icon.app_store_connect_and_xcode_marketing	App Store Connect 与 Xcode 营销图标
+app.icon.app_store_connect_marketing_icon	App Store Connect 营销图标
+app.icon.app_store_icon	App Store 图标
+app.icon.n_1024_1024_app_store_marketing_icon	App Store 的 1024×1024 营销图标不能带 Alpha；如审核提示，请单独导出不透明版本。
+app.icon.app_store_requires_png_icons_with	App Store 要求图标为 PNG，且不能带 Alpha 通道；本工具已按背景色压平透明区域。
+app.icon.appicon_appiconset_icns_and_1024_app	AppIcon.appiconset、ICNS 与 App Store 1024 图标
+app.icon.appicon_icns_is_written_by_imagemagick	AppIcon.icns 由 ImageMagick 生成；失败时自动改用内置 ICNS 写入器。
+app.icon.appimage_icon	AppImage 图标
+app.icon.appimage_usually_uses_256_256_or	AppImage 通常使用 256×256 或 512×512 的 PNG 作为 .DirIcon。
+app.icon.apple_human_interface_guidelines_app_icons	Apple 人机界面指南 · App 图标
+app.icon.apple_human_interface_guidelines_macos_icons	Apple 人机界面指南 · macOS 图标
+app.icon.badgelogo_must_be_monochrome_usually_white	BadgeLogo 必须是单色（通常为白色 + 透明），本工具只是缩放原图，请自行确认颜色。
+app.icon.desktop_entry_specification	Desktop Entry 规范
+app.icon.freedesktop_hicolor_icon_theme_and_desktop	Freedesktop hicolor 图标主题与 .desktop 启动器
+app.icon.freedesktop_icon_theme_specification	Freedesktop 图标主题规范
+app.icon.google_play_store_icon	Google Play 商店图标
+app.icon.google_play_store_icon_512_512	Google Play 商店图标 512×512、32-bit PNG、不超过 1 MB。
+app.icon.google_play_icon_requirements	Google Play 图标规范
+app.icon.icns_multi_size	ICNS 多尺寸
+app.icon.ico_contains_16_24_32_48	ICO 内含 16/24/32/48/64/128/256 多个尺寸，Windows 会按 DPI 自动选择。
+app.icon.ico_multi_size	ICO 多尺寸
+app.icon.icon_uses_file_name_without_png	Icon= 使用文件名去掉 .png 后的名字
+app.common.imagemagick_is_ready	ImageMagick 已就绪
+app.common.imagemagick_did_not_write_output_file	ImageMagick 没有写出文件
+app.icon.imagemagick_handles_resizing_and_format_conversion	ImageMagick 负责缩放和格式转换；所有图标都由同一张源图生成，不会上传到网络。
+app.icon.msix_visual_assets	MSIX 视觉资源
+app.icon.msix_assets_are_written_at_100	MSIX 资源默认输出 100% 和 200% 两个缩放级别，可删掉不用的文件。
+app.icon.n_32_bit_png_transparency_allowed	PNG 32-bit，可透明
+app.icon.png_supports_transparency_system_picks_closest	PNG 支持透明背景；系统会按面板/启动器需要的尺寸挑选最接近的一张。
+app.icon.png_monochrome	PNG，单色
+app.icon.png_transparency_allowed	PNG，可透明
+app.icon.png_no_alpha	PNG，无 Alpha
+app.icon.windows_app_icon_guidelines	Windows 应用图标指南
+app.icon.xcode_14_plus_can_use_single	Xcode 14+ 可用单张 1024×1024 图标，完整尺寸集兼容旧版 Xcode。
+app.icon.xcode_appicon_sizes	Xcode AppIcon 尺寸
+app.icon.exe_resources_taskbar_and_start_menu	exe 资源、任务栏、开始菜单快捷方式
+app.icon.hicolor_icons	hicolor 图标
+app.icon.hicolor_is_supported_by_every_desktop	hicolor 是所有桌面环境都支持的图标主题，16 到 512 像素按目录名区分尺寸。
+app.icon.ios_rounds_corners_itself_supply_full	iOS 系统会自动裁切圆角，请提供满幅方形图，不要在图片里预先画圆角。
+app.icon.ipad_icons	iPad 图标
+app.icon.iphone_icons	iPhone 图标
+app.icon.complete_appicon_set_for_iphone_ipad	iPhone、iPad 与 App Store 的全套 AppIcon
+app.icon.macos_icons_usually_keep_transparency_for	macOS 图标通常保留透明区域（圆角与阴影），本工具不会压平背景。
+app.icon.mipmap_anydpi_v26_xml_makes_android	mipmap-anydpi-v26 XML 会让 Android 8.0+ 自动使用自适应图标，背景色可在 res/values 中修改。
+app.icon.upload_one_image_and_generate_standard	上传一张图片，一键生成 Android、iOS、Windows、Linux、macOS 的标准图标与目录
+app.icon.upload_under_store_listing_in_play	上传到 Play Console 商店信息
+app.icon.table_follows_each_platform_s_current	下表按各平台当前官方规范整理。不同平台版本和打包工具可能略有差异，遇到审核或打包工具报错时，请以各平台官方文档为准。生成器会为每个平台建立独立目录，并附带 README.txt。
+app.icon.opaque_background_ios	不透明背景色（iOS）
+app.common.failed	个失败
+app.common.files_3	个文件
+app.common.files_failed	个文件失败
+app.icon.creates_android_ios_windows_linux_and	会按平台自动创建 android、ios、windows、linux、macos 子目录。已有文件会被覆盖，说明文件和图标会一起写出。
+app.icon.legacy_launcher_icon_ic_launcher	传统启动图标 ic_launcher
+app.icon.legacy_icons_are_32_bit_png	传统图标为 32-bit PNG，建议保留透明背景。
+app.icon.as_appdir_diricon	作为 AppDir 的 .DirIcon
+app.common.use_this_folder	使用这个目录
+app.common.use_this_image	使用这张图片
+app.icon.all_files_generated	全部文件已生成
+app.icon.generate_again	再次生成
+app.common.preparing_output_folders	准备输出目录
+app.icon.cancel_generation	取消生成
+app.icon.multiple_choices	可多选
+app.icon.launcher_adaptive_and_round_icons_plus	启动图标、自适应图标、圆形图标与 Google Play 商店图标
+app.icon.image_is_not_square_it_is	图片不是正方形：会按比例缩放，四周按平台要求填充透明或背景色。
+app.icon.round_icon_ic_launcher_round	圆形图标 ic_launcher_round
+app.icon.copy_all_documentation	复制全部说明
+app.icon.copy_documentation	复制说明
+app.icon.multi_size_ico_and_msix_winui	多尺寸 ICO 与 MSIX / WinUI 磁贴、启动画面资源
+app.common.installer_icons	安装包图标
+app.common.installer_icons_2	安装包图标…
+app.icon.installer_icon_requirements	安装包图标要求
+app.icon.install_brew_install_imagemagick	安装：brew install imagemagick
+app.icon.install_sudo_apt_install_imagemagick_or	安装：sudo apt install imagemagick  或  sudo dnf install ImageMagick
+app.icon.install_winget_install_imagemagick_imagemagick_or	安装：winget install ImageMagick.ImageMagick  或  choco install imagemagick
+app.icon.official_sizes_and_formats	官方尺寸与格式要求
+app.icon.official_documentation	官方文档
+app.icon.tip_generated_folders_can_be_merged	小提示：生成的目录可以直接合并进工程；iOS 的 AppIcon.appiconset 拖进 Xcode，Windows 的 app.ico 用于安装包，Linux 的 .desktop 和 hicolor 图标放到对应系统目录即可。每个平台的 README.txt 写有具体步骤。
+app.common.size	尺寸
+app.common.written	已写出
+app.common.canceled	已取消
+app.icon.generation_canceled_files_already_written_are	已取消生成，已写入的文件会保留
+app.icon.copied_all_platform_documentation	已复制全部平台说明
+app.icon.done_platform_folders_in_output_directory	已完成，输出目录中的平台子目录可以直接合并进工程。
+app.icon.platform_requirements	平台要求
+app.icon.app_list_and_taskbar	应用列表与任务栏
+app.icon.used_by_app_bundle_s_contents	应用包 Contents/Resources 使用
+app.icon.app_name	应用名称
+app.icon.app_splash_screen	应用启动画面
+app.icon.app_icon_app_ico	应用图标 app.ico
+app.icon.square_png_of_at_least_1024	建议 1024 × 1024 以上的正方形 PNG
+app.icon.choose_png_of_at_least_1024	建议选择 1024 × 1024 以上的 PNG
+app.icon.generate	开始生成
+app.icon.start_menu_medium_tile	开始菜单中等磁贴
+app.icon.start_menu_large_tile	开始菜单大磁贴
+app.icon.start_menu_wide_tile	开始菜单宽磁贴
+app.icon.successfully_generated_files_are_kept_fix	成功生成的文件已保留；修复错误后可以再次生成，重复文件会被覆盖。
+app.common.open_output_folder	打开输出目录
+app.icon.supports_png_jpg_webp_and_gif	支持 PNG、JPG、WebP、GIF。透明区域会在 iOS 图标中填充为你选择的背景色。
+app.icon.cannot_find_icns_source_icon_for	无法为 %s 找到 ICNS 源图标
+app.icon.cannot_read_this_image_try_another	无法读取这张图片，请换一张 PNG 或 JPG
+app.common.there_are	有
+app.common.imagemagick_is_not_installed	未安装 ImageMagick
+app.common.imagemagick_not_found	未找到 ImageMagick
+app.common.imagemagick_not_found_2	未找到 ImageMagick：
+app.icon.unknown_step	未知步骤
+app.icon.unknown_icon_container_format	未知的图标容器格式：
+app.common.format	格式
+app.icon.desktop_launcher	桌面启动器
+app.icon.check_passed_imagemagick_is_checked_again	检测通过。开始生成前会再次确认 ImageMagick 仍可用，避免生成到一半才失败。
+app.icon.creating_folders_and_writing_icons	正在创建目录并写入图标…
+app.common.canceling	正在取消…
+app.common.checking_imagemagick	正在检测 ImageMagick…
+app.icon.generating	正在生成…
+app.icon.generating_files_already_written_are_kept	正在生成，已写入的文件会保留
+app.common.ms	毫秒
+app.common.no_files_were_written	没有写出任何文件
+app.icon.no_pngs_available_for_icns	没有可用于 ICNS 的 PNG
+app.icon.no_files_were_generated_check_imagemagick	没有生成文件，请检查 ImageMagick 和输出目录权限后重试。
+app.icon.source_image	源图片
+app.icon.source_image_is_missing_or_was	源图片不存在或已被移动，请重新选择
+app.icon.source_image_is_missing_or_was_2	源图片不存在或已被移动，请重新选择。
+app.icon.source_image_not_found	源图片不存在：
+app.icon.source_image_is_folder	源图片是一个目录
+app.icon.short_side_is_below_1024_pixels	源图短边小于 1024 像素，生成 1024 图标时可能变模糊，建议换更大的原图。
+app.common.generate	生成
+app.icon.generating_2	生成中
+app.icon.imagemagick_source_image_and_output_folder	生成前会自动检查 ImageMagick、源图片和输出目录。
+app.icon.generating_icons_uses_local_imagemagick_installation	生成图标需要调用本机的 ImageMagick。
+app.icon.generation_failed	生成失败
+app.icon.generation_failed_no_files_were_written	生成失败：没有写出任何文件
+app.icon.generation_complete	生成完成
+app.icon.generated	生成完成：
+app.icon.generation_canceled_successfully_written_files_stay	生成已取消，成功写入的文件保留在输出目录中，可以重新生成覆盖。
+app.icon.generation_log	生成日志
+app.common.time	用时
+app.icon.target_platforms	目标平台
+app.common.s	秒
+app.icon.use_rrggbb_for_background_color	背景色请使用 #RRGGBB 格式
+app.icon.adaptive_foreground_ic_launcher_foreground	自适应前景 ic_launcher_foreground
+app.icon.adaptive_icons_use_108dp_canvas_with	自适应图标画布 108dp，中心 72dp 可见，内容放在直径 66dp 的安全区内；本工具已将前景缩进 1/6。
+app.icon.view	视图
+app.common.note	说明
+app.icon.use_rgb_or_rrggbb	请使用 #RGB 或 #RRGGBB
+app.common.install_imagemagick_first_then_click_check	请先安装 ImageMagick，再点击「重新检测」。
+app.icon.choose_source_image_first	请先选择一张源图片
+app.icon.choose_at_least_one_platform	请至少选择一个平台
+app.icon.choose_source_image	请选择一张源图片
+app.common.choose_output_folder	请选择输出目录
+app.common.output_folder	输出目录
+app.icon.output_settings	输出设置
+app.common.more_errors_see_log	还有 %d 个错误，详见日志。
+app.common.no_image_selected_yet	还没有选择图片
+app.common.choose_output_folder_2	选择一个输出目录
+app.common.choose_image	选择图片
+app.icon.choose_source_image_2	选择源图片
+app.icon.selected_platforms_have_no_files_to	选择的平台没有可生成的文件
+app.common.choose_output_folder_3	选择输出目录
+app.common.partially_complete	部分完成
+app.icon.some_files_failed	部分文件生成失败
+app.common.check_again	重新检测
+app.icon.lock_screen_badge	锁屏徽章
+app.common.item	项目
+app.common.wrote_files	已写出 %d 个文件
+app.common.files_failed_2	有 %d 个文件失败
+app.icon.generated_files_failed	生成完成：%d 个文件，%d 个失败
+app.icon.generated_files_in	生成完成：%d 个文件，%s
+app.icon.icns_sizes_are_incomplete_and_built	ICNS 尺寸不完整，内置写入器也失败
+app.image.is_not_imagemagick	 不是 ImageMagick
+app.image.gif_loops_forever_images_become_frames	GIF 会循环播放。图片会按列表顺序成为每一帧，尺寸不一致时以第一张为画布。
+app.image.gif_animation	GIF 动画
+app.common.imagemagick_tools	ImageMagick 工具…
+app.image.jpg_does_not_support_transparency_transparent	JPG 不支持透明，透明区域会填充为白色。质量只影响 JPG、WebP 等有损格式。
+app.common.png_or_jpg_transparent_background_works	PNG 或 JPG，建议使用透明背景
+app.image.process_many_images_at_once_with	一次处理多张图片，统一格式、尺寸与压缩质量
+app.image.upload_one_image_to_generate_standard	上传一张图片，生成各平台安装包所需的标准图标与目录
+app.image.top	上方
+app.image.bottom	下方
+app.common.position	位置
+app.common.e_g_zchat	例如：© zchat
+app.common.keep_original_format	保持原格式
+app.common.all_files_processed	全部文件已处理
+app.common.process_again	再次处理
+app.common.watermark	加水印
+app.image.quality	压缩质量
+app.common.cancel_processing	取消处理
+app.image.only_images_larger_than_limit_are	只会缩小超过限制的图片，不会放大；宽高填 0 表示不限制。每张图输出到「原文件名-batch」。
+app.image.select_several_images_at_once_composition	可以一次选择多张图片，合成时按选择顺序排列
+app.common.top_right	右上
+app.common.bottom_right	右下
+app.image.right	右侧
+app.image.composite_image	合成图像
+app.image.composition	合成方式
+app.image.composition_2	图像合成
+app.image.composition_needs_at_least_two_images	图像合成至少需要两张图片
+app.common.image_not_found	图片不存在：
+app.common.image_watermark	图片水印
+app.image.convert_between_png_jpg_webp_gif	在 PNG、JPG、WebP、GIF、BMP、TIFF、PDF 之间互相转换
+app.image.fill_and_crop	填充并裁剪
+app.common.processing	处理中
+app.common.processing_failed	处理失败
+app.common.processing_failed_no_files_were_written	处理失败：没有写出任何文件
+app.common.processing_complete	处理完成
+app.common.processed_files_failed	处理完成：%d 个文件，%d 个失败
+app.common.processed_files_in	处理完成：%d 个文件，%s
+app.common.processing_log	处理日志
+app.common.results_are_written_to_this_folder	处理结果会写入这个目录，源文件保持不变；同名文件会被覆盖。
+app.common.font_size	字号
+app.image.set_width_or_height_to_0	宽度或高度填 0 表示按比例自动计算。
+app.common.width_px	宽度（像素）
+app.common.center	居中
+app.common.top_left	左上
+app.common.bottom_left	左下
+app.image.left	左侧
+app.common.processing_canceled_files_already_written_are	已取消处理，已写出的文件会保留
+app.image.selected	已选择 %d 张
+app.image.images_output_folder_and_imagemagick_are	开始前会检查输入图片、输出目录和 ImageMagick。
+app.common.start_processing	开始处理
+app.image.everything_runs_locally_through_imagemagick_no	所有处理都在本机调用 ImageMagick 完成，不会上传图片。源文件不会被修改，结果写入你选择的输出目录。
+app.common.batch_processing	批量处理
+app.common.batch_settings	批量设置
+app.common.stretch	拉伸
+app.image.stitched_images_are_saved_as_png	拼接后的图片默认保存为 PNG，可在「输出目录」中找到以 -merged 结尾的文件。
+app.image.stitching_and_gif_animation_follow_order	拼接和 GIF 动画会按上面的顺序合成，可清空后重新按需要添加。
+app.image.resize_or_crop_to_target_size	按尺寸缩放、裁剪画面，适合缩略图与不同终端的图片
+app.image.supports_png_jpg_webp_gif_bmp	支持 PNG、JPG、WebP、GIF、BMP、TIFF、SVG、PDF
+app.common.text_watermark	文字水印
+app.common.text_color	文字颜色
+app.common.mode	方式
+app.image.max_width	最大宽度
+app.image.max_height	最大高度
+app.common.unknown_processing_type	未知的处理类型
+app.common.format_conversion	格式转换
+app.image.format_conversion_resizing_cropping_batch_processing	格式转换、缩放裁剪、批量处理、水印、合成与质量优化，全部在本机完成
+app.image.stitch_images_horizontally_or_vertically_or	横向、纵向拼接多张图片，或合成 GIF 动画
+app.image.horizontal_stitch	横向拼接
+app.common.processing_2	正在处理…
+app.image.processing_images	正在处理图片…
+app.common.processing_files_already_written_are_kept	正在处理，已写出的文件会保留
+app.image.frame_delay_ms	每帧间隔（毫秒）
+app.common.watermark_image	水印图片
+app.common.watermark_image_not_found	水印图片不存在
+app.common.watermark_text	水印文字
+app.image.max_watermark_side	水印最大边长
+app.common.watermark_settings	水印设置
+app.image.watermark_is_centered_by_default_corners	水印默认居中，可选择四角与边缘。建议先在一张图片上确认效果，再批量应用。
+app.common.nothing_to_process	没有可处理的内容
+app.image.add_images	添加图片
+app.image.add_text_or_image_watermark_with	添加文字或图片水印，可设置位置、大小和透明度
+app.common.clear_2	清空
+app.image.strip_metadata	清除元数据
+app.image.strip_metadata_exif_icc_etc	清除元数据（EXIF、ICC 等）
+app.image.target_format	目标格式
+app.common.type	类型
+app.image.vertical_stitch	纵向拼接
+app.common.results_are_in_output_folder_source	结果已写入输出目录，源文件保持不变。
+app.image.resize_and_crop	缩放与裁剪
+app.image.resize_or_crop	缩放或裁剪
+app.image.resize_mode	缩放方式
+app.image.enter_width_or_height_to_resize	缩放需要填写宽度或高度
+app.image.auto_level	自动色阶
+app.image.auto_level_redistributes_tones_which_helps	自动色阶会重新分布明暗，常用于偏灰的照片；清除元数据可以减小体积并保护位置信息。
+app.common.crop	裁剪
+app.image.crop_uses_chosen_position_as_its	裁剪以选定位置为基准，输出尺寸就是上面填写的宽高。
+app.image.crop_position	裁剪位置
+app.common.enter_width_and_height_to_crop	裁剪需要填写宽度和高度
+app.image.choose_images_first	请先选择图片
+app.common.enter_watermark_text	请输入水印文字
+app.common.choose_watermark_image	请选择水印图片
+app.image.adjust_quality_auto_level_and_strip	调整压缩质量、自动色阶并清除元数据，减小图片体积
+app.image.quality_settings	质量设置
+app.image.conversion_settings	转换设置
+app.image.input_images	输入图片
+app.common.output_format	输出格式
+app.icon.back_to_capabilities	返回能力列表
+app.common.more_images_not_shown	还有 %d 张图片未显示
+app.image.no_images_selected_yet_click_add	还没有选择图片，点击右上角「添加图片」开始。
+app.image.these_tools_use_imagemagick_installed_on	这些工具需要调用本机的 ImageMagick。
+app.image.fit_keep_aspect_ratio	适应（保持比例）
+app.common.choose_capability	选择一项能力
+app.common.choose_watermark_image_2	选择水印图片
+app.common.selection_contains_folder	选择的项目里包含文件夹
+app.common.some_files_failed	部分文件处理失败
+app.image.color_and_quality	颜色与质量
+app.common.height_px	高度（像素）
+app.image.fill_and_crop_need_both_width	填充并裁剪需要同时填写宽度和高度
+app.common.capabilities	能力列表
+app.ffmpeg.is_not_ffmpeg	 不是 FFmpeg
+app.ffmpeg.n_0_25_to_4_speed_changes	0.25× 到 4× 变速，画面与声音保持同步
+app.ffmpeg.crf_quality	CRF 画质
+app.ffmpeg.lower_crf_means_better_quality_and	CRF 越小画质越好、文件越大；23 适合大多数视频，28 体积更小。竖屏与方形预设会补边，不会拉伸画面。
+app.common.ffmpeg	FFmpeg
+app.common.ffmpeg_tools	FFmpeg 工具…
+app.ffmpeg.ffmpeg_is_ready	FFmpeg 已就绪
+app.ffmpeg.ffmpeg_did_not_write_file	FFmpeg 没有写出文件
+app.ffmpeg.gifs_loop_automatically_higher_frame_rate	GIF 会循环播放。帧率越高越流畅、文件越大；宽度越大越清晰。高质量调色板会生成更准确的 256 色，适合包含渐变的画面。
+app.ffmpeg.gif_settings	GIF 设置
+app.common.imagemagick	ImageMagick
+app.ffmpeg.compress_extract_audio_or_capture_covers	一次压缩、提取音频或生成封面，逐文件输出
+app.ffmpeg.use_this_subtitle	使用这个字幕
+app.ffmpeg.use_this_audio	使用这个音频
+app.ffmpeg.for_example_2_means_2_speed	例如 2 表示两倍速，0.5 表示半速。
+app.ffmpeg.keep_source_resolution	保持原分辨率
+app.ffmpeg.speed_change	倍速播放
+app.ffmpeg.speed_settings	倍速设置
+app.ffmpeg.speed_must_be_between_0_25	倍速需要在 0.25 到 4 之间
+app.common.resolution	分辨率
+app.ffmpeg.trim_range	剪切范围
+app.ffmpeg.compress_trim_merge_extract_audio_make	压缩、剪切、拼接、提取音频、GIF、水印、字幕、倍速与批量处理，全部在本机完成
+app.ffmpeg.reduce_size_and_standardize_resolution_with	压缩体积、统一分辨率，提供平台横竖屏预设
+app.ffmpeg.compress_video	压缩视频
+app.ffmpeg.compression_settings	压缩设置
+app.ffmpeg.speed_changes_keep_video_and_audio	变速会同步调整画面和声音，声音使用 atempo 保持音调。范围 0.25× 到 4×。
+app.ffmpeg.you_can_select_multiple_files_merging	可以一次选择多个文件，拼接时按选择顺序排列
+app.common.top_right_2	右上角
+app.ffmpeg.bottom_right	右下角
+app.ffmpeg.image_format	图片格式
+app.ffmpeg.balanced	均衡
+app.ffmpeg.flip_vertically	垂直翻转
+app.ffmpeg.subtitles	字幕
+app.ffmpeg.subtitles_and_music	字幕与音乐
+app.ffmpeg.subtitles_are_rendered_into_video_so	字幕会被直接画进画面，播放器不需要额外字幕文件。支持 SRT、ASS 等常见字幕格式。
+app.ffmpeg.subtitle_file	字幕文件
+app.ffmpeg.subtitle_file_does_not_exist	字幕文件不存在
+app.ffmpeg.install_brew_install_ffmpeg	安装：brew install ffmpeg
+app.ffmpeg.install_sudo_apt_install_ffmpeg_or	安装：sudo apt install ffmpeg  或  sudo dnf install ffmpeg
+app.ffmpeg.install_winget_install_gyan_ffmpeg_or	安装：winget install Gyan.FFmpeg  或  choco install ffmpeg
+app.ffmpeg.top_left	左上角
+app.ffmpeg.bottom_left	左下角
+app.ffmpeg.recommended_settings_restored	已恢复推荐参数
+app.ffmpeg.files_selected	已选择 %d 个文件
+app.common.frame_rate	帧率
+app.ffmpeg.frame_rate_must_be_between_1	帧率需要在 1 到 60 之间
+app.ffmpeg.common_canvases	常用画布：
+app.ffmpeg.input_files_output_folder_and_ffmpeg	开始前会检查输入文件、输出目录和 FFmpeg。
+app.ffmpeg.start_time	开始时间
+app.ffmpeg.start_time_format_is_invalid	开始时间格式不正确
+app.ffmpeg.very_fast	很快
+app.common.fast	快
+app.ffmpeg.fast_trim	快速剪切
+app.ffmpeg.fast_trim_no_re_encoding	快速剪切（不重新编码）
+app.ffmpeg.restore_recommended	恢复推荐参数
+app.ffmpeg.slow_smaller	慢（更小）
+app.ffmpeg.capture_single_cover_frame_or_export	截取封面单帧，或按固定间隔批量导出缩略图
+app.ffmpeg.cut_clips_and_remove_intros_or	截取片段、去掉片头片尾，可快速复制或精确重编码
+app.ffmpeg.turn_clip_into_looping_gif_with	截取片段制作循环 GIF，可调帧率、宽度与画质
+app.ffmpeg.capture_cover	截图封面
+app.ffmpeg.capture_time	截图时间
+app.ffmpeg.capture_time_format_is_invalid	截图时间格式不正确
+app.ffmpeg.capture_settings	截图设置
+app.ffmpeg.all_processing_runs_locally_with_ffmpeg	所有处理都在本机调用 FFmpeg 完成，不会上传视频。源文件不会被修改，结果写入你选择的输出目录。
+app.ffmpeg.batch_processing_produces_separate_result_for	批量处理会为每个文件单独生成结果，适合一次整理多条素材；输出文件名会自动加上用途后缀。
+app.ffmpeg.batch_processing_runs_file_by_file	批量处理会逐个文件执行，失败的文件会单独记录，不影响其他文件。
+app.ffmpeg.save_audio_from_video_as_mp3	把视频里的声音保存为 MP3、M4A、AAC 或 WAV
+app.ffmpeg.merging_follows_order_above_use_arrows	拼接会按上面的顺序进行，可以用箭头调整；直接复制流要求所有片段的编码参数一致。
+app.ffmpeg.merge_videos	拼接视频
+app.ffmpeg.merge_settings	拼接设置
+app.ffmpeg.merge_multiple_clips_in_order_with	按顺序合并多段视频，支持直接复制流或统一重编码
+app.ffmpeg.extract_audio	提取音频
+app.ffmpeg.audio_extraction_removes_video_mp3_m4a	提取音频会去掉视频画面。MP3、M4A、AAC 为有损格式，码率越高音质越好；WAV 为无损但文件较大。
+app.ffmpeg.supports_common_formats_such_as_mp4	支持 MP4、MOV、MKV、AVI、WebM、FLV 等常见格式
+app.ffmpeg.supports_common_formats_such_as_mp4_2	支持 MP4、MOV、MKV、MP3、M4A、WAV 等常见格式
+app.ffmpeg.file_not_found	文件不存在：
+app.ffmpeg.text_or_image_watermarks_with_position	文字或图片水印，支持位置、大小、颜色和透明度
+app.ffmpeg.text_watermarks_use_system_fonts_install	文字水印使用系统字体；如果中文显示为方块，请安装支持中文的字体。图片水印建议使用透明背景的 PNG。处理会重新编码视频。
+app.ffmpeg.square_1080_1080	方形 1080×1080
+app.ffmpeg.rotate_180	旋转 180°
+app.ffmpeg.rotation_and_flipping_re_encode_video	旋转和翻转会重新编码视频。旋转 90° 会交换宽高。
+app.ffmpeg.rotate_or_flip	旋转或翻转
+app.common.duration	时长
+app.ffmpeg.duration_format_is_invalid	时长格式不正确
+app.ffmpeg.duration_seconds	时长（秒）
+app.ffmpeg.time_accepts_seconds_mm_ss_or	时间支持秒数、MM:SS 或 HH:MM:SS；时长和结束时间填一个即可。快速剪切速度快，但起点会对齐到关键帧；关闭后会重新编码，剪点更精确。
+app.ffmpeg.replace_background_music	替换背景音乐
+app.ffmpeg.ffmpeg_is_not_installed	未安装 FFmpeg
+app.ffmpeg.ffmpeg_not_found	未找到 FFmpeg
+app.ffmpeg.ffmpeg_not_found_2	未找到 FFmpeg：
+app.ffmpeg.ffprobe_was_not_found_progress_percentages	未找到 ffprobe，进度百分比可能不可用，但处理仍会正常进行。
+app.ffmpeg.unknown_picture_adjustment_mode	未知的画面调整方式
+app.ffmpeg.ultra_fast	极快
+app.ffmpeg.landscape_1920_1080	横屏 1920×1080
+app.ffmpeg.aspect_fit	横竖屏适配
+app.ffmpeg.aspect_fit_scales_video_down_proportionally	横竖屏适配会先等比缩放，再用黑边补满画布，适合上传到抖音、视频号等平台。
+app.ffmpeg.aspect_fit_needs_both_width_and	横竖屏适配需要填写宽度和高度
+app.ffmpeg.processing_video	正在处理视频…
+app.ffmpeg.detecting_ffmpeg	正在检测 FFmpeg…
+app.ffmpeg.watermark_width	水印宽度
+app.ffmpeg.flip_horizontally	水平翻转
+app.ffmpeg.add_files	添加文件
+app.ffmpeg.add_watermark	添加水印
+app.ffmpeg.add_videos	添加视频
+app.ffmpeg.burn_srt_subtitles_or_replace_audio	烧录 SRT 字幕，或替换为新的背景音乐
+app.ffmpeg.burn_subtitles	烧录字幕
+app.ffmpeg.picture_adjustment	画面调整
+app.ffmpeg.direct_stream_copy	直接复制流
+app.ffmpeg.direct_stream_copy_is_fastest_but	直接复制流最快，但所有视频的分辨率、编码和音轨格式需要一致；不一致时请关闭它，让 FFmpeg 统一重新编码。
+app.ffmpeg.direct_stream_copy_no_re_encoding	直接复制流（不重新编码）
+app.ffmpeg.portrait_1080_1920	竖屏 1080×1920
+app.ffmpeg.end_time_must_be_later_than	结束时间必须大于开始时间
+app.ffmpeg.end_time_optional	结束时间（可选）
+app.ffmpeg.encoding_speed	编码速度
+app.ffmpeg.scale_crop_fit_vertical_or_horizontal	缩放、裁剪、横竖屏适配、旋转与翻转
+app.ffmpeg.background_music	背景音乐
+app.ffmpeg.background_music_does_not_exist	背景音乐不存在
+app.ffmpeg.background_music_replaces_original_audio_and	背景音乐会替换原视频的声音，并以较短的音轨为准结束。视频画面不会重新编码。
+app.ffmpeg.cropping_uses_top_left_corner_as	裁剪以左上角为原点，起点 X/Y 可调整位置；输出尺寸就是上面填写的宽高。
+app.common.crop_picture	裁剪画面
+app.common.video	视频
+app.ffmpeg.trim_video	视频剪切
+app.ffmpeg.compress_video_2	视频压缩
+app.ffmpeg.video_snapshot	视频截图
+app.ffmpeg.merge_videos_2	视频拼接
+app.ffmpeg.merging_needs_at_least_two_files	视频拼接至少需要两个文件
+app.ffmpeg.video_to_gif	视频转 GIF
+app.ffmpeg.install_ffmpeg_first_then_click_check	请先安装 FFmpeg，再点击「重新检测」。
+app.ffmpeg.choose_video_or_audio_file_first	请先选择视频或音频文件
+app.ffmpeg.enter_gif_width	请填写 GIF 宽度
+app.ffmpeg.enter_duration_or_end_time	请填写时长或结束时间
+app.ffmpeg.choose_subtitle_file	请选择字幕文件
+app.ffmpeg.choose_batch_mode	请选择批量处理方式
+app.ffmpeg.choose_rotation_or_flip_mode	请选择旋转或翻转方式
+app.ffmpeg.choose_background_music_or_audio_file	请选择背景音乐或音频文件
+app.ffmpeg.resize	调整尺寸
+app.ffmpeg.resize_scales_to_width_and_height	调整尺寸会按填写的宽高缩放，填 0 表示按比例自动计算。画面比例会保持，不会补边。
+app.ffmpeg.resize_needs_width_or_height	调整尺寸需要填写宽度或高度
+app.ffmpeg.adjustment	调整方式
+app.ffmpeg.start_x	起点 X
+app.ffmpeg.start_y	起点 Y
+app.ffmpeg.input_video	输入视频
+app.ffmpeg.input_audio_or_video	输入音频或视频
+app.ffmpeg.margin	边距
+app.common.more_files_not_shown	还有 %d 个文件未显示
+app.ffmpeg.no_files_selected_yet_click_button	还没有选择文件，点击右上角按钮开始。
+app.ffmpeg.these_tools_use_ffmpeg_installed_on	这些工具需要调用本机的 FFmpeg。
+app.ffmpeg.n_90_counterclockwise	逆时针 90°
+app.ffmpeg.choose_mp3_m4a_wav_or_other	选择 MP3、M4A、WAV 等音频文件
+app.ffmpeg.choose_srt_subtitle_file	选择 SRT 字幕文件
+app.ffmpeg.choose_subtitle_file_2	选择字幕文件
+app.ffmpeg.choose_background_music	选择背景音乐
+app.ffmpeg.choose_videos	选择视频
+app.ffmpeg.choose_audio_or_video	选择音频或视频
+app.ffmpeg.speed	速度
+app.ffmpeg.when_interval_is_0_one_cover	间隔为 0 时只在指定时间截取一张封面；大于 0 时从开头开始按间隔批量导出缩略图。
+app.ffmpeg.interval_cannot_be_negative	间隔时间不能为负数
+app.ffmpeg.interval_in_seconds_0_for_one	间隔秒数（0 为单张）
+app.common.audio	音频
+app.ffmpeg.audio_and_video	音频和视频
+app.ffmpeg.audio_format	音频格式
+app.ffmpeg.audio_bitrate	音频码率
+app.ffmpeg.audio_settings	音频设置
+app.ffmpeg.n_90_clockwise	顺时针 90°
+app.ffmpeg.high_quality_palette	高质量调色板
+app.common.view_file_details	查看文件信息
+app.common.file_details	文件信息
+app.file.media_details	媒体信息
+app.common.image_details	图片信息
+app.file.reading_file_details	正在读取文件信息…
+app.common.file_size	文件大小
+app.file.total_bitrate	总码率
+app.file.video_codec	视频编码
+app.file.modified	修改时间
+app.file.file_path	文件路径
+app.common.transparent	透明
+app.file.color_space	色彩空间
+app.file.color_channels	颜色通道
+app.file.bit_depth	位深
+app.common.bit	位
+app.file.image_type	图片类型
+app.file.print_resolution	打印分辨率
+app.file.frames	帧数
+app.common.frames	帧
+app.common.quality	质量
+app.file.no_audio_track	无音轨
+app.file.mono	单声道
+app.file.stereo	立体声
+app.file.channels	声道
+app.file.h	小时
+app.common.min	分
+app.common.yes	是
+app.common.no	否
+app.file.copy_path	复制路径
+app.file.path_copied	已复制路径
+app.ffmpeg.ffprobe_was_not_found_so_video	未找到 ffprobe，无法读取视频详情
+app.image.imagemagick_s_identify_command_was_not	未找到 ImageMagick 的 identify 命令
+app.image.could_not_read_image_details	无法读取图片信息
+app.file.bilevel	黑白
+app.file.grayscale	灰度
+app.file.palette	索引色
+app.file.truecolor	真彩色
+app.file.color_separation	分色
+app.common.optimized	优化
+app.file.with_alpha	含透明通道
+app.common.unknown	未知
+app.file.video_details	视频信息
+app.file.audio_details	音频信息
+app.common.english	English

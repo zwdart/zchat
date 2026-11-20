@@ -89,7 +89,7 @@ func (p Platform) FileCount() int {
 func (p Platform) Markdown() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "## %s\n\n%s\n\n", p.Name, i18n.T(p.Summary))
-	fmt.Fprintf(&b, "| %s | %s | %s | %s |\n", i18n.T("项目"), i18n.T("尺寸"), i18n.T("格式"), i18n.T("说明"))
+	fmt.Fprintf(&b, "| %s | %s | %s | %s |\n", i18n.T("app.common.item"), i18n.T("app.common.size"), i18n.T("app.common.format"), i18n.T("app.common.note"))
 	b.WriteString("| --- | --- | --- | --- |\n")
 	for _, row := range p.Docs {
 		fmt.Fprintf(&b, "| %s | %s | %s | %s |\n",
@@ -98,11 +98,11 @@ func (p Platform) Markdown() string {
 			markdownCell(i18n.T(row.Format)),
 			markdownCell(i18n.T(row.Note)))
 	}
-	b.WriteString("\n### " + i18n.T("备注") + "\n\n")
+	b.WriteString("\n### " + i18n.T("app.common.alias") + "\n\n")
 	for _, note := range p.Notes {
 		b.WriteString("- " + i18n.T(note) + "\n")
 	}
-	b.WriteString("\n### " + i18n.T("官方文档") + "\n\n")
+	b.WriteString("\n### " + i18n.T("app.icon.official_documentation") + "\n\n")
 	for _, link := range p.Links {
 		fmt.Fprintf(&b, "- [%s](%s)\n", i18n.T(link.Label), link.URL)
 	}
@@ -120,7 +120,7 @@ func markdownCell(s string) string {
 // copying the whole reference at once.
 func AllMarkdown() string {
 	var b strings.Builder
-	b.WriteString("# " + i18n.T("安装包图标要求") + "\n\n")
+	b.WriteString("# " + i18n.T("app.icon.installer_icon_requirements") + "\n\n")
 	for _, p := range Platforms {
 		b.WriteString(p.Markdown())
 		b.WriteString("\n")

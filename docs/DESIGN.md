@@ -53,7 +53,7 @@ zchat 是一个不需要服务器的局域网聊天应用。它面向家庭、�
 | `internal/lan` | UDP 发现、TCP 监听、连接注册、心跳与帧分发 |
 | `internal/share` | 目录浏览、HTTP 附件回退、二维码 |
 | `internal/transfer` | TCP 附件传输、断点续传、令牌持久化 |
-| `internal/i18n` | 中文源字符串到英文的翻译表 |
+| `internal/i18n` | 点号分隔的消息 ID 到各语言的翻译表（`internal/i18n/locales/*.tsv`） |
 | `internal/app` | 应用状态、网络回调、业务逻辑和 MyGo UI |
 
 依赖方向始终从 `app` 指向底层包；`model`、`proto` 和 `store` 不依赖 UI，便于测试。

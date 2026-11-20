@@ -32,10 +32,10 @@ func (a *app) aboutDialog(c *ui.Context) {
 			})
 			ui.Column(c).Gap(3).Children(func() {
 				ui.Text(c, "zchat").FontSize(20).FontWeight(750)
-				ui.Text(c, tr("版本")+" "+a.version).FontSize(12).TextColor(p.muted)
+				ui.Text(c, tr("app.common.version")+" "+a.version).FontSize(12).TextColor(p.muted)
 			})
 		})
-		ui.Text(c, tr("局域网聊天工具，支持文字、图片、文件与目录共享，不经过服务器。")).
+		ui.Text(c, tr("app.common.lan_chat_for_text_images_files")).
 			FontSize(12.5).TextColor(p.muted).LineHeight(1.5)
 
 		detail := func(label, value string, control func()) {
@@ -54,14 +54,14 @@ func (a *app) aboutDialog(c *ui.Context) {
 			dir = "—"
 		}
 		ui.Column(c).FillWidth().Padding(12, 14).Radius(12).Background(p.panel).Gap(10).Children(func() {
-			detail(tr("平台"), runtime.GOOS+" / "+runtime.GOARCH, nil)
-			detail(tr("项目主页"), "github.com/zwdart/zchat", func() {
-				if ui.Button(c.Key("about-home"), tr("打开")).Clicked() {
+			detail(tr("app.common.platform"), runtime.GOOS+" / "+runtime.GOARCH, nil)
+			detail(tr("app.common.project_page"), "github.com/zwdart/zchat", func() {
+				if ui.Button(c.Key("about-home"), tr("app.common.open")).Clicked() {
 					a.openExternal("https://github.com/zwdart/zchat")
 				}
 			})
-			detail(tr("数据目录"), dir, func() {
-				if ui.Button(c.Key("about-data"), tr("打开")).Clicked() {
+			detail(tr("app.common.data_folder"), dir, func() {
+				if ui.Button(c.Key("about-data"), tr("app.common.open")).Clicked() {
 					if a.store != nil {
 						a.openPath(a.store.Dir())
 					}
@@ -71,14 +71,14 @@ func (a *app) aboutDialog(c *ui.Context) {
 
 		if !a.updateSupported {
 			ui.Column(c).FillWidth().Gap(7).Children(func() {
-				ui.Text(c, tr("这个版本无法自动更新，请从发布页面下载新版本。")).FontSize(11.5).TextColor(p.muted).LineHeight(1.45)
+				ui.Text(c, tr("app.common.this_build_cannot_update_itself_download")).FontSize(11.5).TextColor(p.muted).LineHeight(1.45)
 				ui.Text(c, releasePageURL()).FontSize(11.5).TextColor(p.text).Selectable()
 				ui.Row(c).Gap(8).Children(func() {
-					if ui.Button(c.Key("about-copy-url"), tr("复制链接")).Clicked() {
+					if ui.Button(c.Key("about-copy-url"), tr("app.common.copy_link")).Clicked() {
 						c.WriteClipboard(releasePageURL())
-						a.setToast(tr("已复制下载链接"))
+						a.setToast(tr("app.common.download_link_copied"))
 					}
-					if ui.Button(c.Key("about-release"), tr("打开发布页面")).Clicked() {
+					if ui.Button(c.Key("about-release"), tr("app.common.open_release_page")).Clicked() {
 						a.openExternal(releasePageURL())
 					}
 				})
@@ -87,13 +87,13 @@ func (a *app) aboutDialog(c *ui.Context) {
 
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 			if a.updateSupported {
-				if pillButtonKey(c, "about-update", iconRefresh, tr("检查更新"), p.accent, p.onAcc).Clicked() {
+				if pillButtonKey(c, "about-update", iconRefresh, tr("app.common.check_for_updates"), p.accent, p.onAcc).Clicked() {
 					a.aboutOpen = false
 					checkForUpdates()
 				}
 			}
 			ui.Spacer(c)
-			if pillButtonKey(c, "about-close", nil, tr("关闭"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "about-close", nil, tr("app.common.close"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.aboutOpen = false
 			}
 		})

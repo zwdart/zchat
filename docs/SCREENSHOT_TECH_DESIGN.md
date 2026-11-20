@@ -128,7 +128,7 @@ internal/
 - `internal/app/settings.go`：新增设置字段与默认值。
 - `internal/app/ui_settings.go`：截图设置分组。
 - `internal/app/icons.go`：截图、图钉、工具图标。
-- `internal/i18n/en.tsv`：英文文案。
+- `internal/i18n/locales/*.tsv`：中英文文案，每种语言独立一个文件；键统一使用点号分隔的 `app.area.name` 格式。
 - `go.mod`：新增必要的纯 Go 依赖。
 - `README.md` / `docs/*`：功能与构建说明（评审后更新）。
 

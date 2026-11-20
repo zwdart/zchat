@@ -10,7 +10,8 @@ zchat 是一个用 Go 和 [MyGo](https://github.com/egoist/mygo) 原生 UI 写�
 - **群聊**：创建、邀请、改名、添加或移出成员、退出与解散。
 - **局域网文件共享**：把本机目录通过 HTTP 只读共享，手机扫码即可用浏览器访问；也可以指定上传目录，让访客从网页上传文件。
 - **图片与文件**：拖入窗口、粘贴剪贴板图片、图片自动缓存、下载进度与另存为。
-- **ImageMagick 工具箱**：统一入口提供格式转换、缩放裁剪、批量处理、文字或图片水印、横向/纵向拼接与 GIF 合成、质量与元数据优化；上传一张图片还能一键生成 Android、iOS、Windows、Linux、macOS 的标准安装包图标与目录。需要本机安装 ImageMagick。
+- **ImageMagick 工具箱**：统一入口提供格式转换、缩放裁剪、批量处理、文字或图片水印、横向/纵向拼接与 GIF 合成、质量与元数据优化；图片列表可查看尺寸、大小、格式、色彩与透明度等详情；上传一张图片还能一键生成 Android、iOS、Windows、Linux、macOS 的标准安装包图标与目录。需要本机安装 ImageMagick。
+- **FFmpeg 工具箱**：统一入口提供视频压缩、剪切、拼接、提取音频、转 GIF、文字或图片水印、缩放裁剪与横竖屏适配、字幕与背景音乐、倍速、封面截图和批量处理；视频列表可查看时长、分辨率、编码、帧率、码率与音轨等详情；默认参数一键可用，也可以按需调整。需要本机安装 FFmpeg。
 - **桌面集成**：系统托盘、应用菜单、全局快捷键、未读角标、系统通知；点击消息头像或聊天标题头像可查看设备资料。
 - **外观**：跟随系统、浅色、深色主题；界面支持简体中文和 English，可在设置里切换或跟随系统。
 - **离线消息**：对方暂未在线时先保存在本机，连接后自动补发。
@@ -29,6 +30,17 @@ brew install imagemagick
 sudo apt install imagemagick
 # Windows
 winget install ImageMagick.ImageMagick
+```
+
+「FFmpeg 工具箱」需要本机安装 [FFmpeg](https://ffmpeg.org/)（建议同时安装 `ffprobe`，用来看进度）：
+
+```bash
+# macOS
+brew install ffmpeg
+# Debian / Ubuntu
+sudo apt install ffmpeg
+# Windows
+winget install Gyan.FFmpeg
 ```
 
 ```bash

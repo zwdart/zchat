@@ -204,14 +204,14 @@ func (a *app) captureScreenshot(wasVisible bool) {
 		}
 		if perm == capture.PermissionDenied {
 			a.post(func() {
-				a.shotFailed(wasVisible, tr("没有屏幕录制权限。请在系统设置中允许 zchat 录制屏幕后重试。"))
+				a.shotFailed(wasVisible, tr("app.screenshot.zchat_does_not_have_screen_recording"))
 			})
 			return
 		}
 		displays, err := b.Displays()
 		if err != nil || len(displays) == 0 {
 			a.post(func() {
-				msg := tr("无法读取显示器信息")
+				msg := tr("app.screenshot.could_not_read_display_information")
 				if err != nil {
 					msg += "：" + err.Error()
 				}
@@ -226,7 +226,7 @@ func (a *app) captureScreenshot(wasVisible bool) {
 		})
 		if err != nil || len(frames) == 0 {
 			a.post(func() {
-				msg := tr("截图失败")
+				msg := tr("app.screenshot.screenshot_failed")
 				if err != nil {
 					msg += "：" + err.Error()
 				}
@@ -303,7 +303,7 @@ func (a *app) showShotOverlay(frame capture.Frame, d capture.Display, caps captu
 		}
 	}
 	if !caps.PreCaptureOverlay {
-		s.notice = tr("已截取屏幕，请拖选区域后编辑")
+		s.notice = tr("app.screenshot.screen_captured_drag_to_select_area")
 	}
 	a.shot = s
 	// A Linux desktop panel (the top bar with the clock, the app menu and the
@@ -411,15 +411,15 @@ func (s *shotSession) resultPNG(level png.CompressionLevel) ([]byte, error) {
 func (a *app) shotCopy(s *shotSession) {
 	data, err := s.resultPNG(png.BestSpeed)
 	if err != nil {
-		a.setToast(tr("无法生成截图"))
+		a.setToast(tr("app.screenshot.could_not_create_screenshot"))
 		return
 	}
 	if err := mygo.Clipboard.WriteImage(data); err != nil {
-		a.setToast(tr("无法复制截图：") + err.Error())
+		a.setToast(tr("app.screenshot.could_not_copy_screenshot") + err.Error())
 		return
 	}
 	a.shotClose(true)
-	a.setToast(tr("截图已复制到剪贴板"))
+	a.setToast(tr("app.screenshot.screenshot_copied_to_clipboard"))
 }
 
 // shotSave writes the screenshot to the configured folder without asking.
@@ -439,9 +439,9 @@ func (a *app) shotSaveAs(s *shotSession) {
 	go func() {
 		path, err := mygo.Dialog.Save(mygo.SaveDialogOptions{
 			Parent:      parent,
-			Title:       tr("保存截图"),
+			Title:       tr("app.screenshot.save_screenshot"),
 			DefaultPath: filepath.Join(dir, name),
-			ButtonLabel: tr("保存"),
+			ButtonLabel: tr("app.common.save"),
 			Filters:     []mygo.FileFilter{{Name: "PNG", Extensions: []string{"png"}}},
 		})
 		if err != nil || strings.TrimSpace(path) == "" {
@@ -459,20 +459,20 @@ func (a *app) shotSaveAs(s *shotSession) {
 func (a *app) finishScreenshotTo(s *shotSession, path string, img *image.RGBA) {
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
-		a.setToast(tr("无法创建保存目录：") + err.Error())
+		a.setToast(tr("app.screenshot.could_not_create_save_folder") + err.Error())
 		return
 	}
 	data, err := capture.EncodePNG(img, png.DefaultCompression)
 	if err != nil {
-		a.setToast(tr("无法生成截图"))
+		a.setToast(tr("app.screenshot.could_not_create_screenshot"))
 		return
 	}
 	if err := os.WriteFile(path, data, 0o600); err != nil {
-		a.setToast(tr("无法保存截图：") + err.Error())
+		a.setToast(tr("app.screenshot.could_not_save_screenshot") + err.Error())
 		return
 	}
 	a.shotClose(true)
-	a.setToast(tr("截图已保存：") + path)
+	a.setToast(tr("app.screenshot.screenshot_saved") + path)
 }
 
 // screenshotName is the default file name for a saved screenshot.
@@ -502,12 +502,12 @@ func (a *app) shotPin(s *shotSession) {
 
 func (a *app) shotSend(s *shotSession) {
 	if a.currentConv() == nil {
-		a.setToast(tr("先打开一个聊天"))
+		a.setToast(tr("app.common.open_chat_first"))
 		return
 	}
 	data, err := s.resultPNG(png.BestSpeed)
 	if err != nil {
-		a.setToast(tr("无法生成截图"))
+		a.setToast(tr("app.screenshot.could_not_create_screenshot"))
 		return
 	}
 	dir := ""
@@ -518,12 +518,12 @@ func (a *app) shotSend(s *shotSession) {
 		dir = filepath.Join(os.TempDir(), "zchat-screenshots")
 	}
 	if err := os.MkdirAll(dir, 0o700); err != nil {
-		a.setToast(tr("无法保存截图：") + err.Error())
+		a.setToast(tr("app.screenshot.could_not_save_screenshot") + err.Error())
 		return
 	}
 	path := filepath.Join(dir, model.NewID("shot")+".png")
 	if err := os.WriteFile(path, data, 0o600); err != nil {
-		a.setToast(tr("无法保存截图：") + err.Error())
+		a.setToast(tr("app.screenshot.could_not_save_screenshot") + err.Error())
 		return
 	}
 	a.shotClose(false)
@@ -549,7 +549,7 @@ func (a *app) screenshotDir() string {
 // shortcutLabel shows a configured accelerator, or that none is set.
 func shortcutLabel(value string) string {
 	if strings.TrimSpace(value) == "" {
-		return tr("未设置")
+		return tr("app.common.not_set")
 	}
 	return value
 }
@@ -612,7 +612,7 @@ func (a *app) setScreenshotShortcut(value string, includeChat bool) bool {
 			_ = mygo.GlobalShortcut.Register(prev, action)
 			*reg = prev
 		}
-		a.setToast(fmt.Sprintf("%s%s", tr("截图快捷键注册失败："), err.Error()))
+		a.setToast(fmt.Sprintf("%s%s", tr("app.screenshot.could_not_register_screenshot_shortcut"), err.Error()))
 		return false
 	}
 	*reg = next
@@ -626,8 +626,8 @@ func (a *app) chooseScreenshotDir() {
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:      a.settingsWin,
-			Title:       tr("选择截图保存目录"),
-			ButtonLabel: tr("选择"),
+			Title:       tr("app.screenshot.choose_screenshot_folder"),
+			ButtonLabel: tr("app.common.choose"),
 			DefaultPath: a.screenshotDir(),
 			Directory:   true,
 		})
@@ -637,7 +637,7 @@ func (a *app) chooseScreenshotDir() {
 		a.post(func() {
 			a.settings.ScreenshotDir = paths[0]
 			_ = a.settings.save()
-			a.setToast(tr("截图保存目录已更新"))
+			a.setToast(tr("app.screenshot.screenshot_folder_updated"))
 			a.redraw()
 		})
 	}()

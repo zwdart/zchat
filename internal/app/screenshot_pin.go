@@ -78,7 +78,7 @@ func (a *app) createPin(img *image.RGBA, scale float64) {
 		y = work.Y + work.Height - int(h) - 8
 	}
 	p.win = mygo.NewWindow(mygo.WindowOptions{
-		Title:           tr("贴图"),
+		Title:           tr("app.common.pin"),
 		X:               x,
 		Y:               y,
 		Width:           int(w),
@@ -155,9 +155,9 @@ func (a *app) setPinsInteractive(on bool) {
 		p.setInteractive(on)
 	}
 	if on {
-		toastAnywhere(tr("贴图已恢复鼠标交互"))
+		toastAnywhere(tr("app.screenshot.pins_respond_to_mouse_again"))
 	} else {
-		toastAnywhere(tr("贴图已开启鼠标穿透"))
+		toastAnywhere(tr("app.screenshot.pins_are_now_click_through"))
 	}
 }
 
@@ -203,31 +203,31 @@ func (p *pinWindow) view(c *ui.Context) {
 	c.Root().Background(ui.Hex("#000000"))
 	box := ui.Box(c).Fill().Focusable().Focus().HandleInput(p.input).Cursor(ui.CursorGrab).
 		PopoverMenu(func(m *ui.Menu) {
-			if m.Item(tr("复制")).Shortcut(ui.Cmd, ui.KeyC).Chosen() {
+			if m.Item(tr("app.common.copy")).Shortcut(ui.Cmd, ui.KeyC).Chosen() {
 				p.copyToClipboard()
 			}
-			if m.Item(tr("保存")).Shortcut(ui.Cmd, ui.KeyS).Chosen() {
+			if m.Item(tr("app.common.save")).Shortcut(ui.Cmd, ui.KeyS).Chosen() {
 				p.saveDirect()
 			}
-			if m.Item(tr("保存为…")).Shortcut(ui.Cmd|ui.Shift, ui.KeyS).Chosen() {
+			if m.Item(tr("app.screenshot.save_as")).Shortcut(ui.Cmd|ui.Shift, ui.KeyS).Chosen() {
 				p.saveAs()
 			}
 			m.Separator()
-			if m.Item(tr("鼠标穿透")).Checked(p.ignore).Chosen() {
+			if m.Item(tr("app.screenshot.click_through")).Checked(p.ignore).Chosen() {
 				p.setInteractive(p.ignore)
 			}
 			m.Separator()
 			for _, o := range []float64{1, 0.85, 0.7, 0.55, 0.4} {
-				label := fmt.Sprintf("%s %d%%", tr("不透明度"), int(o*100))
+				label := fmt.Sprintf("%s %d%%", tr("app.common.opacity"), int(o*100))
 				if m.Item(label).Checked(absf64(p.opacity-o) < 0.001).Chosen() {
 					p.setOpacity(o)
 				}
 			}
 			m.Separator()
-			if m.Item(tr("关闭")).Shortcut(0, ui.KeyEscape).Chosen() {
+			if m.Item(tr("app.common.close")).Shortcut(0, ui.KeyEscape).Chosen() {
 				p.close()
 			}
-			if m.Item(tr("关闭全部贴图")).Chosen() {
+			if m.Item(tr("app.common.close_all_pins")).Chosen() {
 				if globalApp != nil {
 					globalApp.closeAllPins()
 				}
@@ -361,14 +361,14 @@ func (p *pinWindow) copyToClipboard() {
 	}
 	data, err := capture.EncodePNG(p.img, png.BestSpeed)
 	if err != nil {
-		toastAnywhere(tr("无法生成截图"))
+		toastAnywhere(tr("app.screenshot.could_not_create_screenshot"))
 		return
 	}
 	if err := mygo.Clipboard.WriteImage(data); err != nil {
-		toastAnywhere(tr("无法复制截图：") + err.Error())
+		toastAnywhere(tr("app.screenshot.could_not_copy_screenshot") + err.Error())
 		return
 	}
-	toastAnywhere(tr("截图已复制到剪贴板"))
+	toastAnywhere(tr("app.screenshot.screenshot_copied_to_clipboard"))
 }
 
 // saveDirect writes the pin to the screenshot folder without asking.
@@ -407,9 +407,9 @@ func (p *pinWindow) saveAs() {
 	go func() {
 		path, err := mygo.Dialog.Save(mygo.SaveDialogOptions{
 			Parent:      parent,
-			Title:       tr("保存截图"),
+			Title:       tr("app.screenshot.save_screenshot"),
 			DefaultPath: filepath.Join(dir, name),
-			ButtonLabel: tr("保存"),
+			ButtonLabel: tr("app.common.save"),
 			Filters:     []mygo.FileFilter{{Name: "PNG", Extensions: []string{"png"}}},
 		})
 		if err != nil || strings.TrimSpace(path) == "" {
@@ -427,19 +427,19 @@ func (p *pinWindow) write(path string) {
 		return
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		toastAnywhere(tr("无法创建保存目录：") + err.Error())
+		toastAnywhere(tr("app.screenshot.could_not_create_save_folder") + err.Error())
 		return
 	}
 	data, err := capture.EncodePNG(p.img, png.DefaultCompression)
 	if err != nil {
-		toastAnywhere(tr("无法生成截图"))
+		toastAnywhere(tr("app.screenshot.could_not_create_screenshot"))
 		return
 	}
 	if err := os.WriteFile(path, data, 0o600); err != nil {
-		toastAnywhere(tr("无法保存截图：") + err.Error())
+		toastAnywhere(tr("app.screenshot.could_not_save_screenshot") + err.Error())
 		return
 	}
-	toastAnywhere(tr("截图已保存：") + path)
+	toastAnywhere(tr("app.screenshot.screenshot_saved") + path)
 }
 
 // toastAnywhere shows a toast on the main window when it exists; pin windows

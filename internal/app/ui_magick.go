@@ -29,50 +29,50 @@ func magickCapabilities() []magickCapability {
 	return []magickCapability{
 		{
 			Key:     string(magick.KindConvert),
-			Title:   tr("格式转换"),
-			Desc:    tr("在 PNG、JPG、WebP、GIF、BMP、TIFF、PDF 之间互相转换"),
+			Title:   tr("app.common.format_conversion"),
+			Desc:    tr("app.image.convert_between_png_jpg_webp_gif"),
 			Command: "magick input.png output.webp",
 			Icon:    iconImage,
 		},
 		{
 			Key:     string(magick.KindGeometry),
-			Title:   tr("缩放与裁剪"),
-			Desc:    tr("按尺寸缩放、裁剪画面，适合缩略图与不同终端的图片"),
+			Title:   tr("app.image.resize_and_crop"),
+			Desc:    tr("app.image.resize_or_crop_to_target_size"),
 			Command: "magick input.jpg -resize 800x600 out.jpg",
 			Icon:    iconResize,
 		},
 		{
 			Key:     string(magick.KindBatch),
-			Title:   tr("批量处理"),
-			Desc:    tr("一次处理多张图片，统一格式、尺寸与压缩质量"),
+			Title:   tr("app.common.batch_processing"),
+			Desc:    tr("app.image.process_many_images_at_once_with"),
 			Command: "mogrify -quality 85 *.jpg",
 			Icon:    iconLayers,
 		},
 		{
 			Key:     string(magick.KindWatermark),
-			Title:   tr("加水印"),
-			Desc:    tr("添加文字或图片水印，可设置位置、大小和透明度"),
+			Title:   tr("app.common.watermark"),
+			Desc:    tr("app.image.add_text_or_image_watermark_with"),
 			Command: `magick input.jpg -annotate +0+0 "©"`,
 			Icon:    iconWatermark,
 		},
 		{
 			Key:     string(magick.KindCompose),
-			Title:   tr("图像合成"),
-			Desc:    tr("横向、纵向拼接多张图片，或合成 GIF 动画"),
+			Title:   tr("app.image.composition_2"),
+			Desc:    tr("app.image.stitch_images_horizontally_or_vertically_or"),
 			Command: "magick frame*.jpg animation.gif",
 			Icon:    iconCompose,
 		},
 		{
 			Key:     string(magick.KindOptimize),
-			Title:   tr("颜色与质量"),
-			Desc:    tr("调整压缩质量、自动色阶并清除元数据，减小图片体积"),
+			Title:   tr("app.image.color_and_quality"),
+			Desc:    tr("app.image.adjust_quality_auto_level_and_strip"),
 			Command: "magick input.jpg -quality 82 -strip out.jpg",
 			Icon:    iconWand,
 		},
 		{
 			Key:   magickIconCap,
-			Title: tr("安装包图标"),
-			Desc:  tr("上传一张图片，生成各平台安装包所需的标准图标与目录"),
+			Title: tr("app.common.installer_icons"),
+			Desc:  tr("app.image.upload_one_image_to_generate_standard"),
 			Icon:  iconPackage,
 		},
 	}
@@ -191,7 +191,7 @@ func (a *app) magickHeader(c *ui.Context, p palette) {
 	cap, selected := findMagickCapability(a.magick.cap)
 	ui.Row(c).FillWidth().AlignItems(ui.Start).Gap(12).DragWindow().Children(func() {
 		if selected {
-			if pillButtonKey(c, "magick-back", iconBack, tr("能力列表"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "magick-back", iconBack, tr("app.common.capabilities"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.magickBack()
 			}
 		}
@@ -199,13 +199,13 @@ func (a *app) magickHeader(c *ui.Context, p palette) {
 			if selected {
 				sectionTitle(c, p, cap.Title, cap.Desc)
 			} else {
-				sectionTitle(c, p, "ImageMagick", tr("格式转换、缩放裁剪、批量处理、水印、合成与质量优化，全部在本机完成"))
+				sectionTitle(c, p, "ImageMagick", tr("app.image.format_conversion_resizing_cropping_batch_processing"))
 			}
 		})
 		if run := a.magick.run; run != nil && run.running {
 			ui.Row(c).Gap(7).AlignItems(ui.Center).Padding(10, 12).Radius(999).Background(p.accent.Alpha(0.13)).Children(func() {
 				ui.Spinner(c).Size(14, 14)
-				ui.Text(c, tr("正在处理…")).FontSize(11.5).FontWeight(600).TextColor(p.accent)
+				ui.Text(c, tr("app.common.processing_2")).FontSize(11.5).FontWeight(600).TextColor(p.accent)
 			})
 		}
 	})
@@ -214,7 +214,7 @@ func (a *app) magickHeader(c *ui.Context, p palette) {
 func (a *app) magickCapabilitiesView(c *ui.Context, p palette) {
 	ui.Scroll(c).Grow(1).Margin(0, -6).Padding(0, 6).Gap(14).Children(func() {
 		a.magickToolCard(c, p)
-		ui.Text(c, tr("选择一项能力")).FontSize(13).FontWeight(650).Margin(2, 0, 0, 0)
+		ui.Text(c, tr("app.common.choose_capability")).FontSize(13).FontWeight(650).Margin(2, 0, 0, 0)
 		ui.Grid(c).FillWidth().Columns(2).Gap(12).Children(func() {
 			for _, cap := range magickCapabilities() {
 				a.magickCapabilityCard(c, p, cap)
@@ -222,7 +222,7 @@ func (a *app) magickCapabilitiesView(c *ui.Context, p palette) {
 		})
 		ui.Row(c).FillWidth().Padding(12, 14).Radius(12).Background(p.panel).Gap(10).AlignItems(ui.Start).Children(func() {
 			ui.Icon(c, iconInfo).Size(16, 16).TextColor(p.faint)
-			ui.Text(c, tr("所有处理都在本机调用 ImageMagick 完成，不会上传图片。源文件不会被修改，结果写入你选择的输出目录。")).FontSize(11).TextColor(p.muted).LineHeight(1.5)
+			ui.Text(c, tr("app.image.everything_runs_locally_through_imagemagick_no")).FontSize(11).TextColor(p.muted).LineHeight(1.5)
 		})
 	})
 }
@@ -260,17 +260,17 @@ func (a *app) magickToolCard(c *ui.Context, p palette) {
 	ui.Column(c).FillWidth().Padding(16, 15).Radius(14).Background(p.panel).Border(1, p.hair).Gap(10).Children(func() {
 		ui.Row(c).FillWidth().Gap(12).AlignItems(ui.Center).Children(func() {
 			bg, fg := p.hover, p.muted
-			title := tr("正在检测 ImageMagick…")
-			desc := tr("这些工具需要调用本机的 ImageMagick。")
+			title := tr("app.common.checking_imagemagick")
+			desc := tr("app.image.these_tools_use_imagemagick_installed_on")
 			if a.iconToolChecked {
 				if a.iconTool.Path != "" {
 					bg, fg = ui.Oklch(0.72, 0.18, 145).Alpha(0.14), ui.Oklch(0.62, 0.17, 145)
-					title = tr("ImageMagick 已就绪")
+					title = tr("app.common.imagemagick_is_ready")
 					desc = a.iconTool.Version
 				} else {
 					bg, fg = ui.Oklch(0.78, 0.16, 80).Alpha(0.16), ui.Oklch(0.58, 0.15, 65)
-					title = tr("未找到 ImageMagick")
-					desc = tr("请先安装 ImageMagick，再点击「重新检测」。")
+					title = tr("app.common.imagemagick_not_found")
+					desc = tr("app.common.install_imagemagick_first_then_click_check")
 				}
 			}
 			ui.Box(c).Size(40, 40).Radius(12).Center().Background(bg).Children(func() {
@@ -288,7 +288,7 @@ func (a *app) magickToolCard(c *ui.Context, p palette) {
 					ui.Text(c, a.iconTool.Path).FontSize(10.5).TextColor(p.faint).SingleLine()
 				}
 			})
-			if pillButtonKey(c, "magick-tool-check", iconRefresh, tr("重新检测"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "magick-tool-check", iconRefresh, tr("app.common.check_again"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.detectIconTool()
 			}
 		})
@@ -332,32 +332,29 @@ func (a *app) magickForm(c *ui.Context, p palette) {
 func (a *app) magickInputsCard(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
 		ui.Row(c).FillWidth().AlignItems(ui.Center).Gap(10).Children(func() {
-			ui.Text(c, tr("输入图片")).FontSize(13).FontWeight(650)
+			ui.Text(c, tr("app.image.input_images")).FontSize(13).FontWeight(650)
 			if len(a.magick.inputs) > 0 {
-				ui.Text(c, fmt.Sprintf(tr("已选择 %d 张"), len(a.magick.inputs))).FontSize(11).TextColor(p.faint)
+				ui.Text(c, fmt.Sprintf(tr("app.image.selected"), len(a.magick.inputs))).FontSize(11).TextColor(p.faint)
 			} else {
-				ui.Text(c, tr("支持 PNG、JPG、WebP、GIF、BMP、TIFF、SVG、PDF")).FontSize(11).TextColor(p.faint)
+				ui.Text(c, tr("app.image.supports_png_jpg_webp_gif_bmp")).FontSize(11).TextColor(p.faint)
 			}
 			ui.Spacer(c)
-			if len(a.magick.inputs) > 0 && ui.Button(c.Key("magick-clear-inputs"), tr("清空")).Clicked() {
+			if len(a.magick.inputs) > 0 && ui.Button(c.Key("magick-clear-inputs"), tr("app.common.clear_2")).Clicked() {
 				a.magick.inputs = nil
 				a.redraw()
 			}
-			if pillButtonKey(c, "magick-pick-inputs", iconUpload, tr("添加图片"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "magick-pick-inputs", iconUpload, tr("app.image.add_images"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.pickMagickInputs()
 			}
 		})
 		if len(a.magick.inputs) == 0 {
 			ui.Row(c).FillWidth().Padding(18, 16).Radius(12).Background(p.hover.Over(p.panel)).Gap(10).AlignItems(ui.Center).Children(func() {
 				ui.Icon(c, iconImage).Size(20, 20).TextColor(p.faint)
-				ui.Text(c, tr("还没有选择图片，点击右上角「添加图片」开始。")).FontSize(11.5).TextColor(p.muted)
+				ui.Text(c, tr("app.image.no_images_selected_yet_click_add")).FontSize(11.5).TextColor(p.muted)
 			})
 			return
 		}
 		max := len(a.magick.inputs)
-		if max > 8 {
-			max = 8
-		}
 		for i := 0; i < max; i++ {
 			i := i
 			path := a.magick.inputs[i]
@@ -378,135 +375,135 @@ func (a *app) magickInputsCard(c *ui.Context, p palette) {
 					}
 					ui.Text(c, meta).FontSize(10.5).TextColor(p.faint).SingleLine().Selectable()
 				})
-				if b := iconButton(c, iconX, 12, p.faint, tr("移除")); b.Clicked() {
+				if b := iconButton(c, iconInfo, 13, p.faint, tr("app.common.view_file_details")).Key(fmt.Sprintf("magick-info-%d", i)); b.Clicked() {
+					a.openFileInfo(path, fileInfoImage)
+				}
+				if b := iconButton(c, iconX, 12, p.faint, tr("app.common.remove")).Key(fmt.Sprintf("magick-remove-%d", i)); b.Clicked() {
 					a.magick.inputs = append(a.magick.inputs[:i], a.magick.inputs[i+1:]...)
 					a.redraw()
 				}
 			})
 		}
-		if len(a.magick.inputs) > max {
-			ui.Text(c, fmt.Sprintf(tr("还有 %d 张图片未显示"), len(a.magick.inputs)-max)).FontSize(10.5).TextColor(p.faint)
-		}
 		if a.magick.cap == string(magick.KindCompose) {
-			a.magickNote(c, p, tr("拼接和 GIF 动画会按上面的顺序合成，可清空后重新按需要添加。"))
+			a.magickNote(c, p, tr("app.image.stitching_and_gif_animation_follow_order"))
 		}
 	})
 }
 
 func (a *app) magickOutputCard(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
-		ui.Text(c, tr("输出目录")).FontSize(13).FontWeight(650)
+		ui.Text(c, tr("app.common.output_folder")).FontSize(13).FontWeight(650)
 		ui.Row(c).FillWidth().Gap(8).AlignItems(ui.Center).Children(func() {
-			ui.TextInput(c.Key("magick-output"), &a.settings.MagickOutputDir).Grow(1).Placeholder(tr("选择一个输出目录"))
-			if ui.Button(c.Key("magick-pick-output"), tr("选择…")).Clicked() {
+			ui.TextInput(c.Key("magick-output"), &a.settings.MagickOutputDir).Grow(1).Placeholder(tr("app.common.choose_output_folder_2"))
+			if ui.Button(c.Key("magick-pick-output"), tr("app.common.select")).Clicked() {
 				a.pickMagickOutputDir()
 			}
 			if dir := a.magickOutputDir(); dir != "" {
-				if ui.Button(c.Key("magick-open-output"), tr("打开")).Clicked() {
+				if ui.Button(c.Key("magick-open-output"), tr("app.common.open")).Clicked() {
 					a.openPath(dir)
 				}
 			}
 		})
-		ui.Text(c, tr("处理结果会写入这个目录，源文件保持不变；同名文件会被覆盖。")).FontSize(10.5).TextColor(p.faint).LineHeight(1.4)
+		ui.Text(c, tr("app.common.results_are_written_to_this_folder")).FontSize(10.5).TextColor(p.faint).LineHeight(1.4)
 	})
 }
 
 func (a *app) magickConvertOptions(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
-		ui.Text(c, tr("转换设置")).FontSize(13).FontWeight(650)
+		ui.Text(c, tr("app.image.conversion_settings")).FontSize(13).FontWeight(650)
 		ui.Row(c).FillWidth().Gap(16).AlignItems(ui.End).Children(func() {
 			ui.Column(c).Width(190).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("目标格式"))
+				fieldLabel(c, p, tr("app.image.target_format"))
 				a.magickFormatSelect(c, p, true)
 			})
 			ui.Column(c).Width(140).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("压缩质量"))
+				fieldLabel(c, p, tr("app.image.quality"))
 				ui.NumberInput(c.Key("magick-convert-quality"), &a.magick.quality, 1, 100, 1)
 			})
 		})
-		ui.Text(c, tr("JPG 不支持透明，透明区域会填充为白色。质量只影响 JPG、WebP 等有损格式。")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
+		ui.Text(c, tr("app.image.jpg_does_not_support_transparency_transparent")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
 	})
 }
 
 func (a *app) magickGeometryOptions(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
-		ui.Text(c, tr("缩放或裁剪")).FontSize(13).FontWeight(650)
-		ui.Segmented(c, &a.magick.geomTab, tr("缩放"), tr("裁剪")).Label(tr("方式")).Width(260)
+		ui.Text(c, tr("app.image.resize_or_crop")).FontSize(13).FontWeight(650)
+		ui.Segmented(c, &a.magick.geomTab, tr("app.common.zoom"), tr("app.common.crop")).Label(tr("app.common.mode")).Width(260)
 		ui.Row(c).FillWidth().Gap(16).AlignItems(ui.End).Children(func() {
 			ui.Column(c).Width(120).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("宽度（像素）"))
+				fieldLabel(c, p, tr("app.common.width_px"))
 				ui.NumberInput(c.Key("magick-width"), &a.magick.width, 0, 20000, 10)
 			})
 			ui.Column(c).Width(120).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("高度（像素）"))
+				fieldLabel(c, p, tr("app.common.height_px"))
 				ui.NumberInput(c.Key("magick-height"), &a.magick.height, 0, 20000, 10)
 			})
 			if a.magick.geomTab == 0 {
 				ui.Column(c).Width(170).Gap(5).Children(func() {
-					fieldLabel(c, p, tr("缩放方式"))
-					labels := []string{tr("适应（保持比例）"), tr("填充并裁剪"), tr("拉伸")}
+					fieldLabel(c, p, tr("app.image.resize_mode"))
+					labels := []string{tr("app.image.fit_keep_aspect_ratio"), tr("app.image.fill_and_crop"), tr("app.common.stretch")}
 					values := []string{magick.ResizeFit, magick.ResizeFill, magick.ResizeStretch}
 					selectKeyed(c, "magick-resize-mode", &a.magick.resize, values, labels)
 				})
 			} else {
 				ui.Column(c).Width(150).Gap(5).Children(func() {
-					fieldLabel(c, p, tr("裁剪位置"))
+					fieldLabel(c, p, tr("app.image.crop_position"))
 					a.magickGravitySelect(c, p, "magick-crop-gravity", &a.magick.gravity)
 				})
 			}
 			ui.Column(c).Width(150).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("输出格式"))
+				fieldLabel(c, p, tr("app.common.output_format"))
 				a.magickFormatSelect(c, p, true)
 			})
 		})
 		if a.magick.geomTab == 0 {
-			ui.Text(c, tr("宽度或高度填 0 表示按比例自动计算。")).FontSize(10.5).TextColor(p.faint)
+			ui.Text(c, tr("app.image.set_width_or_height_to_0")).FontSize(10.5).TextColor(p.faint)
 		} else {
-			ui.Text(c, tr("裁剪以选定位置为基准，输出尺寸就是上面填写的宽高。")).FontSize(10.5).TextColor(p.faint)
+			ui.Text(c, tr("app.image.crop_uses_chosen_position_as_its")).FontSize(10.5).TextColor(p.faint)
 		}
 	})
 }
 
 func (a *app) magickBatchOptions(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
-		ui.Text(c, tr("批量设置")).FontSize(13).FontWeight(650)
+		ui.Text(c, tr("app.common.batch_settings")).FontSize(13).FontWeight(650)
 		ui.Row(c).FillWidth().Gap(16).AlignItems(ui.End).Children(func() {
 			ui.Column(c).Width(150).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("输出格式"))
+				fieldLabel(c, p, tr("app.common.output_format"))
 				a.magickFormatSelect(c, p, true)
 			})
 			ui.Column(c).Width(130).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("最大宽度"))
+				fieldLabel(c, p, tr("app.image.max_width"))
 				ui.NumberInput(c.Key("magick-batch-width"), &a.magick.width, 0, 20000, 10)
 			})
 			ui.Column(c).Width(130).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("最大高度"))
+				fieldLabel(c, p, tr("app.image.max_height"))
 				ui.NumberInput(c.Key("magick-batch-height"), &a.magick.height, 0, 20000, 10)
 			})
 			ui.Column(c).Width(120).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("压缩质量"))
+				fieldLabel(c, p, tr("app.image.quality"))
 				ui.NumberInput(c.Key("magick-batch-quality"), &a.magick.quality, 1, 100, 1)
 			})
 		})
-		ui.Text(c, tr("只会缩小超过限制的图片，不会放大；宽高填 0 表示不限制。每张图输出到「原文件名-batch」。")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
+		ui.Text(c, tr("app.image.only_images_larger_than_limit_are")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
 	})
 }
 
 func (a *app) magickWatermarkOptions(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
-		ui.Text(c, tr("水印设置")).FontSize(13).FontWeight(650)
-		ui.Segmented(c, &a.magick.wmTab, tr("文字水印"), tr("图片水印")).Label(tr("类型")).Width(280)
+		ui.Text(c, tr("app.common.watermark_settings")).FontSize(13).FontWeight(650)
+		ui.Segmented(c, &a.magick.wmTab, tr("app.common.text_watermark"), tr("app.common.image_watermark")).Label(tr("app.common.type")).Width(280)
 		if a.magick.wmTab == 0 {
 			ui.Column(c).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("水印文字"))
-				ui.TextInput(c.Key("magick-wm-text"), &a.magick.wmText).Placeholder(tr("例如：© zchat"))
+				fieldLabel(c, p, tr("app.common.watermark_text"))
+				ui.TextInput(c.Key("magick-wm-text"), &a.magick.wmText).Placeholder(tr("app.common.e_g_zchat"))
 			})
 		} else {
 			ui.Column(c).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("水印图片"))
+				fieldLabel(c, p, tr("app.common.watermark_image"))
 				ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-					ui.TextInput(c.Key("magick-wm-image"), &a.magick.wmImage).Grow(1).Placeholder(tr("PNG 或 JPG，建议使用透明背景"))
-					if ui.Button(c.Key("magick-pick-wm"), tr("选择…")).Clicked() {
+					ui.TextInput(c.Key("magick-wm-image"), &a.magick.wmImage).Grow(1).Placeholder(tr("app.common.png_or_jpg_transparent_background_works"))
+					if ui.Button(c.Key("magick-pick-wm"), tr("app.common.select")).Clicked() {
 						a.pickMagickWatermark()
 					}
 				})
@@ -514,79 +511,79 @@ func (a *app) magickWatermarkOptions(c *ui.Context, p palette) {
 		}
 		ui.Row(c).FillWidth().Gap(16).AlignItems(ui.End).Children(func() {
 			ui.Column(c).Width(150).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("位置"))
+				fieldLabel(c, p, tr("app.common.position"))
 				a.magickGravitySelect(c, p, "magick-wm-gravity", &a.magick.gravity)
 			})
 			ui.Column(c).Width(120).Gap(5).Children(func() {
 				if a.magick.wmTab == 1 {
-					fieldLabel(c, p, tr("水印最大边长"))
+					fieldLabel(c, p, tr("app.image.max_watermark_side"))
 					ui.NumberInput(c.Key("magick-wm-size"), &a.magick.wmSize, 1, 4000, 1)
 				} else {
-					fieldLabel(c, p, tr("字号"))
+					fieldLabel(c, p, tr("app.common.font_size"))
 					ui.NumberInput(c.Key("magick-wm-size"), &a.magick.font, 1, 4000, 1)
 				}
 			})
 			ui.Column(c).Width(110).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("不透明度"))
+				fieldLabel(c, p, tr("app.common.opacity"))
 				ui.NumberInput(c.Key("magick-wm-opacity"), &a.magick.opacity, 0.05, 1, 0.05)
 			})
 			if a.magick.wmTab == 0 {
 				ui.Column(c).Width(100).Gap(5).Children(func() {
-					fieldLabel(c, p, tr("文字颜色"))
+					fieldLabel(c, p, tr("app.common.text_color"))
 					ui.TextInput(c.Key("magick-wm-color"), &a.magick.color).Placeholder("#ffffff")
 				})
 			}
 			ui.Column(c).Width(150).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("输出格式"))
+				fieldLabel(c, p, tr("app.common.output_format"))
 				a.magickFormatSelect(c, p, true)
 			})
 		})
-		ui.Text(c, tr("水印默认居中，可选择四角与边缘。建议先在一张图片上确认效果，再批量应用。")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
+		ui.Text(c, tr("app.image.watermark_is_centered_by_default_corners")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
 	})
 }
 
 func (a *app) magickComposeOptions(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
-		ui.Text(c, tr("合成方式")).FontSize(13).FontWeight(650)
-		ui.Segmented(c, &a.magick.layout, tr("横向拼接"), tr("纵向拼接"), tr("GIF 动画")).Label(tr("方式")).Width(380)
+		ui.Text(c, tr("app.image.composition")).FontSize(13).FontWeight(650)
+		ui.Segmented(c, &a.magick.layout, tr("app.image.horizontal_stitch"), tr("app.image.vertical_stitch"), tr("app.image.gif_animation")).Label(tr("app.common.mode")).Width(380)
 		if a.magick.layout == 2 {
 			ui.Row(c).FillWidth().Gap(16).AlignItems(ui.End).Children(func() {
 				ui.Column(c).Width(160).Gap(5).Children(func() {
-					fieldLabel(c, p, tr("每帧间隔（毫秒）"))
+					fieldLabel(c, p, tr("app.image.frame_delay_ms"))
 					ui.NumberInput(c.Key("magick-delay"), &a.magick.delay, 10, 5000, 10)
 				})
 			})
-			ui.Text(c, tr("GIF 会循环播放。图片会按列表顺序成为每一帧，尺寸不一致时以第一张为画布。")).FontSize(10.5).TextColor(p.faint)
+			ui.Text(c, tr("app.image.gif_loops_forever_images_become_frames")).FontSize(10.5).TextColor(p.faint)
 		} else {
-			ui.Text(c, tr("拼接后的图片默认保存为 PNG，可在「输出目录」中找到以 -merged 结尾的文件。")).FontSize(10.5).TextColor(p.faint)
+			ui.Text(c, tr("app.image.stitched_images_are_saved_as_png")).FontSize(10.5).TextColor(p.faint)
 		}
 	})
 }
 
 func (a *app) magickOptimizeOptions(c *ui.Context, p palette) {
 	a.magickCard(c, p, func() {
-		ui.Text(c, tr("质量设置")).FontSize(13).FontWeight(650)
+		ui.Text(c, tr("app.image.quality_settings")).FontSize(13).FontWeight(650)
 		ui.Row(c).FillWidth().Gap(16).AlignItems(ui.End).Children(func() {
 			ui.Column(c).Width(150).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("输出格式"))
+				fieldLabel(c, p, tr("app.common.output_format"))
 				a.magickFormatSelect(c, p, true)
 			})
 			ui.Column(c).Width(120).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("压缩质量"))
+				fieldLabel(c, p, tr("app.image.quality"))
 				ui.NumberInput(c.Key("magick-opt-quality"), &a.magick.quality, 1, 100, 1)
 			})
 		})
 		ui.Row(c).FillWidth().Gap(20).Children(func() {
 			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-				ui.Switch(c.Key("magick-auto-level"), &a.magick.autoLevel).Label(tr("自动色阶"))
-				ui.Text(c, tr("自动色阶")).FontSize(12)
+				ui.Switch(c.Key("magick-auto-level"), &a.magick.autoLevel).Label(tr("app.image.auto_level"))
+				ui.Text(c, tr("app.image.auto_level")).FontSize(12)
 			})
 			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-				ui.Switch(c.Key("magick-strip"), &a.magick.strip).Label(tr("清除元数据"))
-				ui.Text(c, tr("清除元数据（EXIF、ICC 等）")).FontSize(12)
+				ui.Switch(c.Key("magick-strip"), &a.magick.strip).Label(tr("app.image.strip_metadata"))
+				ui.Text(c, tr("app.image.strip_metadata_exif_icc_etc")).FontSize(12)
 			})
 		})
-		ui.Text(c, tr("自动色阶会重新分布明暗，常用于偏灰的照片；清除元数据可以减小体积并保护位置信息。")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
+		ui.Text(c, tr("app.image.auto_level_redistributes_tones_which_helps")).FontSize(10.5).TextColor(p.faint).LineHeight(1.45)
 	})
 }
 
@@ -595,14 +592,14 @@ func (a *app) magickFormatSelect(c *ui.Context, p palette, allowKeep bool) {
 	labels := []string{"PNG", "JPG", "WebP", "GIF", "BMP", "TIFF", "PDF"}
 	if allowKeep {
 		values = append([]string{"keep"}, values...)
-		labels = append([]string{tr("保持原格式")}, labels...)
+		labels = append([]string{tr("app.common.keep_original_format")}, labels...)
 	}
 	selectKeyed(c, "magick-format", &a.magick.format, values, labels)
 }
 
 func (a *app) magickGravitySelect(c *ui.Context, p palette, key string, value *string) {
 	values := []string{"center", "north", "south", "west", "east", "northwest", "northeast", "southwest", "southeast"}
-	labels := []string{tr("居中"), tr("上方"), tr("下方"), tr("左侧"), tr("右侧"), tr("左上"), tr("右上"), tr("左下"), tr("右下")}
+	labels := []string{tr("app.common.center"), tr("app.image.top"), tr("app.image.bottom"), tr("app.image.left"), tr("app.image.right"), tr("app.common.top_left"), tr("app.common.top_right"), tr("app.common.bottom_left"), tr("app.common.bottom_right")}
 	selectKeyed(c, key, value, values, labels)
 }
 
@@ -631,39 +628,39 @@ func selectKeyed(c *ui.Context, key any, value *string, values, labels []string)
 func (a *app) magickActions(c *ui.Context, p palette) {
 	if a.magickRunning() {
 		ui.Row(c).FillWidth().Gap(10).AlignItems(ui.Center).Children(func() {
-			if pillButtonKey(c, "magick-cancel", iconPause, tr("取消处理"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "magick-cancel", iconPause, tr("app.common.cancel_processing"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.cancelMagickRun()
 			}
 			ui.Spinner(c).Size(15, 15)
-			ui.Text(c, tr("正在处理，已写出的文件会保留")).FontSize(11.5).TextColor(p.muted)
+			ui.Text(c, tr("app.common.processing_files_already_written_are_kept")).FontSize(11.5).TextColor(p.muted)
 		})
 		return
 	}
-	label := tr("开始处理")
+	label := tr("app.common.start_processing")
 	if run := a.magick.run; run != nil && run.finished {
-		label = tr("再次处理")
+		label = tr("app.common.process_again")
 	}
 	ui.Row(c).FillWidth().Gap(10).AlignItems(ui.Center).Children(func() {
 		if pillButtonKey(c, "magick-run", iconPlay, label, p.accent, p.onAcc).Clicked() {
 			a.startMagickRun()
 		}
-		ui.Text(c, tr("开始前会检查输入图片、输出目录和 ImageMagick。")).FontSize(11).TextColor(p.faint)
+		ui.Text(c, tr("app.image.images_output_folder_and_imagemagick_are")).FontSize(11).TextColor(p.faint)
 	})
 }
 
 func (a *app) magickRunCard(c *ui.Context, p palette, run *magickRun) {
-	status, color, icon := tr("处理中"), p.accent, iconWand
+	status, color, icon := tr("app.common.processing"), p.accent, iconWand
 	switch {
 	case run.canceled:
-		status, color, icon = tr("已取消"), ui.Oklch(0.78, 0.16, 80), iconPause
+		status, color, icon = tr("app.common.canceled"), ui.Oklch(0.78, 0.16, 80), iconPause
 	case run.finished && len(run.errors) > 0 && run.files > 0:
-		status, color, icon = tr("部分完成"), ui.Oklch(0.78, 0.16, 80), iconInfo
+		status, color, icon = tr("app.common.partially_complete"), ui.Oklch(0.78, 0.16, 80), iconInfo
 	case run.finished && len(run.errors) > 0:
-		status, color, icon = tr("处理失败"), ui.Oklch(0.64, 0.2, 28), iconInfo
+		status, color, icon = tr("app.common.processing_failed"), ui.Oklch(0.64, 0.2, 28), iconInfo
 	case run.finished && run.files > 0:
-		status, color, icon = tr("处理完成"), ui.Oklch(0.68, 0.17, 145), iconCheck
+		status, color, icon = tr("app.common.processing_complete"), ui.Oklch(0.68, 0.17, 145), iconCheck
 	case run.finished:
-		status, color, icon = tr("处理失败"), ui.Oklch(0.64, 0.2, 28), iconInfo
+		status, color, icon = tr("app.common.processing_failed"), ui.Oklch(0.64, 0.2, 28), iconInfo
 	}
 	a.magickCard(c, p, func() {
 		ui.Row(c).FillWidth().Gap(12).AlignItems(ui.Center).Children(func() {
@@ -681,7 +678,7 @@ func (a *app) magickRunCard(c *ui.Context, p palette, run *magickRun) {
 			})
 			if run.output != "" {
 				if _, err := os.Stat(run.output); err == nil {
-					if pillButtonKey(c, "magick-open-run-output", iconFolder, tr("打开输出目录"), p.hover.Over(p.bg), p.text).Clicked() {
+					if pillButtonKey(c, "magick-open-run-output", iconFolder, tr("app.common.open_output_folder"), p.hover.Over(p.bg), p.text).Clicked() {
 						a.openPath(run.output)
 					}
 				}
@@ -701,15 +698,15 @@ func (a *app) magickRunCard(c *ui.Context, p palette, run *magickRun) {
 		ui.Row(c).FillWidth().Gap(16).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, fmt.Sprintf("%d / %d", run.done, run.total)).FontSize(11).TextColor(p.muted)
 			if run.files > 0 {
-				ui.Text(c, fmt.Sprintf(tr("已写出 %d 个文件"), run.files)).FontSize(11).TextColor(p.muted)
+				ui.Text(c, fmt.Sprintf(tr("app.common.wrote_files"), run.files)).FontSize(11).TextColor(p.muted)
 			}
 			if run.elapsed > 0 {
-				ui.Text(c, tr("用时")+" "+formatRunDuration(run.elapsed)).FontSize(11).TextColor(p.muted)
+				ui.Text(c, tr("app.common.time")+" "+formatRunDuration(run.elapsed)).FontSize(11).TextColor(p.muted)
 			}
 		})
 		if len(run.errors) > 0 {
 			ui.Column(c).FillWidth().Padding(10, 12).Radius(10).Background(ui.Oklch(0.64, 0.2, 28).Alpha(0.09)).Gap(4).Children(func() {
-				ui.Text(c, fmt.Sprintf(tr("有 %d 个文件失败"), len(run.errors))).FontSize(11.5).FontWeight(650)
+				ui.Text(c, fmt.Sprintf(tr("app.common.files_failed_2"), len(run.errors))).FontSize(11.5).FontWeight(650)
 				max := len(run.errors)
 				if max > 6 {
 					max = 6
@@ -718,13 +715,13 @@ func (a *app) magickRunCard(c *ui.Context, p palette, run *magickRun) {
 					ui.Text(c, "• "+msg).FontSize(10.5).TextColor(p.muted).Selectable()
 				}
 				if len(run.errors) > max {
-					ui.Text(c, fmt.Sprintf(tr("还有 %d 个错误，详见日志。"), len(run.errors)-max)).FontSize(10.5).TextColor(p.faint)
+					ui.Text(c, fmt.Sprintf(tr("app.common.more_errors_see_log"), len(run.errors)-max)).FontSize(10.5).TextColor(p.faint)
 				}
 			})
 		}
 		if len(run.log) > 0 {
 			ui.Column(c).FillWidth().Gap(3).Children(func() {
-				ui.Text(c, tr("处理日志")).FontSize(11.5).FontWeight(650).TextColor(p.muted)
+				ui.Text(c, tr("app.common.processing_log")).FontSize(11.5).FontWeight(650).TextColor(p.muted)
 				lines := run.log
 				if len(lines) > 10 {
 					lines = lines[len(lines)-10:]
@@ -735,7 +732,7 @@ func (a *app) magickRunCard(c *ui.Context, p palette, run *magickRun) {
 			})
 		}
 		if run.finished && run.files > 0 {
-			ui.Text(c, tr("结果已写入输出目录，源文件保持不变。")).FontSize(11).TextColor(p.faint)
+			ui.Text(c, tr("app.common.results_are_in_output_folder_source")).FontSize(11).TextColor(p.faint)
 		}
 	})
 }
@@ -853,12 +850,12 @@ func (a *app) pickMagickInputs() {
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:      a.win,
-			Title:       tr("选择图片"),
-			ButtonLabel: tr("添加"),
-			Message:     tr("可以一次选择多张图片，合成时按选择顺序排列"),
+			Title:       tr("app.common.choose_image"),
+			ButtonLabel: tr("app.common.add"),
+			Message:     tr("app.image.select_several_images_at_once_composition"),
 			Multiple:    true,
 			Filters: []mygo.FileFilter{{
-				Name:       tr("图片"),
+				Name:       tr("app.common.images"),
 				Extensions: []string{"png", "jpg", "jpeg", "webp", "gif", "bmp", "tif", "tiff", "svg", "pdf"},
 			}},
 		})
@@ -889,10 +886,10 @@ func (a *app) pickMagickWatermark() {
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:      a.win,
-			Title:       tr("选择水印图片"),
-			ButtonLabel: tr("使用这张图片"),
+			Title:       tr("app.common.choose_watermark_image_2"),
+			ButtonLabel: tr("app.common.use_this_image"),
 			Filters: []mygo.FileFilter{{
-				Name:       tr("图片"),
+				Name:       tr("app.common.images"),
 				Extensions: []string{"png", "jpg", "jpeg", "webp", "gif"},
 			}},
 		})
@@ -913,8 +910,8 @@ func (a *app) pickMagickOutputDir() {
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:            a.win,
-			Title:             tr("选择输出目录"),
-			ButtonLabel:       tr("使用这个目录"),
+			Title:             tr("app.common.choose_output_folder_3"),
+			ButtonLabel:       tr("app.common.use_this_folder"),
 			Directory:         true,
 			CreateDirectories: true,
 		})
@@ -940,7 +937,7 @@ func (a *app) startMagickRun() {
 	a.persistMagickSettings()
 	run := &magickRun{
 		running: true,
-		current: tr("正在检测 ImageMagick…"),
+		current: tr("app.common.checking_imagemagick"),
 		output:  opt.OutputDir,
 		started: time.Now(),
 	}
@@ -958,7 +955,7 @@ func (a *app) startMagickRun() {
 				a.iconTool = magick.Tool{}
 				a.iconToolErr = err.Error()
 				a.iconToolChecked = true
-				a.finishMagickRun(run, magick.Result{}, tr("未找到 ImageMagick：")+err.Error())
+				a.finishMagickRun(run, magick.Result{}, tr("app.common.imagemagick_not_found_2")+err.Error())
 			})
 			return
 		}
@@ -981,7 +978,7 @@ func (a *app) startMagickRun() {
 		a.post(func() {
 			if a.magick.run == run {
 				run.total = len(plan.Steps)
-				run.current = tr("正在处理图片…")
+				run.current = tr("app.image.processing_images")
 			}
 		})
 		res := plan.Run(ctx, func(ev magick.Progress) {
@@ -1028,17 +1025,17 @@ func (a *app) finishMagickRun(run *magickRun, res magick.Result, fatal string) {
 		run.current = fatal
 		a.setToast(fatal)
 	} else if res.Canceled {
-		run.current = tr("已取消处理，已写出的文件会保留")
-		a.setToast(tr("已取消处理，已写出的文件会保留"))
+		run.current = tr("app.common.processing_canceled_files_already_written_are")
+		a.setToast(tr("app.common.processing_canceled_files_already_written_are"))
 	} else if len(res.Errors) > 0 {
-		run.current = tr("部分文件处理失败")
-		a.setToast(fmt.Sprintf(tr("处理完成：%d 个文件，%d 个失败"), res.Files, len(res.Errors)))
+		run.current = tr("app.common.some_files_failed")
+		a.setToast(fmt.Sprintf(tr("app.common.processed_files_failed"), res.Files, len(res.Errors)))
 	} else if res.Files == 0 {
-		run.current = tr("没有写出任何文件")
-		a.setToast(tr("处理失败：没有写出任何文件"))
+		run.current = tr("app.common.no_files_were_written")
+		a.setToast(tr("app.common.processing_failed_no_files_were_written"))
 	} else {
-		run.current = tr("全部文件已处理")
-		a.setToast(fmt.Sprintf(tr("处理完成：%d 个文件，%s"), res.Files, formatRunDuration(res.Duration)))
+		run.current = tr("app.common.all_files_processed")
+		a.setToast(fmt.Sprintf(tr("app.common.processed_files_in"), res.Files, formatRunDuration(res.Duration)))
 	}
 	if a.magick.cancel != nil {
 		a.magick.cancel()
@@ -1052,7 +1049,7 @@ func (a *app) cancelMagickRun() {
 		a.magick.cancel()
 	}
 	if run := a.magick.run; run != nil {
-		run.current = tr("正在取消…")
+		run.current = tr("app.common.canceling")
 	}
 	a.redraw()
 }

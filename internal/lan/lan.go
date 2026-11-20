@@ -291,7 +291,7 @@ func (n *Node) ConnectAddress(addr string) (model.Peer, error) {
 	}
 	if peer.ID == n.Self().ID {
 		conn.Close()
-		return model.Peer{}, errors.New(i18n.T("zchat: 不能连接自己"))
+		return model.Peer{}, errors.New(i18n.T("app.network.zchat_cannot_connect_to_yourself"))
 	}
 	n.register(conn, br, peer, true)
 	return peer, nil

@@ -59,21 +59,21 @@ func (a *app) iconKitPage(c *ui.Context) {
 		ui.Column(c).FillWidth().Grow(1).Padding(32, 30, 32, 24).Gap(16).Children(func() {
 			ui.Row(c).FillWidth().AlignItems(ui.Start).Gap(16).DragWindow().Children(func() {
 				if a.magick.cap == magickIconCap {
-					if b := iconButton(c, iconBack, 17, p.muted, tr("返回能力列表")); b.Clicked() {
+					if b := iconButton(c, iconBack, 17, p.muted, tr("app.icon.back_to_capabilities")); b.Clicked() {
 						a.magickBack()
 					}
 				}
 				ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Children(func() {
-					sectionTitle(c, p, tr("安装包图标"), tr("上传一张图片，一键生成 Android、iOS、Windows、Linux、macOS 的标准图标与目录"))
+					sectionTitle(c, p, tr("app.common.installer_icons"), tr("app.icon.upload_one_image_and_generate_standard"))
 				})
 				if run := a.iconRun; run != nil && run.running {
 					ui.Row(c).Gap(7).AlignItems(ui.Center).Padding(10, 12).Radius(999).Background(p.accent.Alpha(0.13)).Children(func() {
 						ui.Spinner(c).Size(14, 14)
-						ui.Text(c, tr("正在生成…")).FontSize(11.5).FontWeight(600).TextColor(p.accent)
+						ui.Text(c, tr("app.icon.generating")).FontSize(11.5).FontWeight(600).TextColor(p.accent)
 					})
 				}
 			})
-			ui.Segmented(c, &a.iconTab, tr("生成"), tr("平台要求")).Label(tr("视图")).Width(420)
+			ui.Segmented(c, &a.iconTab, tr("app.common.generate"), tr("app.icon.platform_requirements")).Label(tr("app.icon.view")).Width(420)
 			ui.Scroll(c).Grow(1).Margin(0, -6).Padding(0, 6).Gap(14).Children(func() {
 				if a.iconTab == 1 {
 					a.iconDocsTab(c, p)
@@ -97,17 +97,17 @@ func (a *app) iconToolCard(c *ui.Context, p palette) {
 	a.iconCard(c, p, func() {
 		ui.Row(c).FillWidth().Gap(12).AlignItems(ui.Center).Children(func() {
 			bg, fg := p.hover, p.muted
-			title := tr("正在检测 ImageMagick…")
-			desc := tr("生成图标需要调用本机的 ImageMagick。")
+			title := tr("app.common.checking_imagemagick")
+			desc := tr("app.icon.generating_icons_uses_local_imagemagick_installation")
 			if a.iconToolChecked {
 				if a.iconTool.Path != "" {
 					bg, fg = ui.Oklch(0.72, 0.18, 145).Alpha(0.14), ui.Oklch(0.62, 0.17, 145)
-					title = tr("ImageMagick 已就绪")
+					title = tr("app.common.imagemagick_is_ready")
 					desc = a.iconTool.Version
 				} else {
 					bg, fg = ui.Oklch(0.78, 0.16, 80).Alpha(0.16), ui.Oklch(0.58, 0.15, 65)
-					title = tr("未找到 ImageMagick")
-					desc = tr("请先安装 ImageMagick，再点击「重新检测」。")
+					title = tr("app.common.imagemagick_not_found")
+					desc = tr("app.common.install_imagemagick_first_then_click_check")
 				}
 			}
 			ui.Box(c).Size(40, 40).Radius(12).Center().Background(bg).Children(func() {
@@ -125,7 +125,7 @@ func (a *app) iconToolCard(c *ui.Context, p palette) {
 					ui.Text(c, a.iconTool.Path).FontSize(10.5).TextColor(p.faint).SingleLine()
 				}
 			})
-			if pillButtonKey(c, "icon-tool-check", iconRefresh, tr("重新检测"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "icon-tool-check", iconRefresh, tr("app.common.check_again"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.detectIconTool()
 			}
 		})
@@ -137,7 +137,7 @@ func (a *app) iconToolCard(c *ui.Context, p palette) {
 				}
 			})
 		} else if a.iconToolChecked {
-			ui.Text(c, tr("检测通过。开始生成前会再次确认 ImageMagick 仍可用，避免生成到一半才失败。")).FontSize(11).TextColor(p.faint)
+			ui.Text(c, tr("app.icon.check_passed_imagemagick_is_checked_again")).FontSize(11).TextColor(p.faint)
 		}
 	})
 }
@@ -145,10 +145,10 @@ func (a *app) iconToolCard(c *ui.Context, p palette) {
 func (a *app) iconSourceCard(c *ui.Context, p palette) {
 	a.iconCard(c, p, func() {
 		ui.Row(c).FillWidth().AlignItems(ui.Center).Gap(10).Children(func() {
-			ui.Text(c, tr("源图片")).FontSize(13).FontWeight(650)
-			ui.Text(c, tr("建议 1024 × 1024 以上的正方形 PNG")).FontSize(11).TextColor(p.faint)
+			ui.Text(c, tr("app.icon.source_image")).FontSize(13).FontWeight(650)
+			ui.Text(c, tr("app.icon.square_png_of_at_least_1024")).FontSize(11).TextColor(p.faint)
 			ui.Spacer(c)
-			if pillButtonKey(c, "icon-pick-source", iconUpload, tr("选择图片"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "icon-pick-source", iconUpload, tr("app.common.choose_image"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.pickIconSource()
 			}
 		})
@@ -163,8 +163,8 @@ func (a *app) iconSourceCard(c *ui.Context, p palette) {
 			}
 			ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(4).Children(func() {
 				if a.iconSource == "" {
-					ui.Text(c, tr("还没有选择图片")).FontSize(12.5).FontWeight(600)
-					ui.Text(c, tr("支持 PNG、JPG、WebP、GIF。透明区域会在 iOS 图标中填充为你选择的背景色。")).FontSize(11).TextColor(p.muted).LineHeight(1.45)
+					ui.Text(c, tr("app.common.no_image_selected_yet")).FontSize(12.5).FontWeight(600)
+					ui.Text(c, tr("app.icon.supports_png_jpg_webp_and_gif")).FontSize(11).TextColor(p.muted).LineHeight(1.45)
 					return
 				}
 				ui.Text(c, filepath.Base(a.iconSource)).FontSize(12.5).FontWeight(600).SingleLine()
@@ -176,13 +176,13 @@ func (a *app) iconSourceCard(c *ui.Context, p palette) {
 		})
 		if a.iconSource != "" {
 			if _, err := os.Stat(a.iconSource); err != nil {
-				a.iconWarning(c, p, tr("源图片不存在或已被移动，请重新选择。"))
+				a.iconWarning(c, p, tr("app.icon.source_image_is_missing_or_was_2"))
 			} else {
 				if a.iconSourceW > 0 && a.iconSourceW != a.iconSourceH {
-					a.iconNote(c, p, tr("图片不是正方形：会按比例缩放，四周按平台要求填充透明或背景色。"))
+					a.iconNote(c, p, tr("app.icon.image_is_not_square_it_is"))
 				}
 				if a.iconSourceW > 0 && min(a.iconSourceW, a.iconSourceH) < 1024 {
-					a.iconNote(c, p, tr("源图短边小于 1024 像素，生成 1024 图标时可能变模糊，建议换更大的原图。"))
+					a.iconNote(c, p, tr("app.icon.short_side_is_below_1024_pixels"))
 				}
 			}
 		}
@@ -191,29 +191,29 @@ func (a *app) iconSourceCard(c *ui.Context, p palette) {
 
 func (a *app) iconOutputCard(c *ui.Context, p palette) {
 	a.iconCard(c, p, func() {
-		ui.Text(c, tr("输出设置")).FontSize(13).FontWeight(650)
+		ui.Text(c, tr("app.icon.output_settings")).FontSize(13).FontWeight(650)
 		ui.Row(c).FillWidth().Gap(12).AlignItems(ui.End).Children(func() {
 			ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("应用名称"))
+				fieldLabel(c, p, tr("app.icon.app_name"))
 				ui.TextInput(c.Key("icon-name"), &a.settings.IconName).Placeholder("zchat")
 			})
 			ui.Column(c).Width(170).Gap(5).Children(func() {
-				fieldLabel(c, p, tr("不透明背景色（iOS）"))
+				fieldLabel(c, p, tr("app.icon.opaque_background_ios"))
 				ui.TextInput(c.Key("icon-bg"), &a.settings.IconBackground).Placeholder("#ffffff")
 				if !iconBackgroundPattern.MatchString(strings.TrimSpace(a.settings.IconBackground)) {
-					ui.Text(c, tr("请使用 #RGB 或 #RRGGBB")).FontSize(10.5).TextColor(ui.Oklch(0.64, 0.2, 28))
+					ui.Text(c, tr("app.icon.use_rgb_or_rrggbb")).FontSize(10.5).TextColor(ui.Oklch(0.64, 0.2, 28))
 				}
 			})
 		})
 		ui.Column(c).Gap(5).Children(func() {
-			fieldLabel(c, p, tr("输出目录"))
+			fieldLabel(c, p, tr("app.common.output_folder"))
 			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-				ui.TextInput(c.Key("icon-output"), &a.settings.IconOutputDir).Grow(1).Placeholder(tr("选择一个输出目录"))
-				if ui.Button(c.Key("icon-pick-output"), tr("选择…")).Clicked() {
+				ui.TextInput(c.Key("icon-output"), &a.settings.IconOutputDir).Grow(1).Placeholder(tr("app.common.choose_output_folder_2"))
+				if ui.Button(c.Key("icon-pick-output"), tr("app.common.select")).Clicked() {
 					a.pickIconOutput()
 				}
 			})
-			ui.Text(c, tr("会按平台自动创建 android、ios、windows、linux、macos 子目录。已有文件会被覆盖，说明文件和图标会一起写出。")).FontSize(10.5).TextColor(p.faint).LineHeight(1.4)
+			ui.Text(c, tr("app.icon.creates_android_ios_windows_linux_and")).FontSize(10.5).TextColor(p.faint).LineHeight(1.4)
 		})
 	})
 }
@@ -221,13 +221,13 @@ func (a *app) iconOutputCard(c *ui.Context, p palette) {
 func (a *app) iconPlatformsCard(c *ui.Context, p palette) {
 	a.iconCard(c, p, func() {
 		ui.Row(c).FillWidth().AlignItems(ui.Center).Gap(8).Children(func() {
-			ui.Text(c, tr("目标平台")).FontSize(13).FontWeight(650)
-			ui.Text(c, tr("可多选")).FontSize(11).TextColor(p.faint)
+			ui.Text(c, tr("app.icon.target_platforms")).FontSize(13).FontWeight(650)
+			ui.Text(c, tr("app.icon.multiple_choices")).FontSize(11).TextColor(p.faint)
 			ui.Spacer(c)
-			if ui.Button(c.Key("icon-pick-all"), tr("全选")).Clicked() {
+			if ui.Button(c.Key("icon-pick-all"), tr("app.common.select_all")).Clicked() {
 				a.iconPicks = iconPicks{Android: true, IOS: true, Windows: true, Linux: true, MacOS: true}
 			}
-			if ui.Button(c.Key("icon-pick-none"), tr("全不选")).Clicked() {
+			if ui.Button(c.Key("icon-pick-none"), tr("app.common.select_none")).Clicked() {
 				a.iconPicks = iconPicks{}
 			}
 		})
@@ -253,7 +253,7 @@ func (a *app) iconPlatformsCard(c *ui.Context, p palette) {
 				ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(2).Children(func() {
 					ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 						ui.Text(c, platform.Name).FontSize(12.5).FontWeight(650)
-						ui.Text(c, fmt.Sprintf(tr("%d 个文件"), platform.FileCount())).FontSize(10.5).TextColor(p.faint)
+						ui.Text(c, fmt.Sprintf(tr("app.common.files_2"), platform.FileCount())).FontSize(10.5).TextColor(p.faint)
 					})
 					ui.Text(c, tr(platform.Summary)).FontSize(11).TextColor(p.muted).LineHeight(1.35)
 				})
@@ -266,37 +266,37 @@ func (a *app) iconActions(c *ui.Context, p palette) {
 	running := a.iconRunning()
 	ui.Row(c).FillWidth().Gap(10).AlignItems(ui.Center).Children(func() {
 		if running {
-			if pillButtonKey(c, "icon-cancel", iconPause, tr("取消生成"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "icon-cancel", iconPause, tr("app.icon.cancel_generation"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.cancelIconGeneration()
 			}
 			ui.Spinner(c).Size(15, 15)
-			ui.Text(c, tr("正在生成，已写入的文件会保留")).FontSize(11.5).TextColor(p.muted)
+			ui.Text(c, tr("app.icon.generating_files_already_written_are_kept")).FontSize(11.5).TextColor(p.muted)
 			return
 		}
-		label := tr("开始生成")
+		label := tr("app.icon.generate")
 		if run := a.iconRun; run != nil && run.finished {
-			label = tr("再次生成")
+			label = tr("app.icon.generate_again")
 		}
 		if pillButtonKey(c, "icon-generate", iconPackage, label, p.accent, p.onAcc).Clicked() {
 			a.startIconGeneration()
 		}
-		ui.Text(c, tr("生成前会自动检查 ImageMagick、源图片和输出目录。")).FontSize(11).TextColor(p.faint)
+		ui.Text(c, tr("app.icon.imagemagick_source_image_and_output_folder")).FontSize(11).TextColor(p.faint)
 	})
 }
 
 func (a *app) iconRunCard(c *ui.Context, p palette, run *iconRun) {
-	status, color, icon := tr("生成中"), p.accent, iconPackage
+	status, color, icon := tr("app.icon.generating_2"), p.accent, iconPackage
 	switch {
 	case run.canceled:
-		status, color, icon = tr("已取消"), ui.Oklch(0.78, 0.16, 80), iconPause
+		status, color, icon = tr("app.common.canceled"), ui.Oklch(0.78, 0.16, 80), iconPause
 	case run.finished && len(run.errors) > 0 && run.files > 0:
-		status, color, icon = tr("部分完成"), ui.Oklch(0.78, 0.16, 80), iconInfo
+		status, color, icon = tr("app.common.partially_complete"), ui.Oklch(0.78, 0.16, 80), iconInfo
 	case run.finished && len(run.errors) > 0:
-		status, color, icon = tr("生成失败"), ui.Oklch(0.64, 0.2, 28), iconInfo
+		status, color, icon = tr("app.icon.generation_failed"), ui.Oklch(0.64, 0.2, 28), iconInfo
 	case run.finished && run.files > 0:
-		status, color, icon = tr("生成完成"), ui.Oklch(0.68, 0.17, 145), iconCheck
+		status, color, icon = tr("app.icon.generation_complete"), ui.Oklch(0.68, 0.17, 145), iconCheck
 	case run.finished:
-		status, color, icon = tr("生成失败"), ui.Oklch(0.64, 0.2, 28), iconInfo
+		status, color, icon = tr("app.icon.generation_failed"), ui.Oklch(0.64, 0.2, 28), iconInfo
 	}
 	a.iconCard(c, p, func() {
 		ui.Row(c).FillWidth().Gap(12).AlignItems(ui.Center).Children(func() {
@@ -314,7 +314,7 @@ func (a *app) iconRunCard(c *ui.Context, p palette, run *iconRun) {
 			})
 			if run.output != "" {
 				if _, err := os.Stat(run.output); err == nil {
-					if pillButtonKey(c, "icon-open-output", iconFolder, tr("打开输出目录"), p.hover.Over(p.bg), p.text).Clicked() {
+					if pillButtonKey(c, "icon-open-output", iconFolder, tr("app.common.open_output_folder"), p.hover.Over(p.bg), p.text).Clicked() {
 						a.openPath(run.output)
 					}
 				}
@@ -334,10 +334,10 @@ func (a *app) iconRunCard(c *ui.Context, p palette, run *iconRun) {
 		ui.Row(c).FillWidth().Gap(16).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, fmt.Sprintf("%d / %d", run.done, run.total)).FontSize(11).TextColor(p.muted)
 			if run.files > 0 {
-				ui.Text(c, fmt.Sprintf(tr("已写出 %d 个文件"), run.files)).FontSize(11).TextColor(p.muted)
+				ui.Text(c, fmt.Sprintf(tr("app.common.wrote_files"), run.files)).FontSize(11).TextColor(p.muted)
 			}
 			if run.elapsed > 0 {
-				ui.Text(c, tr("用时")+" "+formatRunDuration(run.elapsed)).FontSize(11).TextColor(p.muted)
+				ui.Text(c, tr("app.common.time")+" "+formatRunDuration(run.elapsed)).FontSize(11).TextColor(p.muted)
 			}
 			if run.output != "" {
 				ui.Text(c, run.output).FontSize(10.5).TextColor(p.faint).SingleLine().Grow(1).Shrink(1).MinWidth(0).Selectable()
@@ -348,7 +348,7 @@ func (a *app) iconRunCard(c *ui.Context, p palette, run *iconRun) {
 		}
 		if len(run.errors) > 0 {
 			ui.Column(c).FillWidth().Padding(10, 12).Radius(10).Background(ui.Oklch(0.64, 0.2, 28).Alpha(0.09)).Gap(4).Children(func() {
-				ui.Text(c, fmt.Sprintf(tr("有 %d 个文件失败"), len(run.errors))).FontSize(11.5).FontWeight(650)
+				ui.Text(c, fmt.Sprintf(tr("app.common.files_failed_2"), len(run.errors))).FontSize(11.5).FontWeight(650)
 				max := len(run.errors)
 				if max > 6 {
 					max = 6
@@ -357,13 +357,13 @@ func (a *app) iconRunCard(c *ui.Context, p palette, run *iconRun) {
 					ui.Text(c, "• "+msg).FontSize(10.5).TextColor(p.muted).Selectable()
 				}
 				if len(run.errors) > max {
-					ui.Text(c, fmt.Sprintf(tr("还有 %d 个错误，详见日志。"), len(run.errors)-max)).FontSize(10.5).TextColor(p.faint)
+					ui.Text(c, fmt.Sprintf(tr("app.common.more_errors_see_log"), len(run.errors)-max)).FontSize(10.5).TextColor(p.faint)
 				}
 			})
 		}
 		if len(run.log) > 0 {
 			ui.Column(c).FillWidth().Gap(3).Children(func() {
-				ui.Text(c, tr("生成日志")).FontSize(11.5).FontWeight(650).TextColor(p.muted)
+				ui.Text(c, tr("app.icon.generation_log")).FontSize(11.5).FontWeight(650).TextColor(p.muted)
 				lines := run.log
 				if len(lines) > 10 {
 					lines = lines[len(lines)-10:]
@@ -382,7 +382,7 @@ func (a *app) iconRunCard(c *ui.Context, p palette, run *iconRun) {
 func (a *app) iconUsageHint(c *ui.Context, p palette) {
 	ui.Row(c).FillWidth().Padding(12, 14).Radius(12).Background(p.panel).Gap(10).AlignItems(ui.Start).Children(func() {
 		ui.Icon(c, iconInfo).Size(16, 16).TextColor(p.faint)
-		ui.Text(c, tr("小提示：生成的目录可以直接合并进工程；iOS 的 AppIcon.appiconset 拖进 Xcode，Windows 的 app.ico 用于安装包，Linux 的 .desktop 和 hicolor 图标放到对应系统目录即可。每个平台的 README.txt 写有具体步骤。")).FontSize(11).TextColor(p.muted).LineHeight(1.5)
+		ui.Text(c, tr("app.icon.tip_generated_folders_can_be_merged")).FontSize(11).TextColor(p.muted).LineHeight(1.5)
 	})
 }
 
@@ -393,13 +393,13 @@ func (a *app) iconDocsTab(c *ui.Context, p palette) {
 	ui.Column(c).FillWidth().Padding(14, 16).Radius(14).Background(p.panel).Border(1, p.hair).Gap(6).Children(func() {
 		ui.Row(c).FillWidth().AlignItems(ui.Center).Gap(10).Children(func() {
 			ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(4).Children(func() {
-				ui.Text(c, tr("官方尺寸与格式要求")).FontSize(15).FontWeight(700)
-				ui.Text(c, tr("下表按各平台当前官方规范整理。不同平台版本和打包工具可能略有差异，遇到审核或打包工具报错时，请以各平台官方文档为准。生成器会为每个平台建立独立目录，并附带 README.txt。")).FontSize(11.5).TextColor(p.muted).LineHeight(1.5)
-				ui.Text(c, tr("ImageMagick 负责缩放和格式转换；所有图标都由同一张源图生成，不会上传到网络。")).FontSize(11).TextColor(p.faint)
+				ui.Text(c, tr("app.icon.official_sizes_and_formats")).FontSize(15).FontWeight(700)
+				ui.Text(c, tr("app.icon.table_follows_each_platform_s_current")).FontSize(11.5).TextColor(p.muted).LineHeight(1.5)
+				ui.Text(c, tr("app.icon.imagemagick_handles_resizing_and_format_conversion")).FontSize(11).TextColor(p.faint)
 			})
-			if ui.Button(c.Key("icon-copy-all-docs"), tr("复制全部说明")).Clicked() {
+			if ui.Button(c.Key("icon-copy-all-docs"), tr("app.icon.copy_all_documentation")).Clicked() {
 				c.WriteClipboard(iconkit.AllMarkdown())
-				a.setToast(tr("已复制全部平台说明"))
+				a.setToast(tr("app.icon.copied_all_platform_documentation"))
 			}
 		})
 	})
@@ -415,11 +415,11 @@ func (a *app) iconDocsTab(c *ui.Context, p palette) {
 					ui.Text(c, tr(platform.Summary)).FontSize(11).TextColor(p.muted).LineHeight(1.4)
 				})
 				ui.Box(c).Padding(7, 5).Radius(999).Background(p.hover).Children(func() {
-					ui.Text(c, fmt.Sprintf(tr("%d 个文件"), platform.FileCount())).FontSize(10.5).TextColor(p.muted)
+					ui.Text(c, fmt.Sprintf(tr("app.common.files_2"), platform.FileCount())).FontSize(10.5).TextColor(p.muted)
 				})
-				if ui.Button(c.Key("icon-copy-doc-"+platform.Key), tr("复制说明")).Clicked() {
+				if ui.Button(c.Key("icon-copy-doc-"+platform.Key), tr("app.icon.copy_documentation")).Clicked() {
 					c.WriteClipboard(platform.Markdown())
-					a.setToast(platform.Name + tr(" 说明已复制"))
+					a.setToast(platform.Name + tr("app.icon.documentation_copied"))
 				}
 			})
 			markdown.View(c, platform.Markdown(), &a.iconDocOpts).FillWidth()
@@ -503,11 +503,11 @@ func (a *app) pickIconSource() {
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:      a.win,
-			Title:       tr("选择源图片"),
-			ButtonLabel: tr("使用这张图片"),
-			Message:     tr("建议选择 1024 × 1024 以上的 PNG"),
+			Title:       tr("app.icon.choose_source_image_2"),
+			ButtonLabel: tr("app.common.use_this_image"),
+			Message:     tr("app.icon.choose_png_of_at_least_1024"),
 			Filters: []mygo.FileFilter{{
-				Name:       tr("图片"),
+				Name:       tr("app.common.images"),
 				Extensions: []string{"png", "jpg", "jpeg", "webp", "gif"},
 			}},
 		})
@@ -518,7 +518,7 @@ func (a *app) pickIconSource() {
 		w, h := imageSize(path)
 		a.post(func() {
 			if w == 0 || h == 0 {
-				a.setToast(tr("无法读取这张图片，请换一张 PNG 或 JPG"))
+				a.setToast(tr("app.icon.cannot_read_this_image_try_another"))
 				return
 			}
 			a.iconSource = path
@@ -536,8 +536,8 @@ func (a *app) pickIconOutput() {
 	go func() {
 		paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 			Parent:            a.win,
-			Title:             tr("选择输出目录"),
-			ButtonLabel:       tr("使用这个目录"),
+			Title:             tr("app.common.choose_output_folder_3"),
+			ButtonLabel:       tr("app.common.use_this_folder"),
 			Directory:         true,
 			CreateDirectories: true,
 		})
@@ -557,26 +557,26 @@ func (a *app) startIconGeneration() {
 	}
 	src := strings.TrimSpace(a.iconSource)
 	if src == "" {
-		a.setToast(tr("请先选择一张源图片"))
+		a.setToast(tr("app.icon.choose_source_image_first"))
 		return
 	}
 	if info, err := os.Stat(src); err != nil || info.IsDir() {
-		a.setToast(tr("源图片不存在或已被移动，请重新选择"))
+		a.setToast(tr("app.icon.source_image_is_missing_or_was"))
 		return
 	}
 	keys := a.iconSelectedKeys()
 	if len(keys) == 0 {
-		a.setToast(tr("请至少选择一个平台"))
+		a.setToast(tr("app.icon.choose_at_least_one_platform"))
 		return
 	}
 	out := strings.TrimSpace(a.settings.IconOutputDir)
 	if out == "" {
-		a.setToast(tr("请选择输出目录"))
+		a.setToast(tr("app.common.choose_output_folder"))
 		return
 	}
 	bg := strings.TrimSpace(a.settings.IconBackground)
 	if !iconBackgroundPattern.MatchString(bg) {
-		a.setToast(tr("背景色请使用 #RRGGBB 格式"))
+		a.setToast(tr("app.icon.use_rrggbb_for_background_color"))
 		return
 	}
 	name := iconkit.SafeName(a.settings.IconName)
@@ -585,7 +585,7 @@ func (a *app) startIconGeneration() {
 
 	run := &iconRun{
 		running: true,
-		current: tr("正在检测 ImageMagick…"),
+		current: tr("app.common.checking_imagemagick"),
 		output:  out,
 		started: time.Now(),
 	}
@@ -604,7 +604,7 @@ func (a *app) startIconGeneration() {
 				a.iconTool = iconkit.Tool{}
 				a.iconToolErr = err.Error()
 				a.iconToolChecked = true
-				a.finishIconRun(run, iconkit.Result{}, tr("未找到 ImageMagick：")+err.Error())
+				a.finishIconRun(run, iconkit.Result{}, tr("app.common.imagemagick_not_found_2")+err.Error())
 			})
 			return
 		}
@@ -633,7 +633,7 @@ func (a *app) startIconGeneration() {
 		a.post(func() {
 			if a.iconRun == run {
 				run.total = len(plan.Steps)
-				run.current = tr("正在创建目录并写入图标…")
+				run.current = tr("app.icon.creating_folders_and_writing_icons")
 			}
 		})
 		res := plan.Run(ctx, func(ev iconkit.Progress) {
@@ -681,17 +681,17 @@ func (a *app) finishIconRun(run *iconRun, res iconkit.Result, fatal string) {
 		run.current = fatal
 		a.setToast(fatal)
 	} else if res.Canceled {
-		run.current = tr("已取消生成，已写入的文件会保留")
-		a.setToast(tr("已取消生成，已写入的文件会保留"))
+		run.current = tr("app.icon.generation_canceled_files_already_written_are")
+		a.setToast(tr("app.icon.generation_canceled_files_already_written_are"))
 	} else if len(res.Errors) > 0 {
-		run.current = tr("部分文件生成失败")
-		a.setToast(fmt.Sprintf(tr("生成完成：%d 个文件，%d 个失败"), res.Files, len(res.Errors)))
+		run.current = tr("app.icon.some_files_failed")
+		a.setToast(fmt.Sprintf(tr("app.icon.generated_files_failed"), res.Files, len(res.Errors)))
 	} else if res.Files == 0 {
-		run.current = tr("没有写出任何文件")
-		a.setToast(tr("生成失败：没有写出任何文件"))
+		run.current = tr("app.common.no_files_were_written")
+		a.setToast(tr("app.icon.generation_failed_no_files_were_written"))
 	} else {
-		run.current = tr("全部文件已生成")
-		a.setToast(fmt.Sprintf(tr("生成完成：%d 个文件，%s"), res.Files, formatRunDuration(res.Duration)))
+		run.current = tr("app.icon.all_files_generated")
+		a.setToast(fmt.Sprintf(tr("app.icon.generated_files_in"), res.Files, formatRunDuration(res.Duration)))
 	}
 	if a.iconCancel != nil {
 		a.iconCancel()
@@ -705,42 +705,42 @@ func (a *app) cancelIconGeneration() {
 		a.iconCancel()
 	}
 	if run := a.iconRun; run != nil {
-		run.current = tr("正在取消…")
+		run.current = tr("app.common.canceling")
 	}
 	a.redraw()
 }
 
 func iconDoneHint(run *iconRun) string {
 	if run.canceled {
-		return tr("生成已取消，成功写入的文件保留在输出目录中，可以重新生成覆盖。")
+		return tr("app.icon.generation_canceled_successfully_written_files_stay")
 	}
 	if len(run.errors) > 0 {
-		return tr("成功生成的文件已保留；修复错误后可以再次生成，重复文件会被覆盖。")
+		return tr("app.icon.successfully_generated_files_are_kept_fix")
 	}
 	if run.files > 0 {
-		return tr("已完成，输出目录中的平台子目录可以直接合并进工程。")
+		return tr("app.icon.done_platform_folders_in_output_directory")
 	}
-	return tr("没有生成文件，请检查 ImageMagick 和输出目录权限后重试。")
+	return tr("app.icon.no_files_were_generated_check_imagemagick")
 }
 
 func formatRunDuration(d time.Duration) string {
 	if d <= 0 {
-		return "0 " + tr("秒")
+		return "0 " + tr("app.common.s")
 	}
 	if d < time.Second {
-		return fmt.Sprintf("%d %s", d.Milliseconds(), tr("毫秒"))
+		return fmt.Sprintf("%d %s", d.Milliseconds(), tr("app.common.ms"))
 	}
-	return fmt.Sprintf("%.1f %s", d.Seconds(), tr("秒"))
+	return fmt.Sprintf("%.1f %s", d.Seconds(), tr("app.common.s"))
 }
 
 func imageMagickHint() string {
 	switch runtime.GOOS {
 	case "windows":
-		return tr("安装：winget install ImageMagick.ImageMagick  或  choco install imagemagick")
+		return tr("app.icon.install_winget_install_imagemagick_imagemagick_or")
 	case "darwin":
-		return tr("安装：brew install imagemagick")
+		return tr("app.icon.install_brew_install_imagemagick")
 	default:
-		return tr("安装：sudo apt install imagemagick  或  sudo dnf install ImageMagick")
+		return tr("app.icon.install_sudo_apt_install_imagemagick_or")
 	}
 }
 

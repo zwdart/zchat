@@ -86,7 +86,7 @@ func (a *app) headerAvatar(c *ui.Context, conv *model.Conversation, size float32
 		return
 	}
 	b := ui.ButtonBase(c).Key("header-avatar-"+conv.ID).Size(size, size).Radius(size / 2).
-		Padding(0).FocusRing(false).Label(tr("查看资料")).Background(ui.Transparent)
+		Padding(0).FocusRing(false).Label(tr("app.common.view_profile")).Background(ui.Transparent)
 	b.Children(func() {
 		a.convAvatar(c, conv, size)
 	})
@@ -116,7 +116,7 @@ func (a *app) chatHeader(c *ui.Context, conv *model.Conversation) {
 			}
 			ui.Text(c, sub).FontSize(11.5).TextColor(p.muted).SingleLine()
 		})
-		if b := iconButton(c, iconSearch, 16, p.muted, tr("搜索聊天记录")); b.Clicked() {
+		if b := iconButton(c, iconSearch, 16, p.muted, tr("app.common.search_chat_history")); b.Clicked() {
 			a.msgSearchShown = !a.msgSearchShown
 			if a.msgSearchShown {
 				a.focusMsgQuery = true
@@ -124,7 +124,7 @@ func (a *app) chatHeader(c *ui.Context, conv *model.Conversation) {
 				a.clearMsgSearch()
 			}
 		}
-		more := iconButton(c, iconMore, 16, p.muted, tr("更多"))
+		more := iconButton(c, iconMore, 16, p.muted, tr("app.chat.more"))
 		more.PopoverMenu(func(m *ui.Menu) { a.chatMenu(m, conv) })
 	})
 }
@@ -139,64 +139,64 @@ func (a *app) convSubtitle(conv *model.Conversation) string {
 			}
 		}
 		if n > 0 {
-			return itoa(n) + tr(" 位成员 · ") + itoa(online) + tr(" 人在线")
+			return itoa(n) + tr("app.common.members_2") + itoa(online) + tr("app.chat.online")
 		}
-		return tr("群聊")
+		return tr("app.common.group")
 	}
 	p := a.peers[conv.PeerID]
 	if p == nil {
-		return tr("未知设备")
+		return tr("app.common.unknown_device")
 	}
 	if p.Connected && p.Status.Available() {
 		return presenceLabel(p.Status)
 	}
 	if !p.LastSeen.IsZero() {
-		return presenceLabel(p.Status) + tr(" · 最后在线 ") + shortStamp(p.LastSeen, time.Now())
+		return presenceLabel(p.Status) + tr("app.chat.last_seen") + shortStamp(p.LastSeen, time.Now())
 	}
 	return presenceLabel(p.Status)
 }
 
 func (a *app) chatMenu(m *ui.Menu, conv *model.Conversation) {
 	if conv.Kind == model.KindGroup {
-		if m.Item(tr("群聊信息")).Chosen() {
+		if m.Item(tr("app.common.group_info")).Chosen() {
 			a.openGroupInfo(conv)
 		}
-		if m.Item(tr("添加成员…")).Chosen() {
+		if m.Item(tr("app.chat.add_members")).Chosen() {
 			a.openGroupAdd(conv)
 		}
 		m.Separator()
 	} else if p := a.peers[conv.PeerID]; p != nil {
-		if m.Item(tr("设置备注…")).Chosen() {
+		if m.Item(tr("app.common.set_alias_2")).Chosen() {
 			a.openAlias(p)
 		}
 		if p.IP != "" {
-			if m.Item(tr("复制 IP 地址")).Chosen() {
+			if m.Item(tr("app.common.copy_ip_address")).Chosen() {
 				mygo.Clipboard.WriteText(p.IP)
-				a.setToast(tr("已复制 ") + p.IP)
+				a.setToast(tr("app.common.copied_2") + p.IP)
 			}
 		}
 		m.Separator()
 	}
-	if m.Item(tr("消息免打扰")).Checked(conv.Muted).Chosen() {
+	if m.Item(tr("app.common.mute_chat")).Checked(conv.Muted).Chosen() {
 		conv.Muted = !conv.Muted
 		a.scheduleSave()
 	}
-	if m.Item(tr("搜索聊天记录")).Chosen() {
+	if m.Item(tr("app.common.search_chat_history")).Chosen() {
 		a.msgSearchShown = true
 		a.focusMsgQuery = true
 		a.redraw()
 	}
 	m.Separator()
-	if m.Item(tr("清空聊天记录")).Chosen() {
-		a.confirm(tr("清空聊天记录"), tr("只会删除这台设备上的记录。"), func() { a.clearHistory(conv.ID) })
+	if m.Item(tr("app.common.clear_chat_history")).Chosen() {
+		a.confirm(tr("app.common.clear_chat_history"), tr("app.common.only_records_on_this_device_will"), func() { a.clearHistory(conv.ID) })
 	}
 	if conv.Kind == model.KindGroup {
-		if m.Item(tr("退出群聊…")).Chosen() {
-			label, prefix, dissolve := tr("退出群聊"), tr("确定退出群聊「"), false
+		if m.Item(tr("app.chat.leave_group")).Chosen() {
+			label, prefix, dissolve := tr("app.common.leave_group"), tr("app.common.leave_group_2"), false
 			if conv.Owner == a.profile.ID && len(conv.Members) > 1 {
-				label, prefix, dissolve = tr("解散群聊"), tr("确定解散群聊「"), true
+				label, prefix, dissolve = tr("app.common.dissolve_group"), tr("app.common.dissolve_group_2"), true
 			}
-			a.confirm(label, prefix+a.convTitle(conv)+tr("」吗？"), func() {
+			a.confirm(label, prefix+a.convTitle(conv)+tr("app.common.closing_quote_question"), func() {
 				if dissolve {
 					a.disbandGroup(conv)
 				} else {
@@ -204,15 +204,15 @@ func (a *app) chatMenu(m *ui.Menu, conv *model.Conversation) {
 				}
 			})
 		}
-	} else if m.Item(tr("删除会话")).Chosen() {
-		a.confirm(tr("删除会话"), tr("确定删除「")+a.convTitle(conv)+tr("」吗？"), func() { a.deleteConversation(conv.ID) })
+	} else if m.Item(tr("app.common.delete_chat")).Chosen() {
+		a.confirm(tr("app.common.delete_chat"), tr("app.common.delete_2")+a.convTitle(conv)+tr("app.common.closing_quote_question"), func() { a.deleteConversation(conv.ID) })
 	}
 }
 
 func (a *app) messageSearch(c *ui.Context, conv *model.Conversation) {
 	p := a.pal
 	ui.Row(c).Padding(18, 8).Gap(8).AlignItems(ui.Center).Background(p.panel).Children(func() {
-		in := ui.SearchField(c, &a.msgQuery).Bind(&a.msgSearch).Label(tr("搜索聊天记录")).Placeholder(tr("搜索聊天记录")).Grow(1)
+		in := ui.SearchField(c, &a.msgQuery).Bind(&a.msgSearch).Label(tr("app.common.search_chat_history")).Placeholder(tr("app.common.search_chat_history")).Grow(1)
 		in.Changed()
 		count := 0
 		for _, r := range a.rows {
@@ -221,9 +221,9 @@ func (a *app) messageSearch(c *ui.Context, conv *model.Conversation) {
 			}
 		}
 		if strings.TrimSpace(a.msgQuery) != "" {
-			ui.Text(c, itoa(count)+tr(" 条结果")).FontSize(11.5).TextColor(p.muted)
+			ui.Text(c, itoa(count)+tr("app.chat.results")).FontSize(11.5).TextColor(p.muted)
 		}
-		if b := iconButton(c, iconX, 14, p.muted, tr("关闭搜索")); b.Clicked() {
+		if b := iconButton(c, iconX, 14, p.muted, tr("app.chat.close_search")); b.Clicked() {
 			a.clearMsgSearch()
 		}
 	})
@@ -282,10 +282,10 @@ func (a *app) messageRow(c *ui.Context, conv *model.Conversation, row int) {
 	if m.Recalled {
 		who := m.SenderName
 		if m.Mine {
-			who = tr("你")
+			who = tr("app.common.you")
 		}
 		ui.Row(c).Padding(0, 8).Center().Children(func() {
-			ui.Text(c, who+tr("撤回了一条消息")).FontSize(11.5).TextColor(p.faint)
+			ui.Text(c, who+tr("app.chat.unsent_message")).FontSize(11.5).TextColor(p.faint)
 		})
 		return
 	}
@@ -341,7 +341,7 @@ func (a *app) messageAvatar(c *ui.Context, m *model.Message, size float32) {
 		name = a.peerName(m.SenderID)
 	}
 	b := ui.ButtonBase(c).Key("msg-avatar-"+m.ID+"-"+m.SenderID).Size(size, size).Radius(size / 2).
-		Padding(0).FocusRing(false).Label(tr("查看资料")).Background(ui.Transparent)
+		Padding(0).FocusRing(false).Label(tr("app.common.view_profile")).Background(ui.Transparent)
 	b.Children(func() {
 		ui.Avatar(c, name, a.avatarBitmap(avatar)).Size(size, size)
 	})
@@ -397,7 +397,7 @@ func (a *app) imageBubble(c *ui.Context, conv *model.Conversation, m *model.Mess
 		bmp = a.loadImage(m.File.Path)
 	}
 	if bmp != nil {
-		b := ui.ButtonBase(c).Radius(14).FocusRing(false).Label(tr("[图片] ") + fileNameOf(m)).
+		b := ui.ButtonBase(c).Radius(14).FocusRing(false).Label(tr("app.common.image_2") + fileNameOf(m)).
 			BorderWidth(1).BorderColor(p.hair).Children(func() {
 			ui.Image(c, bmp).Size(w, h).Fit(ui.Contain).Radius(13)
 		})
@@ -408,10 +408,10 @@ func (a *app) imageBubble(c *ui.Context, conv *model.Conversation, m *model.Mess
 		return
 	}
 	// No local copy yet: offer to fetch it.
-	label := tr("点击下载图片")
+	label := tr("app.chat.click_to_download_image")
 	progress := ""
 	if st := a.transfers[m.ID]; st != nil && st.Working {
-		label = tr("正在下载…")
+		label = tr("app.chat.downloading")
 		if st.Total > 0 {
 			progress = model.HumanSize(st.Done) + " / " + model.HumanSize(st.Total)
 		}
@@ -451,7 +451,7 @@ func (a *app) fileBubble(c *ui.Context, conv *model.Conversation, m *model.Messa
 		iconFG = p.onMine
 	}
 	b := ui.ButtonBase(c).Width(min(360, a.bubbleWidth(c))).Padding(12, 13).Radius(14).
-		FocusRing(false).Label(tr("[文件] ") + file.Name).Background(bg).Children(func() {
+		FocusRing(false).Label(tr("app.common.file_2") + file.Name).Background(bg).Children(func() {
 		ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
 			ui.Box(c).Size(38, 38).Radius(10).Center().Background(iconBG).Children(func() {
 				ui.Icon(c, iconFile).Size(19, 19).TextColor(iconFG)
@@ -473,16 +473,16 @@ func (a *app) fileBubble(c *ui.Context, conv *model.Conversation, m *model.Messa
 					}
 					switch {
 					case send != nil && send.Err != "":
-						meta = transport + tr("发送中断：") + send.Err
+						meta = transport + tr("app.chat.send_interrupted") + send.Err
 					case send != nil && send.Working && send.Total > 0:
-						meta = transport + tr("发送中") + " · " + model.HumanSize(send.Sent) + " / " + model.HumanSize(send.Total)
+						meta = transport + tr("app.chat.sending") + " · " + model.HumanSize(send.Sent) + " / " + model.HumanSize(send.Total)
 						if send.Speed > 0 {
 							meta += " · " + model.HumanSize(int64(send.Speed)) + "/s"
 						}
 					case send != nil && send.Done:
-						meta = transport + tr("已发送") + " · " + model.HumanSize(file.Size)
+						meta = transport + tr("app.chat.sent") + " · " + model.HumanSize(file.Size)
 					case send != nil:
-						meta = transport + tr("等待对方接收") + " · " + model.HumanSize(file.Size)
+						meta = transport + tr("app.chat.waiting_for_other_side") + " · " + model.HumanSize(file.Size)
 					}
 				} else if st != nil && st.Working && st.Total > 0 {
 					meta = model.HumanSize(st.Done) + " / " + model.HumanSize(st.Total)
@@ -490,9 +490,9 @@ func (a *app) fileBubble(c *ui.Context, conv *model.Conversation, m *model.Messa
 						meta = st.Transport + " · " + meta
 					}
 				} else if st != nil && st.Err != "" {
-					meta = tr("下载失败：") + st.Err
+					meta = tr("app.chat.download_failed") + st.Err
 				} else if file.Path != "" {
-					meta += tr(" · 已下载")
+					meta += tr("app.chat.downloaded")
 				}
 				ui.Text(c, meta).FontSize(10.5).TextColor(fg.Alpha(0.7)).SingleLine()
 				ratio, showBar := 0.0, false
@@ -532,32 +532,32 @@ func shortMIME(mimeType string) string {
 func (a *app) messageMenu(b ui.Element, m *model.Message) {
 	b.ContextMenu(func(menu *ui.Menu) {
 		if m.Kind == model.KindText && m.Text != "" {
-			if menu.Item(tr("复制文本")).Chosen() {
+			if menu.Item(tr("app.chat.copy_text")).Chosen() {
 				mygo.Clipboard.WriteText(m.Text)
-				a.setToast(tr("已复制"))
+				a.setToast(tr("app.common.copied"))
 			}
 		}
 		if m.File != nil {
 			if m.File.Path != "" {
-				if menu.Item(tr("打开")).Chosen() {
+				if menu.Item(tr("app.common.open")).Chosen() {
 					a.openPath(m.File.Path)
 				}
-				if menu.Item(tr("在文件夹中显示")).Chosen() {
+				if menu.Item(tr("app.common.show_in_folder")).Chosen() {
 					mygo.Shell.ShowItemInFolder(m.File.Path)
 				}
 			} else if m.File.URL != "" || m.File.Token != "" {
-				if menu.Item(tr("下载")).Chosen() {
+				if menu.Item(tr("app.common.download")).Chosen() {
 					a.downloadMessage(m.ConvID, m.ID, "")
 				}
 			}
 			if m.File.URL != "" {
-				if menu.Item(tr("复制下载链接")).Chosen() {
+				if menu.Item(tr("app.common.copy_download_link")).Chosen() {
 					mygo.Clipboard.WriteText(m.File.URL)
-					a.setToast(tr("已复制下载链接"))
+					a.setToast(tr("app.common.download_link_copied"))
 				}
 			}
 			if !m.Mine && (m.File.URL != "" || m.File.Token != "") {
-				if menu.Item(tr("另存为…")).Chosen() {
+				if menu.Item(tr("app.chat.save_as")).Chosen() {
 					a.saveMessageAs(m.ConvID, m.ID)
 				}
 			}
@@ -565,11 +565,11 @@ func (a *app) messageMenu(b ui.Element, m *model.Message) {
 		}
 		if m.Mine {
 			if time.Since(m.SentAt) <= 2*time.Minute {
-				if menu.Item(tr("撤回")).Chosen() {
+				if menu.Item(tr("app.common.unsend")).Chosen() {
 					a.recallMessage(m.ConvID, m.ID)
 				}
 			}
-			if menu.Item(tr("删除")).Chosen() {
+			if menu.Item(tr("app.common.delete")).Chosen() {
 				a.deleteMessage(m.ConvID, m.ID)
 			}
 		}
@@ -578,15 +578,15 @@ func (a *app) messageMenu(b ui.Element, m *model.Message) {
 
 func messageStatus(m *model.Message) string {
 	if m.Status == model.Failed {
-		return tr("发送失败")
+		return tr("app.chat.send_failed")
 	}
 	if m.Read {
-		return tr("已读")
+		return tr("app.chat.read")
 	}
 	if m.Delivered || m.Status == model.Delivered {
-		return tr("已送达")
+		return tr("app.chat.delivered")
 	}
-	return tr("已发送")
+	return tr("app.chat.sent")
 }
 
 func fileNameOf(m *model.Message) string {
@@ -603,9 +603,9 @@ func (a *app) composer(c *ui.Context, conv *model.Conversation) {
 		// at the far right.
 		box := ui.Column(c).FillWidth().Radius(16).Background(p.panel).Border(1, p.hair).Padding(7, 9).Gap(4)
 		box.Children(func() {
-			in := ui.TextArea(c, &a.input).Placeholder(tr("输入消息，Enter 发送，Shift+Enter 换行")).
+			in := ui.TextArea(c, &a.input).Placeholder(tr("app.chat.type_message_enter_sends_shift_plus")).
 				FontSize(14).MinHeight(38).MaxHeight(132).FillWidth().
-				Padding(4, 8).FocusRing(false).Label(tr("消息"))
+				Padding(4, 8).FocusRing(false).Label(tr("app.common.messages"))
 			in.OnTextKey(func(k ui.TextKey) bool {
 				if k.Key != ui.KeyEnter || k.Mods&ui.Shift != 0 || k.Mods&ui.Cmd != 0 {
 					return false
@@ -638,7 +638,7 @@ func (a *app) composer(c *ui.Context, conv *model.Conversation) {
 				a.scheduleSave()
 			})
 			ui.Row(c).FillWidth().Gap(2).AlignItems(ui.Center).Children(func() {
-				if b := iconButton(c, iconImage, 16, p.muted, tr("发送图片")); b.Clicked() {
+				if b := iconButton(c, iconImage, 16, p.muted, tr("app.common.send_image")); b.Clicked() {
 					a.pickImages()
 				}
 				if a.settings.ScreenshotEnabled {
@@ -646,34 +646,34 @@ func (a *app) composer(c *ui.Context, conv *model.Conversation) {
 					// chat window unless the default says otherwise. The small
 					// arrow beside it toggles that default and opens settings.
 					ui.Row(c).Gap(0).AlignItems(ui.Center).Children(func() {
-						if b := iconButton(c, iconScreenshot, 16, p.muted, tr("截图")); b.Clicked() {
+						if b := iconButton(c, iconScreenshot, 16, p.muted, tr("app.common.screenshot")); b.Clicked() {
 							a.startScreenshot(a.settings.ScreenshotIncludeChat)
 						}
-						opts := iconButton(c, iconChevron, 10, p.muted, tr("截图选项"))
+						opts := iconButton(c, iconChevron, 10, p.muted, tr("app.chat.screenshot_options"))
 						opts.PopoverMenu(func(m *ui.Menu) {
-							if m.Item(tr("显示窗口截图")).Radio(a.settings.ScreenshotIncludeChat).Chosen() {
+							if m.Item(tr("app.chat.include_window_in_screenshot")).Radio(a.settings.ScreenshotIncludeChat).Chosen() {
 								a.setScreenshotIncludeChat(true)
 							}
-							if m.Item(tr("隐藏窗口截图")).Radio(!a.settings.ScreenshotIncludeChat).Chosen() {
+							if m.Item(tr("app.chat.hide_window_in_screenshot")).Radio(!a.settings.ScreenshotIncludeChat).Chosen() {
 								a.setScreenshotIncludeChat(false)
 							}
 							m.Separator()
-							if m.Item(tr("设置…")).Chosen() {
+							if m.Item(tr("app.common.settings_2")).Chosen() {
 								a.openScreenshotSettings()
 							}
 						})
 					})
 				}
-				if b := iconButton(c, iconClip, 16, p.muted, tr("发送文件")); b.Clicked() {
+				if b := iconButton(c, iconClip, 16, p.muted, tr("app.common.send_file")); b.Clicked() {
 					a.pickFiles()
 				}
-				if b := iconButton(c, iconLink, 16, p.muted, tr("发送共享链接")); b.Clicked() {
+				if b := iconButton(c, iconLink, 16, p.muted, tr("app.chat.send_share_link")); b.Clicked() {
 					a.sendShareLink()
 				}
 				ui.Spacer(c)
 				// Match the toolbar icons' height; the wider pill keeps the
 				// send button recognisable beside them.
-				send := ui.ButtonBase(c).Size(54, 30).Radius(999).Center().FocusRing(false).Label(tr("发送"))
+				send := ui.ButtonBase(c).Size(54, 30).Radius(999).Center().FocusRing(false).Label(tr("app.common.send"))
 				fill := p.accent
 				if strings.TrimSpace(a.input) == "" {
 					fill = p.press
@@ -697,11 +697,11 @@ func (a *app) composer(c *ui.Context, conv *model.Conversation) {
 			})
 		})
 		ui.Row(c).Gap(6).PaddingX(4).AlignItems(ui.Center).Children(func() {
-			ui.Text(c, tr("局域网内点对点发送 · 文件通过 TCP 直连传输")).FontSize(10).TextColor(p.faint)
+			ui.Text(c, tr("app.chat.peer_to_peer_on_your_lan")).FontSize(10).TextColor(p.faint)
 			ui.Spacer(c)
 			if a.shareRunning() {
 				ui.Icon(c, iconWifi).Size(10, 10).TextColor(p.faint)
-				ui.Text(c, tr("文件共享已开启")).FontSize(10).TextColor(p.faint)
+				ui.Text(c, tr("app.common.file_sharing_is_on")).FontSize(10).TextColor(p.faint)
 			}
 		})
 	})

@@ -15,6 +15,7 @@ func (a *app) dialogs(c *ui.Context) {
 	a.groupAddDialog(c)
 	a.aliasDialog(c)
 	a.userInfoDialog(c)
+	a.fileInfoDialog(c)
 	a.aboutDialog(c)
 	a.confirmDialog(c)
 	// The chooser opens above the composer's screenshot button; only when
@@ -44,23 +45,23 @@ func (a *app) newGroupDialog(c *ui.Context) {
 	p := a.pal
 	ui.DialogBase(c.Key("new-group"), &a.newGroupOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 460)
-		ui.Text(c, tr("新建群聊")).FontSize(18).FontWeight(700)
-		ui.Text(c, tr("群聊只在加入的成员之间发送，消息会分别送达每台在线设备。")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
-		name := ui.TextInput(c.Key("group-name"), &a.groupName).Label(tr("群聊名称")).Placeholder(tr("例如：三号会议室")).AutoFocus()
+		ui.Text(c, tr("app.common.new_group")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("app.common.groups_send_only_to_joined_members")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
+		name := ui.TextInput(c.Key("group-name"), &a.groupName).Label(tr("app.common.group_name")).Placeholder(tr("app.common.e_g_meeting_room_3")).AutoFocus()
 		if name.Submitted() {
 			a.submitNewGroup()
 		}
 		ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
-			ui.Text(c, tr("选择成员")).FontSize(12).FontWeight(650).TextColor(p.muted)
-			ui.Text(c, itoa(len(a.groupPicked))+tr(" 人")).FontSize(11).TextColor(p.faint)
+			ui.Text(c, tr("app.common.select_members")).FontSize(12).FontWeight(650).TextColor(p.muted)
+			ui.Text(c, itoa(len(a.groupPicked))+tr("app.common.people")).FontSize(11).TextColor(p.faint)
 			ui.Spacer(c)
 			if len(a.sortedPeers()) > 0 {
-				if ui.Button(c.Key("pick-all"), tr("全选")).Clicked() {
+				if ui.Button(c.Key("pick-all"), tr("app.common.select_all")).Clicked() {
 					for _, peer := range a.sortedPeers() {
 						a.groupPicked[peer.ID] = true
 					}
 				}
-				if ui.Button(c.Key("pick-none"), tr("全不选")).Clicked() {
+				if ui.Button(c.Key("pick-none"), tr("app.common.select_none")).Clicked() {
 					a.groupPicked = map[string]bool{}
 				}
 			}
@@ -68,7 +69,7 @@ func (a *app) newGroupDialog(c *ui.Context) {
 		peers := a.sortedPeers()
 		if len(peers) == 0 {
 			ui.Row(c).Padding(14).Radius(12).Background(p.panel).Center().Children(func() {
-				ui.Text(c, tr("没有发现其他设备，也可以先创建一个只有自己的群聊。")).FontSize(12).TextColor(p.muted).TextAlign(ui.Center)
+				ui.Text(c, tr("app.common.no_other_devices_found_you_can")).FontSize(12).TextColor(p.muted).TextAlign(ui.Center)
 			})
 		} else {
 			ui.Scroll(c).MaxHeight(280).Gap(2).Children(func() {
@@ -78,10 +79,10 @@ func (a *app) newGroupDialog(c *ui.Context) {
 			})
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("app.common.cancel"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.newGroupOpen = false
 			}
-			ok := pillButtonKey(c, "create", nil, tr("创建"), p.accent, p.onAcc)
+			ok := pillButtonKey(c, "create", nil, tr("app.common.create"), p.accent, p.onAcc)
 			if strings.TrimSpace(a.groupName) == "" {
 				ok.Disabled(true).Opacity(0.5)
 			}
@@ -139,17 +140,17 @@ func (a *app) manualDialog(c *ui.Context) {
 	p := a.pal
 	ui.DialogBase(c.Key("manual-peer"), &a.manualOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 420)
-		ui.Text(c, tr("通过 IP 连接")).FontSize(18).FontWeight(700)
-		ui.Text(c, tr("自动发现被网络屏蔽时，输入对方的 IP 地址或 IP:端口。")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
-		in := ui.TextInput(c.Key("manual-addr"), &a.manualAddr).Label(tr("IP 地址")).Placeholder(tr("192.168.1.8 或 192.168.1.8:42224")).AutoFocus()
+		ui.Text(c, tr("app.common.connect_by_ip")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("app.common.if_discovery_is_blocked_by_network")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
+		in := ui.TextInput(c.Key("manual-addr"), &a.manualAddr).Label(tr("app.common.ip_address")).Placeholder(tr("app.common.example_lan_address")).AutoFocus()
 		if in.Submitted() {
 			a.connectManual()
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("app.common.cancel"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.manualOpen = false
 			}
-			ok := pillButtonKey(c, "connect", nil, tr("连接"), p.accent, p.onAcc)
+			ok := pillButtonKey(c, "connect", nil, tr("app.common.connect"), p.accent, p.onAcc)
 			if strings.TrimSpace(a.manualAddr) == "" {
 				ok.Disabled(true).Opacity(0.5)
 			}
@@ -166,17 +167,17 @@ func (a *app) connectManual() {
 		return
 	}
 	a.manualOpen = false
-	a.setToast(tr("正在连接 ") + addr + "…")
+	a.setToast(tr("app.common.connecting_to") + addr + "…")
 	go func() {
 		peer, err := a.node.ConnectAddress(addr)
 		a.post(func() {
 			if err != nil {
-				a.setToast(tr("无法连接：") + err.Error())
+				a.setToast(tr("app.common.could_not_connect") + err.Error())
 				return
 			}
 			peer.Manual = true
 			a.applyPeer(peer)
-			a.setToast(tr("已连接 ") + tr(peer.Title()))
+			a.setToast(tr("app.common.connected_to") + tr(peer.Title()))
 			a.openPeer(&peer)
 		})
 	}()
@@ -204,13 +205,13 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 		ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 			a.groupAvatar(c, conv, 44)
 			ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(3).Children(func() {
-				ui.Text(c, tr("群聊信息")).FontSize(18).FontWeight(700)
-				ui.Text(c, itoa(len(conv.Members))+tr(" 位成员 · 群主 ")+a.peerName(conv.Owner)).FontSize(11.5).TextColor(p.muted)
+				ui.Text(c, tr("app.common.group_info")).FontSize(18).FontWeight(700)
+				ui.Text(c, itoa(len(conv.Members))+tr("app.common.members_owner")+a.peerName(conv.Owner)).FontSize(11.5).TextColor(p.muted)
 			})
 		})
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-			in := ui.TextInput(c.Key("group-name"), &a.groupRename).Label(tr("群聊名称")).Placeholder(tr("群聊名称")).Grow(1)
-			save := ui.PrimaryButton(c.Key("group-rename"), tr("保存"))
+			in := ui.TextInput(c.Key("group-name"), &a.groupRename).Label(tr("app.common.group_name")).Placeholder(tr("app.common.group_name")).Grow(1)
+			save := ui.PrimaryButton(c.Key("group-rename"), tr("app.common.save"))
 			if strings.TrimSpace(a.groupRename) == "" || strings.TrimSpace(a.groupRename) == conv.Title {
 				save.Disabled(true).Opacity(0.5)
 			}
@@ -219,9 +220,9 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 			}
 		})
 		ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
-			ui.Text(c, tr("成员")).FontSize(12).FontWeight(650).TextColor(p.muted)
+			ui.Text(c, tr("app.common.members_3")).FontSize(12).FontWeight(650).TextColor(p.muted)
 			ui.Spacer(c)
-			if pillButtonKey(c, "add-members", iconPlus, tr("添加成员"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "add-members", iconPlus, tr("app.common.add_members"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.openGroupAdd(conv)
 			}
 		})
@@ -234,10 +235,10 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 						ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
 							ui.Text(c, tr(member.Title())).FontSize(13).FontWeight(600).SingleLine()
 							if member.ID == a.profile.ID {
-								ui.Text(c, tr("我")).FontSize(9.5).TextColor(p.accent).Padding(1, 5).Radius(999).Background(p.accent.Alpha(0.12))
+								ui.Text(c, tr("app.common.me")).FontSize(9.5).TextColor(p.accent).Padding(1, 5).Radius(999).Background(p.accent.Alpha(0.12))
 							}
 							if member.ID == conv.Owner {
-								ui.Text(c, tr("群主")).FontSize(9.5).TextColor(p.faint).Padding(1, 5).Radius(999).Border(1, p.hair)
+								ui.Text(c, tr("app.common.owner")).FontSize(9.5).TextColor(p.faint).Padding(1, 5).Radius(999).Border(1, p.hair)
 							}
 						})
 						ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
@@ -246,9 +247,9 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 						})
 					})
 					if conv.Owner == a.profile.ID && member.ID != a.profile.ID {
-						if b := iconButton(c, iconX, 13, p.faint, tr("移出群聊")); b.Clicked() {
+						if b := iconButton(c, iconX, 13, p.faint, tr("app.common.remove_from_group")); b.Clicked() {
 							id := member.ID
-							a.confirm(tr("移出成员"), tr("确定把「")+tr(member.Title())+tr("」移出群聊吗？"), func() {
+							a.confirm(tr("app.common.remove_member"), tr("app.common.remove_2")+tr(member.Title())+tr("app.common.from_group"), func() {
 								a.removeGroupMember(conv, id)
 							})
 						}
@@ -257,12 +258,12 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 			}
 		})
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			label, prefix, dissolve := tr("退出群聊"), tr("确定退出群聊「"), false
+			label, prefix, dissolve := tr("app.common.leave_group"), tr("app.common.leave_group_2"), false
 			if conv.Owner == a.profile.ID && len(conv.Members) > 1 {
-				label, prefix, dissolve = tr("解散群聊"), tr("确定解散群聊「"), true
+				label, prefix, dissolve = tr("app.common.dissolve_group"), tr("app.common.dissolve_group_2"), true
 			}
 			if pillButtonKey(c, "leave", iconLeave, label, p.hover.Over(p.bg), p.text).Clicked() {
-				a.confirm(label, prefix+conv.Title+tr("」吗？"), func() {
+				a.confirm(label, prefix+conv.Title+tr("app.common.closing_quote_question"), func() {
 					if dissolve {
 						a.disbandGroup(conv)
 					} else {
@@ -271,7 +272,7 @@ func (a *app) groupInfoDialog(c *ui.Context) {
 					a.groupInfoOpen = false
 				})
 			}
-			if pillButtonKey(c, "done", nil, tr("完成"), p.accent, p.onAcc).Clicked() {
+			if pillButtonKey(c, "done", nil, tr("app.common.done"), p.accent, p.onAcc).Clicked() {
 				a.groupInfoOpen = false
 			}
 		})
@@ -307,11 +308,11 @@ func (a *app) groupAddDialog(c *ui.Context) {
 	}
 	ui.DialogBase(c.Key("group-add"), &a.groupAddOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 440)
-		ui.Text(c, tr("添加成员")).FontSize(18).FontWeight(700)
-		ui.Text(c, tr("邀请后会把自己的群聊信息发送给新成员。")).FontSize(12).TextColor(p.muted)
+		ui.Text(c, tr("app.common.add_members")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("app.common.inviting_someone_sends_them_this_group")).FontSize(12).TextColor(p.muted)
 		if len(candidates) == 0 {
 			ui.Row(c).Padding(16).Radius(12).Background(p.panel).Center().Children(func() {
-				ui.Text(c, tr("没有可以邀请的设备。")).FontSize(12).TextColor(p.muted)
+				ui.Text(c, tr("app.common.no_devices_available_to_invite")).FontSize(12).TextColor(p.muted)
 			})
 		} else {
 			ui.Scroll(c).MaxHeight(300).Gap(2).Children(func() {
@@ -321,10 +322,10 @@ func (a *app) groupAddDialog(c *ui.Context) {
 			})
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
-			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("app.common.cancel"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.groupAddOpen = false
 			}
-			ok := pillButtonKey(c, "add", nil, tr("添加"), p.accent, p.onAcc)
+			ok := pillButtonKey(c, "add", nil, tr("app.common.add"), p.accent, p.onAcc)
 			if len(a.groupAddPicked) == 0 {
 				ok.Disabled(true).Opacity(0.5)
 			}
@@ -361,25 +362,25 @@ func (a *app) aliasDialog(c *ui.Context) {
 	}
 	ui.DialogBase(c.Key("alias"), &a.aliasOpen, func(backdrop, panel ui.Element) {
 		dialogPanel(backdrop, panel, p, 400)
-		ui.Text(c, tr("设置备注")).FontSize(18).FontWeight(700)
-		ui.Text(c, tr("备注只保存在这台设备上，会替换设备原来的名称。")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
-		in := ui.TextInput(c.Key("alias-name"), &a.aliasName).Label(tr("备注")).Placeholder(peer.Name).AutoFocus()
+		ui.Text(c, tr("app.common.set_alias")).FontSize(18).FontWeight(700)
+		ui.Text(c, tr("app.common.aliases_are_stored_only_on_this")).FontSize(12).TextColor(p.muted).LineHeight(1.45)
+		in := ui.TextInput(c.Key("alias-name"), &a.aliasName).Label(tr("app.common.alias")).Placeholder(peer.Name).AutoFocus()
 		if in.Submitted() {
 			a.submitAlias(peer)
 		}
 		ui.Row(c).Gap(10).Justify(ui.End).Children(func() {
 			if peer.Alias != "" {
-				if pillButtonKey(c, "clear-alias", nil, tr("清除备注"), p.hover.Over(p.bg), p.text).Clicked() {
+				if pillButtonKey(c, "clear-alias", nil, tr("app.common.clear_alias"), p.hover.Over(p.bg), p.text).Clicked() {
 					peer.Alias = ""
 					a.aliasOpen = false
 					a.scheduleSave()
 					a.redraw()
 				}
 			}
-			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("app.common.cancel"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.aliasOpen = false
 			}
-			if pillButtonKey(c, "save-alias", nil, tr("保存"), p.accent, p.onAcc).Clicked() {
+			if pillButtonKey(c, "save-alias", nil, tr("app.common.save"), p.accent, p.onAcc).Clicked() {
 				a.submitAlias(peer)
 			}
 		})
@@ -394,7 +395,7 @@ func (a *app) submitAlias(peer *model.Peer) {
 	peer.Alias = name
 	a.aliasOpen = false
 	a.scheduleSave()
-	a.setToast(tr("备注已保存"))
+	a.setToast(tr("app.common.alias_saved"))
 	a.redraw()
 }
 
@@ -405,11 +406,11 @@ func (a *app) confirmDialog(c *ui.Context) {
 		ui.Text(c, a.confirmTitle).FontSize(17).FontWeight(700)
 		ui.Text(c, a.confirmText).FontSize(12.5).TextColor(p.muted).LineHeight(1.5)
 		ui.Row(c).Gap(10).Justify(ui.End).Margin(4, 0, 0, 0).Children(func() {
-			if pillButtonKey(c, "cancel", nil, tr("取消"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButtonKey(c, "cancel", nil, tr("app.common.cancel"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.confirmOpen = false
 				a.confirmAction = nil
 			}
-			if pillButtonKey(c, "ok", nil, tr("确定"), p.accent, p.onAcc).Clicked() {
+			if pillButtonKey(c, "ok", nil, tr("app.common.ok"), p.accent, p.onAcc).Clicked() {
 				action := a.confirmAction
 				a.confirmOpen = false
 				a.confirmAction = nil
@@ -423,12 +424,12 @@ func (a *app) confirmDialog(c *ui.Context) {
 
 // screenshotChooserRows are the two choices of the screenshot chooser.
 func (a *app) screenshotChooserRows(c *ui.Context, p palette) {
-	if pillButtonKey(c, "shot-with-chat", nil, tr("包含当前聊天窗口"), p.accent, p.onAcc).FillWidth().Clicked() {
+	if pillButtonKey(c, "shot-with-chat", nil, tr("app.common.include_current_chat_window"), p.accent, p.onAcc).FillWidth().Clicked() {
 		a.shotChooserOpen = false
 		a.redraw()
 		a.startScreenshot(true)
 	}
-	if pillButtonKey(c, "shot-without-chat", nil, tr("不包含当前聊天窗口"), p.hover.Over(p.bg), p.text).FillWidth().Clicked() {
+	if pillButtonKey(c, "shot-without-chat", nil, tr("app.common.do_not_include_current_chat_window"), p.hover.Over(p.bg), p.text).FillWidth().Clicked() {
 		a.shotChooserOpen = false
 		a.redraw()
 		a.startScreenshot(false)
@@ -450,9 +451,9 @@ func (a *app) screenshotChooserPopover(c *ui.Context, anchor ui.Element) {
 			// The capture may follow this click within a frame or two, so
 			// leave no exit fade that the shot could catch.
 			Transition(ui.ElementTransition{})
-		ui.Text(c, tr("截图")).FontSize(13).FontWeight(700)
+		ui.Text(c, tr("app.common.screenshot")).FontSize(13).FontWeight(700)
 		a.screenshotChooserRows(c, p)
-		ui.Text(c, tr("快捷键")+"  "+shortcutLabel(a.settings.ScreenshotIncludeShortcut)+" / "+
+		ui.Text(c, tr("app.common.shortcuts")+"  "+shortcutLabel(a.settings.ScreenshotIncludeShortcut)+" / "+
 			shortcutLabel(a.settings.ScreenshotExcludeShortcut)).FontSize(10.5).TextColor(p.faint)
 	})
 }
@@ -468,9 +469,9 @@ func (a *app) screenshotChooserDialog(c *ui.Context) {
 			Shadow(0, 24, 60, -12, ui.RGBA(0, 0, 0, 0.42)).
 			// As the popover: no exit fade that the capture could catch.
 			Transition(ui.ElementTransition{})
-		ui.Text(c, tr("截图")).FontSize(15).FontWeight(700)
+		ui.Text(c, tr("app.common.screenshot")).FontSize(15).FontWeight(700)
 		a.screenshotChooserRows(c, p)
-		ui.Text(c, tr("快捷键")+"  "+shortcutLabel(a.settings.ScreenshotIncludeShortcut)+" / "+
+		ui.Text(c, tr("app.common.shortcuts")+"  "+shortcutLabel(a.settings.ScreenshotIncludeShortcut)+" / "+
 			shortcutLabel(a.settings.ScreenshotExcludeShortcut)).FontSize(10.5).TextColor(p.faint)
 	})
 }

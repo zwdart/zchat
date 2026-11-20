@@ -47,6 +47,11 @@ type settings struct {
 	MagickOutputDir string `json:"magickOutputDir,omitempty"`
 	MagickFormat    string `json:"magickFormat,omitempty"`
 	MagickQuality   int    `json:"magickQuality,omitempty"`
+	// FFmpeg toolkit choices.
+	FFmpegOutputDir string `json:"ffmpegOutputDir,omitempty"`
+	FFmpegCRF       int    `json:"ffmpegCRF"`
+	FFmpegPreset    string `json:"ffmpegPreset,omitempty"`
+	FFmpegAudioRate string `json:"ffmpegAudioRate,omitempty"`
 	path            string
 }
 
@@ -55,6 +60,10 @@ func defaultSettings() settings {
 	pictures, _ := mygo.App.Path(mygo.PathPictures)
 	if pictures == "" {
 		pictures = downloads
+	}
+	videos, _ := mygo.App.Path(mygo.PathVideos)
+	if videos == "" {
+		videos = downloads
 	}
 	return settings{
 		Appearance:                "system",
@@ -81,6 +90,10 @@ func defaultSettings() settings {
 		MagickOutputDir:           filepath.Join(pictures, appFolderName, "magick"),
 		MagickFormat:              "keep",
 		MagickQuality:             90,
+		FFmpegOutputDir:           filepath.Join(videos, appFolderName, "ffmpeg"),
+		FFmpegCRF:                 23,
+		FFmpegPreset:              "medium",
+		FFmpegAudioRate:           "128k",
 	}
 }
 
@@ -180,6 +193,32 @@ func loadSettings() settings {
 	}
 	if s.MagickQuality < 1 || s.MagickQuality > 100 {
 		s.MagickQuality = 90
+		changed = true
+	}
+	if d, ok := normalizeDirForOS(s.FFmpegOutputDir, runtime.GOOS); ok {
+		s.FFmpegOutputDir = d
+	} else {
+		s.FFmpegOutputDir = defaultSettings().FFmpegOutputDir
+		changed = true
+	}
+	if s.FFmpegOutputDir == "" {
+		s.FFmpegOutputDir = defaultSettings().FFmpegOutputDir
+		changed = true
+	}
+	if s.FFmpegCRF < 0 || s.FFmpegCRF > 51 {
+		s.FFmpegCRF = 23
+		changed = true
+	}
+	switch s.FFmpegPreset {
+	case "ultrafast", "veryfast", "fast", "medium", "slow":
+	default:
+		s.FFmpegPreset = "medium"
+		changed = true
+	}
+	switch s.FFmpegAudioRate {
+	case "96k", "128k", "192k", "256k":
+	default:
+		s.FFmpegAudioRate = "128k"
 		changed = true
 	}
 	if changed {

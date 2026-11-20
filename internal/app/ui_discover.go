@@ -51,15 +51,15 @@ func (a *app) discoverPage(c *ui.Context) {
 		ui.Column(c).FillWidth().Grow(1).Padding(32, 30, 32, 24).Gap(18).Children(func() {
 			ui.Row(c).AlignItems(ui.Start).Gap(16).DragWindow().Children(func() {
 				ui.Column(c).Grow(1).Children(func() {
-					sectionTitle(c, p, tr("发现设备"), tr("同一局域网里运行 zchat 的设备会自动出现"))
+					sectionTitle(c, p, tr("app.common.discover"), tr("app.network.devices_running_zchat_on_same_lan"))
 				})
-				if pillButton(c, iconRefresh, tr("刷新"), p.hover.Over(p.bg), p.text).Clicked() {
+				if pillButton(c, iconRefresh, tr("app.network.refresh"), p.hover.Over(p.bg), p.text).Clicked() {
 					if a.node != nil {
 						a.node.AnnounceNow()
 					}
-					a.setToast(tr("正在重新搜索局域网设备"))
+					a.setToast(tr("app.network.searching_lan_again"))
 				}
-				if pillButton(c, iconPlus, tr("通过 IP 连接"), p.accent, p.onAcc).Clicked() {
+				if pillButton(c, iconPlus, tr("app.common.connect_by_ip"), p.accent, p.onAcc).Clicked() {
 					a.manualAddr = ""
 					a.manualOpen = true
 				}
@@ -73,10 +73,10 @@ func (a *app) discoverPage(c *ui.Context) {
 			}
 
 			ui.Row(c).AlignItems(ui.Center).Gap(8).Children(func() {
-				ui.Text(c, tr("设备")).FontSize(12).FontWeight(700).TextColor(p.muted).LetterSpacing(0.5)
+				ui.Text(c, tr("app.common.devices")).FontSize(12).FontWeight(700).TextColor(p.muted).LetterSpacing(0.5)
 				ui.Text(c, itoa(len(peers))).FontSize(11).TextColor(p.faint)
 				ui.Spacer(c)
-				ui.Text(c, tr("在线 ")+itoa(online)).FontSize(11.5).TextColor(p.muted)
+				ui.Text(c, tr("app.common.online_2")+itoa(online)).FontSize(11.5).TextColor(p.muted)
 			})
 			ui.Scroll(c).Grow(1).Margin(0, -6).Padding(0, 6).Gap(8).Children(func() {
 				for _, peer := range peers {
@@ -91,28 +91,28 @@ func (a *app) thisDeviceCard(c *ui.Context, online, total int) {
 	p := a.pal
 	ui.Row(c).FillWidth().Padding(16, 16).Radius(14).Background(p.panel).Border(1, p.hair).Gap(14).AlignItems(ui.Center).Children(func() {
 		ui.Avatar(c, a.profile.Name, a.avatarBitmap(a.profile.Avatar)).Size(46, 46).
-			Label(tr("查看资料")).OnClick(func() { a.openUserInfo(a.profile.ID) })
+			Label(tr("app.common.view_profile")).OnClick(func() { a.openUserInfo(a.profile.ID) })
 		ui.Column(c).Grow(1).Shrink(1).MinWidth(0).Gap(3).Children(func() {
 			ui.Row(c).Gap(7).AlignItems(ui.Center).Children(func() {
 				dot(c, a.profile.Status, 8)
 				ui.Text(c, a.profile.Name).FontSize(14).FontWeight(650).SingleLine()
-				ui.Text(c, tr("本机")).FontSize(10).FontWeight(600).TextColor(p.accent).
+				ui.Text(c, tr("app.common.this_device")).FontSize(10).FontWeight(600).TextColor(p.accent).
 					Padding(2, 7).Radius(999).Background(p.accent.Alpha(0.12))
 			})
-			addr := tr("端口 ") + itoa(a.nodePort())
+			addr := tr("app.common.port") + itoa(a.nodePort())
 			if ip := netutil.PrimaryIP(); ip != "" {
 				addr = ip + " · " + addr
 			}
 			if !a.settings.Discovery {
-				addr += tr(" · 自动发现已关闭")
+				addr += tr("app.network.auto_discovery_off")
 			}
 			ui.Text(c, addr).FontSize(11.5).TextColor(p.muted).SingleLine()
 		})
 		ui.Column(c).AlignItems(ui.End).Gap(2).Children(func() {
-			ui.Text(c, itoa(online)+tr(" 在线")).FontSize(12).FontWeight(600)
-			ui.Text(c, itoa(total)+tr(" 台设备")).FontSize(10.5).TextColor(p.faint)
+			ui.Text(c, itoa(online)+tr("app.network.online")).FontSize(12).FontWeight(600)
+			ui.Text(c, itoa(total)+tr("app.network.devices")).FontSize(10.5).TextColor(p.faint)
 		})
-		if b := iconButton(c, iconSettings, 15, p.muted, tr("网络设置")); b.Clicked() {
+		if b := iconButton(c, iconSettings, 15, p.muted, tr("app.network.network_settings")); b.Clicked() {
 			a.openSettings()
 		}
 	})
@@ -124,16 +124,16 @@ func (a *app) emptyDiscover(c *ui.Context) {
 		ui.Box(c).Size(74, 74).Radius(22).Background(p.accent.Alpha(0.1)).Center().Children(func() {
 			ui.Icon(c, iconWifi).Size(34, 34).TextColor(p.accent)
 		})
-		ui.Text(c, tr("还没有发现设备")).FontSize(17).FontWeight(650)
-		ui.Text(c, tr("请确认对方也打开了 zchat，并且两台设备在同一个 Wi-Fi 或局域网内。\n如果网络屏蔽了广播，可以用 IP 地址直接连接。")).FontSize(12.5).
+		ui.Text(c, tr("app.network.no_devices_found_yet")).FontSize(17).FontWeight(650)
+		ui.Text(c, tr("app.network.make_sure_other_device_also_has")).FontSize(12.5).
 			TextColor(p.muted).TextAlign(ui.Center).LineHeight(1.6).MaxWidth(430)
 		ui.Row(c).Gap(10).Margin(0, 8, 0, 0).Children(func() {
-			if pillButton(c, iconRefresh, tr("重新搜索"), p.accent, p.onAcc).Clicked() {
+			if pillButton(c, iconRefresh, tr("app.network.search_again"), p.accent, p.onAcc).Clicked() {
 				if a.node != nil {
 					a.node.AnnounceNow()
 				}
 			}
-			if pillButton(c, iconPlus, tr("通过 IP 连接"), p.hover.Over(p.bg), p.text).Clicked() {
+			if pillButton(c, iconPlus, tr("app.common.connect_by_ip"), p.hover.Over(p.bg), p.text).Clicked() {
 				a.manualOpen = true
 			}
 		})
@@ -161,7 +161,7 @@ func (a *app) peerCard(c *ui.Context, peer *model.Peer) {
 				dot(c, peer.Status, 7)
 				ui.Text(c, presenceLabel(peer.Status)).FontSize(10.5).TextColor(p.muted)
 				if peer.Manual {
-					ui.Text(c, tr("手动")).FontSize(9.5).TextColor(p.faint).
+					ui.Text(c, tr("app.common.manual")).FontSize(9.5).TextColor(p.faint).
 						Padding(1, 5).Radius(999).Border(1, p.hair)
 				}
 			})
@@ -176,12 +176,12 @@ func (a *app) peerCard(c *ui.Context, peer *model.Peer) {
 			}
 		})
 		if active {
-			if pillButton(c, iconChat, tr("发消息"), p.accent, p.onAcc).Clicked() {
+			if pillButton(c, iconChat, tr("app.common.message"), p.accent, p.onAcc).Clicked() {
 				a.openPeer(peer)
 			}
 		} else {
 			ui.Column(c).AlignItems(ui.End).Gap(3).Children(func() {
-				ui.Text(c, tr("离线")).FontSize(11.5).TextColor(p.muted)
+				ui.Text(c, tr("app.common.offline")).FontSize(11.5).TextColor(p.muted)
 				if !peer.LastSeen.IsZero() {
 					ui.Text(c, shortStamp(peer.LastSeen, time.Now())).FontSize(10).TextColor(p.faint)
 				}
@@ -192,32 +192,32 @@ func (a *app) peerCard(c *ui.Context, peer *model.Peer) {
 		a.openPeer(peer)
 	}
 	b.ContextMenu(func(m *ui.Menu) {
-		if m.Item(tr("查看资料")).Chosen() {
+		if m.Item(tr("app.common.view_profile")).Chosen() {
 			a.openUserInfo(peer.ID)
 		}
 		m.Separator()
-		if m.Item(tr("发送消息")).Chosen() {
+		if m.Item(tr("app.network.send_message")).Chosen() {
 			a.openPeer(peer)
 		}
-		if m.Item(tr("设置备注…")).Chosen() {
+		if m.Item(tr("app.common.set_alias_2")).Chosen() {
 			a.openAlias(peer)
 		}
 		if peer.IP != "" {
-			if m.Item(tr("复制 IP 地址")).Chosen() {
+			if m.Item(tr("app.common.copy_ip_address")).Chosen() {
 				mygo.Clipboard.WriteText(peer.IP)
-				a.setToast(tr("已复制 ") + peer.IP)
+				a.setToast(tr("app.common.copied_2") + peer.IP)
 			}
 		}
 		if peer.Signature != "" {
-			if m.Item(tr("复制签名")).Chosen() {
+			if m.Item(tr("app.network.copy_bio")).Chosen() {
 				mygo.Clipboard.WriteText(peer.Signature)
-				a.setToast(tr("已复制签名"))
+				a.setToast(tr("app.network.bio_copied"))
 			}
 		}
 		m.Separator()
 		if peer.Manual || !peer.Connected {
-			if m.Item(tr("从设备列表移除")).Chosen() {
-				a.confirm(tr("移除设备"), tr("确定移除「")+tr(peer.Title())+tr("」吗？聊天记录会保留。"), func() {
+			if m.Item(tr("app.network.remove_from_device_list")).Chosen() {
+				a.confirm(tr("app.network.remove_device"), tr("app.network.remove")+tr(peer.Title())+tr("app.network.chat_history_will_be_kept"), func() {
 					delete(a.peers, peer.ID)
 					a.scheduleSave()
 					a.redraw()
@@ -246,7 +246,7 @@ func (a *app) nodePort() int {
 
 func peerAddr(p *model.Peer) string {
 	if p.IP == "" {
-		return tr("地址未知")
+		return tr("app.network.address_unknown")
 	}
 	if p.Port == 0 {
 		return p.IP

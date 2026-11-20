@@ -1,0 +1,983 @@
+# English translations keyed by dot-separated message IDs (app.area.name).
+# Keep keys in the same order as zh.tsv; use \n for a line break inside a value.
+app.chat.downloaded	 · Downloaded
+app.chat.last_seen	 · Last seen 
+app.share.port	 · Port 
+app.network.auto_discovery_off	 · Auto-discovery off
+app.settings.conversations	conversations · 
+app.common.people	 people
+app.chat.online	 online
+app.common.members	 members
+app.common.members_2	 members · 
+app.common.members_owner	 members · Owner 
+app.network.devices	 devices
+app.network.online	Online
+app.common.is_busy_using	 is busy; using 
+app.common.unread	 unread
+app.settings.messages	 messages
+app.chat.results	 results
+app.common.typing	typing…
+app.common.was_removed_from_group	 was removed from the group
+app.common.left_group	 left the group
+app.common.invited_you_to_group	 invited you to a group
+app.common.date_format_numeric_ymd	%d/%d/%d
+app.common.date_format_numeric_md	%d/%d
+app.common.example_lan_address	192.168.1.8 or 192.168.1.8:42224
+app.common.date_format_md	Jan 2
+app.settings.http_service_port_default_42230	HTTP service port, default 42230
+app.common.ip_address	IP address
+app.settings.sqlite_database	SQLite database
+app.settings.tcp_port_default_42224_restart_network	TCP port, default 42224; restart the network after changing it
+app.common.image	[Image]
+app.common.image_2	[Image] 
+app.common.file	[File]
+app.common.file_2	[File] 
+app.common.zchat_settings	zchat Settings
+app.common.zchat_project_page	zchat project page
+app.common.closing_quote_question	"?
+app.network.chat_history_will_be_kept	"? Chat history will be kept.
+app.common.was_dissolved	" was dissolved
+app.common.from_group	" from the group?
+app.settings.short_bio_shown_on_your_device	A short bio shown on your device card
+app.common.download	Download
+app.chat.download_failed	Download failed: 
+app.common.downloads	Downloads
+app.share.download_folder_updated	Download folder updated
+app.common.profile	Profile
+app.common.theme	Theme
+app.common.today	Today
+app.settings.get_updates_from_github_releases	Get updates from GitHub Releases
+app.network.remove_from_device_list	Remove from device list
+app.common.chats	Chats
+app.common.you	You
+app.common.you_created_group	You created group "
+app.common.you_joined_group	You joined group "
+app.common.you_were_removed_from_group	You were removed from group "
+app.common.use	Use
+app.common.e_g_meeting_room_3	e.g. Meeting Room 3
+app.common.save	Save
+app.common.save_file	Save file
+app.settings.save_profile	Save profile
+app.share.stop_sharing	Stop sharing
+app.common.open_chat_first	Open a chat first
+app.common.select_none	Select none
+app.common.select_all	Select all
+app.common.show_all	Show All
+app.common.share	Share
+app.share.sharing	Sharing
+app.share.sharing_is_off	Sharing is off
+app.common.shared_folder	Shared folder
+app.common.shared_folder_does_not_exist	Shared folder does not exist
+app.share.shared_folder_updated	Shared folder updated
+app.common.shared_folder_is_read_only_visitors	The shared folder is read-only; visitors cannot upload or modify files.\n\nFiles in messages are sent through one-time links and saved locally after the recipient downloads them.\n\nLinks stop working when zchat closes.
+app.settings.share_port	Share port
+app.common.about	About
+app.common.about_zchat	About zchat
+app.common.close	Close
+app.chat.close_search	Close search
+app.settings.keep_receiving_messages_after_closing_window	Keep receiving messages after closing the window; reopen from the menu bar or notification area
+app.settings.keep_running_in_tray_when_window	Keep running in the tray when the window closes
+app.settings.name_other_devices_see_on_lan	The name other devices see on the LAN
+app.common.create	Create
+app.common.delete	Delete
+app.common.delete_chat	Delete chat
+app.common.delete_current_chat	Delete current chat
+app.settings.delete_messages_in_all_chats_keeping	Delete messages in all chats, keeping chats, profile, and offline queue
+app.settings.reclaim_disk_space_after_deleting_chat	Reclaim disk space after deleting chat history; this can take a few seconds with many records
+app.network.refresh	Refresh
+app.common.bring_all_to_front	Bring All to Front
+app.common.cut	Cut
+app.common.no_image_in_clipboard	No image in the clipboard
+app.common.message	Message
+app.common.discover	Discover
+app.common.send	Send
+app.chat.send_share_link	Send share link
+app.common.send_clipboard_image	Send clipboard image
+app.common.send_image	Send image
+app.chat.send_failed	Send failed
+app.chat.send_interrupted	Send interrupted: 
+app.chat.waiting_for_other_side	Waiting for the other side
+app.chat.sending	Sending
+app.common.send_file	Send file
+app.common.send_file_2	Send file…
+app.network.send_message	Send message
+app.share.send_link	Send link
+app.common.cancel	Cancel
+app.chat.save_as	Save As…
+app.common.only_records_on_this_device_will	Only records on this device will be deleted.
+app.share.read_only_access	Read-only access
+app.settings.you_can_back_up_zchat_db	You can back up zchat.db in your file manager
+app.common.optional	Optional
+app.network.devices_running_zchat_on_same_lan	Devices running zchat on the same LAN appear automatically
+app.common.name	Name
+app.settings.share_automatically_on_startup	Share automatically on startup
+app.common.images	Images
+app.settings.enable_it_on_file_sharing_page	Enable it on the File sharing page so visitors can browse this folder
+app.share.open_in_browser_on_same_lan	Open in a browser on the same LAN
+app.settings.download_new_versions_in_background_they	Download new versions in the background; they apply on the next launch
+app.share.open_it_in_browser_on_lan	Open it in a browser on the LAN to download files from the shared folder
+app.share.open_on_phone	Open on phone
+app.common.show_in_folder	Show in folder
+app.common.online	Online
+app.common.online_2	Online 
+app.settings.your_status_is_broadcast_to_connected	Your status is broadcast to connected devices
+app.network.address_unknown	Address unknown
+app.common.alias	Alias
+app.common.aliases_are_stored_only_on_this	Aliases are stored only on this device and replace the device's name.
+app.common.alias_saved	Alias saved
+app.common.copy	Copy
+app.common.copy_ip_address	Copy IP address
+app.common.copy_download_link	Copy download link
+app.chat.copy_text	Copy text
+app.network.copy_bio	Copy bio
+app.settings.appearance	Appearance
+app.common.several_people_are_typing	Several people are typing…
+app.settings.avatar	Avatar
+app.share.if_you_cannot_connect_allow_zchat	If you cannot connect, allow zchat to receive incoming connections in your firewall and make sure the visiting device is on the same subnet.
+app.common.done	Done
+app.common.tip	Tip
+app.chat.peer_to_peer_on_your_lan	Peer-to-peer on your LAN · Files transfer directly over TCP
+app.settings.lan_chat_no_server_involved	LAN chat · No server involved
+app.common.lan_chat_guide	LAN chat guide
+app.common.lan_chat_without_server	LAN chat without a server
+app.common.saved_to	Saved to 
+app.share.stopped	Stopped
+app.chat.sent	Sent
+app.common.copied	Copied
+app.common.copied_2	Copied 
+app.common.download_link_copied	Download link copied
+app.network.bio_copied	Bio copied
+app.share.link_copied	Link copied
+app.share.shared_folder_cleared	Shared folder cleared
+app.chat.read	Read
+app.common.connected_to	Connected to 
+app.common.you_left_group	You left group "
+app.chat.delivered	Delivered
+app.common.help	Help
+app.common.on	On
+app.share.start_sharing	Start sharing
+app.common.when_enabled_this_device_serves_read	When enabled, this device serves a read-only page on the LAN that phones and other computers can open.
+app.settings.current_version	Current version 
+app.model.busy	Busy
+app.common.members_3	Members
+app.common.me	Me
+app.common.i_shared_folder_with_zchat	I shared a folder with zchat: 
+app.common.my_zchat	My zchat
+app.common.me_2	Me: 
+app.common.manual	Manual
+app.common.open	Open
+app.common.open_zchat	Open zchat
+app.settings.reopen_last_shared_folder_when_zchat	Reopen the last shared folder when zchat starts
+app.settings.open_sharing	Open sharing
+app.settings.open_database_location	Open database location
+app.share.open_page_to_browse	Open the page to browse
+app.settings.give_these_addresses_to_devices_that	Give these addresses to devices that cannot auto-discover
+app.common.copy_2	Copy
+app.common.search_chats	Search chats
+app.common.search_chats_or_messages	Search chats or messages
+app.common.search_chat_history	Search chat history
+app.common.unsend	Unsend
+app.chat.unsent_message	 unsent a message
+app.common.undo	Undo
+app.settings.cache_received_images_locally_open_chat	Cache received images locally; open the chat to view them
+app.settings.database_compacted	Database compacted
+app.common.data_folder	Data folder
+app.common.compact	Compact
+app.settings.compaction_failed	Compaction failed: 
+app.settings.compact_database	Compact database
+app.common.files	Files
+app.common.file_is_missing_or_was_moved	File is missing or was moved
+app.common.file_transfer_service_is_not_running	File transfer service is not running; cannot send image
+app.common.file_transfer_service_is_not_running_2	File transfer service is not running; cannot send file
+app.common.file_transfer_port	File transfer port
+app.common.file_transfer_port_2	File transfer port 
+app.common.file_sharing	File sharing
+app.common.file_sharing_2	File sharing…
+app.common.file_sharing_is_on	File sharing is on
+app.common.file_sharing_is_off	File sharing is off
+app.common.size_mismatch_received_expected	Size mismatch: received %d, expected %d
+app.common.files_are_sent_through_this_device	Files are sent through this device's HTTP service, without any server.
+app.common.added	added 
+app.common.new_group	New group
+app.common.new_group_2	New group…
+app.settings.message_notifications	Message notifications
+app.common.cannot_download_sender_is_offline_or	Cannot download: sender is offline or does not support file transfer
+app.common.could_not_save_to	Could not save to %s: %v
+app.common.could_not_save_pasted_image	Could not save the pasted image
+app.common.could_not_create_download_folder	Could not create download folder %s: %v
+app.common.could_not_create_download_folder_2	Could not create download folder: 
+app.common.could_not_create_cache_folder	Could not create cache folder %s: %v
+app.common.could_not_start_file_transfer_service	Could not start file transfer service: 
+app.common.could_not_start_file_sharing	Could not start file sharing: 
+app.common.could_not_open_data_folder	Could not open data folder: 
+app.common.could_not_open_file	Could not open file: 
+app.common.could_not_open_link	Could not open link: 
+app.network.could_not_listen_on_port	Could not listen on port: 
+app.settings.could_not_read_image	Could not read image: 
+app.common.could_not_read_data	Could not read data: 
+app.common.could_not_connect	Could not connect: 
+app.common.yesterday	Yesterday
+app.chat.more	More
+app.common.update	Update
+app.common.minimize	Minimize
+app.common.services	Services
+app.common.unnamed_group	Unnamed group
+app.common.unknown_member	Unknown member
+app.common.unknown_device	Unknown device
+app.settings.not_connected_to_lan	Not connected to a LAN
+app.common.this_device	This device
+app.settings.local_address	Local address
+app.common.check_for_updates	Check for Updates
+app.common.check_for_updates_2	Check for Updates…
+app.chat.downloading	Downloading…
+app.common.connecting_to	Connecting to 
+app.network.searching_lan_again	Searching the LAN again
+app.settings.check_for_updates_once_day	Check for updates once a day
+app.common.no_other_devices_found_you_can	No other devices found. You can create a group with just yourself first.
+app.common.no_devices_available_to_invite	No devices available to invite.
+app.common.no_files_to_send	No files to send
+app.share.no_usable_lan_address_found	No usable LAN address found.
+app.settings.light	Light
+app.common.messages	Messages
+app.common.mute_chat	Mute chat
+app.common.message_unsent	Message unsent
+app.settings.dark	Dark
+app.common.add	Add
+app.common.add_members	Add members
+app.chat.add_members	Add members…
+app.settings.clear	Clear…
+app.settings.clear_all_chat_history	Clear all chat history
+app.common.clear_chat_history	Clear chat history
+app.common.clear	Clear
+app.common.clear_alias	Clear alias
+app.chat.click_to_download_image	Click to download image
+app.common.status	Status
+app.share.scan_qr_code_with_camera_or	Scan the QR code with a camera or browser to browse the shared folder.
+app.common.listen_port	Listen port
+app.common.ok	OK
+app.common.delete_2	Delete "
+app.common.remove_2	Remove "
+app.network.remove	Remove "
+app.model.away	Away
+app.common.offline	Offline
+app.common.remove_member	Remove member
+app.common.remove_from_group	Remove from group
+app.common.remove	Remove
+app.network.remove_device	Remove device
+app.common.window	Window
+app.settings.show_system_notifications_when_window_is	Show system notifications when the window is in the background
+app.common.port	Port 
+app.common.bio	Bio
+app.common.paste	Paste
+app.common.edit	Edit
+app.common.zoom	Zoom
+app.common.network	Network
+app.settings.network_restarted	Network restarted
+app.network.network_settings	Network settings
+app.common.pin_chat	Pin chat
+app.common.owner	Owner
+app.common.group	Group
+app.common.group_2	Group "
+app.common.group_info	Group info
+app.common.groups_send_only_to_joined_members	Groups send only to joined members; messages reach each online device separately.
+app.common.group_name	Group name
+app.common.group_renamed_to	Group renamed to "
+app.common.chat	Chat
+app.common.chat_history	Chat history
+app.network.chat_history_cleared	Chat history cleared
+app.settings.chat_attachments_transfer_directly_over_this	Chat attachments transfer directly over this TCP port; default 42225
+app.settings.auto_download_images	Auto-download images
+app.settings.download_and_install_automatically	Download and install automatically
+app.common.if_discovery_is_blocked_by_network	If discovery is blocked by the network, enter the other device's IP address or IP:port.
+app.settings.discover_devices_automatically	Discover devices automatically
+app.settings.check_for_updates_automatically	Check for updates automatically
+app.common.dissolve	Dissolve
+app.common.dissolve_group	Dissolve group
+app.settings.apply_port_file_transfer_or_discovery	Apply port, file transfer, or discovery changes now
+app.settings.records_are_indexed_by_chat_and	Records are indexed by chat and time in zchat.db in the data folder
+app.common.devices	Devices
+app.common.settings	Settings
+app.common.settings_2	Settings…
+app.common.set_alias	Set alias
+app.common.set_alias_2	Set alias…
+app.share.access_address	Access address
+app.model.do_not_disturb	Do Not Disturb
+app.network.make_sure_other_device_also_has	Make sure the other device also has zchat open and both are on the same Wi-Fi or LAN.\nIf the network blocks broadcasts, connect directly by IP address.
+app.settings.your_profile_chat_history_and_file	Your profile, chat history, and file cache are stored here
+app.settings.profile_saved	Profile saved
+app.network.messages_older_than_2_minutes_cannot	Messages older than 2 minutes cannot be unsent
+app.common.use_system_setting	Use system setting
+app.settings.follow_system_or_fix_light_or	Follow the system, or fix light or dark mode
+app.chat.type_message_enter_sends_shift_plus	Type a message; Enter sends, Shift+Enter adds a new line
+app.share.running	Running
+app.common.no_chats_yet_nfind_someone_in	No chats yet\nFind someone in Discover to start chatting
+app.network.no_devices_found_yet	No devices found yet
+app.common.no_messages_yet	No messages yet
+app.share.no_folder_selected_attachments_can_still	No folder selected; attachments can still be sent
+app.settings.these_settings_only_affect_this_device	These settings only affect this device.
+app.settings.this_deletes_messages_in_every_chat	This deletes messages in every chat on this device. It cannot be undone.
+app.common.connect	Connect
+app.common.connection_lost	Connection lost
+app.common.other_side_cancelled	The other side cancelled
+app.common.quit	Quit 
+app.common.quit_zchat	Quit zchat
+app.common.leave_group	Leave group
+app.chat.leave_group	Leave group…
+app.common.select	Select…
+app.settings.choose_image_it_is_scaled_down	Choose an image; it is scaled down and stored on this device
+app.share.choose_download_folder	Choose download folder
+app.share.choose_shared_folder	Choose shared folder
+app.settings.choose_avatar	Choose avatar
+app.common.select_members	Select members
+app.share.choose_folder	Choose folder…
+app.settings.notifications	Notifications
+app.common.connect_by_ip	Connect by IP
+app.common.connect_by_ip_2	Connect by IP…
+app.settings.find_other_zchat_devices_on_lan	Find other zchat devices on the LAN using UDP multicast and broadcast
+app.common.inviting_someone_sends_them_this_group	Inviting someone sends them this group's details.
+app.common.redo	Redo
+app.settings.restart_network	Restart network
+app.settings.restart_network_2	Restart network
+app.network.search_again	Search again
+app.common.hide	Hide 
+app.common.hide_others	Hide Others
+app.model.invisible	Invisible
+app.common.project_page	Project page
+app.settings.last_checked	; last checked: 
+app.settings.language	Language
+app.settings.interface_language_changes_apply_immediately	Interface language; changes apply immediately
+app.common.simplified_chinese	Simplified Chinese
+app.common.closing_quote	"
+app.common.list_separator	, 
+app.common.leave_group_2	Leave group "
+app.common.dissolve_group_2	Dissolve group "
+app.chat.user_id	User ID
+app.chat.off	Off
+app.common.version	Version
+app.common.platform	Platform
+app.chat.last_seen_2	Last seen
+app.chat.edit_profile	Edit profile
+app.common.view_profile	View profile
+app.common.colon	: 
+app.common.bad_request	Bad request
+app.common.file_is_gone_or_sender_restarted	File is gone or the sender restarted
+app.common.file_was_moved_or_deleted	File was moved or deleted
+app.common.invalid_resume_position	Invalid resume position
+app.common.could_not_read_file	Could not read file
+app.transfer.could_not_seek_in_file	Could not seek in file
+app.transfer.could_not_transfer_file	Could not transfer file
+app.network.zchat_cannot_connect_to_yourself	zchat: cannot connect to yourself
+app.common.date_format_ymd	Jan 2, 2006
+app.share.shared_folder_is_served_over_this	The shared folder is served over this device's HTTP service, without any server.
+app.share.shared_folder_is_read_only_visitors	The shared folder is read-only; visitors cannot upload or modify files.\n\nChat attachments are sent directly over a separate TCP port and do not depend on this shared folder.\n\nSharing links stop working when zchat closes.
+app.share.file_is_gone	File is gone
+app.share.search_in_shared_folder	Search in shared folder
+app.common.search	Search
+app.share.back	Back
+app.share.this_folder_is_empty	This folder is empty
+app.share.shared_by_zchat_on_lan_read	Shared by zchat on the LAN · Read-only
+app.share.zchat_file_sharing	zchat File Sharing
+app.share.this_service_is_running_but_no	This service is running, but no shared folder has been selected.
+app.share.invalid_path	Invalid path
+app.share.could_not_read_folder	Could not read folder
+app.common.folder	Folder
+app.common.files_2	%d files
+app.share.search_results	Search “%s” · %d results
+app.common.upload_folder	Upload folder
+app.common.upload_folder_does_not_exist	Upload folder does not exist
+app.share.upload_folder_updated	Upload folder updated
+app.share.upload_folder_cleared	Upload folder cleared
+app.share.choose_upload_folder	Choose upload folder
+app.share.browse_and_upload	Browse and upload
+app.share.uploads_off	Uploads off
+app.share.visitors_can_upload	Visitors can upload
+app.share.takes_effect_when_sharing_starts	Takes effect when sharing starts
+app.share.anyone_on_lan_with_address_can	Anyone on the LAN with the address can upload
+app.share.no_upload_folder_selected_visitors_can	No upload folder selected; visitors can only browse and download
+app.share.open_it_in_browser_on_lan_2	Open it in a browser on the LAN to browse the shared folder and upload files
+app.share.when_enabled_this_device_serves_file	When enabled, this device serves a file page on the LAN that phones and other computers can open.
+app.share.shared_and_upload_folders_are_served	The shared and upload folders are served over this device's HTTP service, without any server.
+app.share.shared_folder_is_read_only_files	The shared folder is read-only; files visitors upload go to the upload folder and do not modify it.\n\nChat attachments are sent directly over a separate TCP port and do not depend on this shared folder.\n\nSharing links stop working when zchat closes.
+app.share.open_page_to_browse_or_upload	Open the page to browse or upload
+app.settings.after_sharing_is_enabled_on_file	After sharing is enabled on the File Sharing page, visitors can upload files to this folder from the web page
+app.share.no_shared_folder_is_set_but	No shared folder is set, but files can still be uploaded.
+app.share.choose_files_to_upload_to_sharer	Choose files to upload to the sharer's upload folder
+app.common.upload	Upload
+app.share.uploaded_file_s	Uploaded %d file(s)
+app.common.file_too_large	File too large
+app.share.could_not_save_file	Could not save the file
+app.common.no_files_selected	No files selected
+app.share.shared_by_zchat_on_lan	Shared by zchat on the LAN
+app.share.shared_by_zchat_on_lan_uploads	Shared by zchat on the LAN · Uploads allowed
+app.common.screenshot	Screenshot
+app.screenshot.screenshot_failed	Screenshot failed
+app.screenshot.screenshot_copied_to_clipboard	Screenshot copied to the clipboard
+app.screenshot.screenshot_saved	Screenshot saved: 
+app.screenshot.screenshot_folder_updated	Screenshot folder updated
+app.settings.screenshot_shortcut_updated	Screenshot shortcut updated
+app.screenshot.could_not_register_screenshot_shortcut	Could not register the screenshot shortcut: 
+app.screenshot.save_screenshot	Save screenshot
+app.screenshot.choose_screenshot_folder	Choose screenshot folder
+app.screenshot.could_not_create_screenshot	Could not create the screenshot
+app.screenshot.could_not_copy_screenshot	Could not copy the screenshot: 
+app.screenshot.could_not_save_screenshot	Could not save the screenshot: 
+app.screenshot.could_not_create_save_folder	Could not create the save folder: 
+app.screenshot.could_not_read_display_information	Could not read display information
+app.screenshot.zchat_does_not_have_screen_recording	zchat does not have screen recording permission. Allow it in System Settings and try again.
+app.screenshot.screen_captured_drag_to_select_area	Screen captured. Drag to select an area, then edit it.
+app.screenshot.drag_to_select_area_or_press	Drag to select an area, or press Esc to cancel
+app.common.pin	Pin
+app.common.save_2	Save…
+app.common.opacity	Opacity
+app.common.global_shortcut	Global shortcut
+app.common.capture_from_any_window_leave_empty	Capture from any window; leave empty or enter off to disable
+app.common.apply	Apply
+app.common.save_folder	Save folder
+app.settings.capture_mouse_pointer	Capture the mouse pointer
+app.settings.include_mouse_pointer_in_screenshot	Include the mouse pointer in the screenshot
+app.settings.take_screenshot_now	Take a screenshot now
+app.settings.select_area_to_annotate_copy_save	Select an area to annotate, copy, save, pin or send it to a chat
+app.common.choose	Choose
+app.settings.enable_screenshots	Enable screenshots
+app.settings.use_screenshots_from_chat_toolbar_menus	Use screenshots from the chat toolbar, menus and shortcuts
+app.screenshot.save_as	Save as…
+app.screenshot.click_through	Click-through
+app.common.show_all_pins	Show all pins
+app.common.restore_pin_interaction	Restore pin interaction
+app.common.close_all_pins	Close all pins
+app.screenshot.pins_respond_to_mouse_again	Pins respond to the mouse again
+app.screenshot.pins_are_now_click_through	Pins are now click-through
+app.common.screenshots_and_pins	Screenshots and pins
+app.chat.screenshot_options	Screenshot options
+app.chat.include_window_in_screenshot	Include window in screenshot
+app.chat.hide_window_in_screenshot	Hide window in screenshot
+app.settings.include_chat_window_by_default	Include the chat window by default
+app.settings.include_current_chat_window_by_default	Include the current chat window by default when taking a screenshot from the chat toolbar
+app.common.include_current_chat_window	Include the current chat window
+app.common.do_not_include_current_chat_window	Do not include the current chat window
+app.settings.shortcut_with_chat_window	Shortcut with the chat window
+app.settings.shortcut_without_chat_window	Shortcut without the chat window
+app.settings.include_chat_window_leave_empty_or	Include the chat window; leave empty or enter off to disable
+app.settings.hide_zchat_first_leave_empty_or	Hide zchat first; leave empty or enter off to disable
+app.common.screenshot_2	Screenshot…
+app.common.shortcuts	Shortcuts
+app.common.not_set	Not set
+app.chat.change_status	Change status
+app.common.download_link	Download link
+app.settings.copy_it_into_browser_or_open	Copy it into a browser, or open the release page.
+app.common.copy_link	Copy link
+app.common.open_release_page	Open release page
+app.common.this_build_cannot_update_itself_download	This build cannot update itself. Download the new version from the release page.
+app.settings.manual_update	Manual update
+app.common.lan_chat_for_text_images_files	LAN chat for text, images, files and shared folders, with no server in between.
+app.common.invalid_transfer_request	Invalid transfer request
+app.common.sender_cannot_read_file	The sender cannot read the file
+app.common.sender_is_busy_try_again_later	The sender is busy; try again later
+app.common.file_checksum_mismatch	File checksum mismatch
+app.common.file_changed_download_it_again	The file changed; download it again
+app.common.file_is_gone_or_has_expired	The file is gone or has expired
+app.icon.documentation_copied	 documentation copied
+app.icon.icon_in_desktop_file_must_be	The Icon= in the .desktop file must be the icon's base name without the extension.
+app.icon.desktop_text_file	.desktop text file
+app.icon.n_108dp_canvas_72dp_visible_66dp_safe	108dp canvas, 72dp visible, 66dp safe zone
+app.icon.n_16_32_128_256_512_pt	16/32/128/256/512 pt at @1x and @2x
+app.icon.n_20_29_40_60_pt_at	20/29/40/60 pt at @2x and @3x
+app.icon.n_20_29_40_76_83_5	20/29/40/76/83.5 pt at @1x and @2x
+app.icon.n_256_256_or_512_512_px	256 × 256 or 512 × 512 px
+app.icon.android_7_1_plus_round_launcher	Android 7.1+ round launcher
+app.icon.android_adaptive_icons	Android adaptive icons
+app.icon.app_store_connect_and_xcode_marketing	App Store Connect and the Xcode marketing icon
+app.icon.app_store_connect_marketing_icon	App Store Connect marketing icon
+app.icon.app_store_icon	App Store icon
+app.icon.n_1024_1024_app_store_marketing_icon	The 1024×1024 App Store marketing icon must not have alpha; if review flags it, export an opaque version separately.
+app.icon.app_store_requires_png_icons_with	The App Store requires PNG icons with no alpha channel; this tool flattens transparency onto the chosen background color.
+app.icon.appicon_appiconset_icns_and_1024_app	AppIcon.appiconset, ICNS and the 1024 App Store icon
+app.icon.appicon_icns_is_written_by_imagemagick	AppIcon.icns is written by ImageMagick; if that fails, the built-in ICNS writer is used.
+app.icon.appimage_icon	AppImage icon
+app.icon.appimage_usually_uses_256_256_or	AppImage usually uses a 256×256 or 512×512 PNG as .DirIcon.
+app.icon.apple_human_interface_guidelines_app_icons	Apple Human Interface Guidelines · App icons
+app.icon.apple_human_interface_guidelines_macos_icons	Apple Human Interface Guidelines · macOS icons
+app.icon.badgelogo_must_be_monochrome_usually_white	BadgeLogo must be monochrome (usually white on transparent); this tool only resizes the source, so check the color yourself.
+app.icon.desktop_entry_specification	Desktop Entry specification
+app.icon.freedesktop_hicolor_icon_theme_and_desktop	Freedesktop hicolor icon theme and .desktop launcher
+app.icon.freedesktop_icon_theme_specification	Freedesktop icon theme specification
+app.icon.google_play_store_icon	Google Play store icon
+app.icon.google_play_store_icon_512_512	Google Play store icon: 512×512, 32-bit PNG, no more than 1 MB.
+app.icon.google_play_icon_requirements	Google Play icon requirements
+app.icon.icns_multi_size	ICNS multi-size
+app.icon.ico_contains_16_24_32_48	The ICO contains 16/24/32/48/64/128/256 sizes; Windows picks one by DPI.
+app.icon.ico_multi_size	ICO multi-size
+app.icon.icon_uses_file_name_without_png	Icon= uses the file name without .png
+app.common.imagemagick_is_ready	ImageMagick is ready
+app.common.imagemagick_did_not_write_output_file	ImageMagick did not write the output file
+app.icon.imagemagick_handles_resizing_and_format_conversion	ImageMagick handles resizing and format conversion; every icon comes from the same source image and nothing is uploaded.
+app.icon.msix_visual_assets	MSIX visual assets
+app.icon.msix_assets_are_written_at_100	MSIX assets are written at 100% and 200% scale; delete the files you do not use.
+app.icon.n_32_bit_png_transparency_allowed	32-bit PNG, transparency allowed
+app.icon.png_supports_transparency_system_picks_closest	PNG supports transparency; the system picks the closest size for panels and launchers.
+app.icon.png_monochrome	PNG, monochrome
+app.icon.png_transparency_allowed	PNG, transparency allowed
+app.icon.png_no_alpha	PNG, no alpha
+app.icon.windows_app_icon_guidelines	Windows app icon guidelines
+app.icon.xcode_14_plus_can_use_single	Xcode 14+ can use a single 1024×1024 icon; the full size set remains compatible with older Xcode.
+app.icon.xcode_appicon_sizes	Xcode AppIcon sizes
+app.icon.exe_resources_taskbar_and_start_menu	exe resources, taskbar and Start menu shortcuts
+app.icon.hicolor_icons	hicolor icons
+app.icon.hicolor_is_supported_by_every_desktop	hicolor is supported by every desktop environment; 16 to 512 pixels are separated by directory name.
+app.icon.ios_rounds_corners_itself_supply_full	iOS rounds the corners itself; supply a full square image and do not round the corners in the artwork.
+app.icon.ipad_icons	iPad icons
+app.icon.iphone_icons	iPhone icons
+app.icon.complete_appicon_set_for_iphone_ipad	Complete AppIcon set for iPhone, iPad and the App Store
+app.icon.macos_icons_usually_keep_transparency_for	macOS icons usually keep transparency for rounded corners and shadows; this tool does not flatten the background.
+app.icon.mipmap_anydpi_v26_xml_makes_android	The mipmap-anydpi-v26 XML makes Android 8.0+ use the adaptive icon; change the background color in res/values.
+app.icon.upload_one_image_and_generate_standard	Upload one image and generate the standard icons and folders for Android, iOS, Windows, Linux and macOS
+app.icon.upload_under_store_listing_in_play	Upload under Store listing in Play Console
+app.icon.table_follows_each_platform_s_current	The table follows each platform's current official guidance. Versions and packaging tools can differ slightly; if review or a packaging tool complains, check the official documentation. The generator creates a separate folder per platform and includes a README.txt.
+app.icon.opaque_background_ios	Opaque background (iOS)
+app.common.failed	failed
+app.common.files_3	files
+app.common.files_failed	files failed
+app.icon.creates_android_ios_windows_linux_and	Creates android, ios, windows, linux and macos subfolders. Existing files are overwritten; READMEs and icons are written together.
+app.icon.legacy_launcher_icon_ic_launcher	Legacy launcher icon ic_launcher
+app.icon.legacy_icons_are_32_bit_png	Legacy icons are 32-bit PNG; keeping transparent backgrounds is recommended.
+app.icon.as_appdir_diricon	as the AppDir .DirIcon
+app.common.use_this_folder	Use this folder
+app.common.use_this_image	Use this image
+app.icon.all_files_generated	All files generated
+app.icon.generate_again	Generate again
+app.common.preparing_output_folders	Preparing output folders
+app.icon.cancel_generation	Cancel generation
+app.icon.multiple_choices	Multiple choices
+app.icon.launcher_adaptive_and_round_icons_plus	Launcher, adaptive and round icons plus the Google Play store icon
+app.icon.image_is_not_square_it_is	The image is not square: it is scaled proportionally and the margins are filled with transparency or the background color as each platform needs.
+app.icon.round_icon_ic_launcher_round	Round icon ic_launcher_round
+app.icon.copy_all_documentation	Copy all documentation
+app.icon.copy_documentation	Copy documentation
+app.icon.multi_size_ico_and_msix_winui	Multi-size ICO and MSIX / WinUI tile and splash assets
+app.common.installer_icons	Installer icons
+app.common.installer_icons_2	Installer icons…
+app.icon.installer_icon_requirements	Installer icon requirements
+app.icon.install_brew_install_imagemagick	Install: brew install imagemagick
+app.icon.install_sudo_apt_install_imagemagick_or	Install: sudo apt install imagemagick  or  sudo dnf install ImageMagick
+app.icon.install_winget_install_imagemagick_imagemagick_or	Install: winget install ImageMagick.ImageMagick  or  choco install imagemagick
+app.icon.official_sizes_and_formats	Official sizes and formats
+app.icon.official_documentation	Official documentation
+app.icon.tip_generated_folders_can_be_merged	Tip: the generated folders can be merged into a project. Drag AppIcon.appiconset into Xcode, use app.ico for a Windows installer, and put the Linux .desktop and hicolor icons in the system folders. Each platform's README.txt has the exact steps.
+app.common.size	Size
+app.common.written	Written
+app.common.canceled	Canceled
+app.icon.generation_canceled_files_already_written_are	Generation canceled; files already written are kept
+app.icon.copied_all_platform_documentation	Copied all platform documentation
+app.icon.done_platform_folders_in_output_directory	Done. The platform folders in the output directory can be merged into your project.
+app.icon.platform_requirements	Platform requirements
+app.icon.app_list_and_taskbar	App list and taskbar
+app.icon.used_by_app_bundle_s_contents	Used by the app bundle's Contents/Resources
+app.icon.app_name	App name
+app.icon.app_splash_screen	App splash screen
+app.icon.app_icon_app_ico	App icon app.ico
+app.icon.square_png_of_at_least_1024	A square PNG of at least 1024 × 1024 works best
+app.icon.choose_png_of_at_least_1024	Choose a PNG of at least 1024 × 1024
+app.icon.generate	Generate
+app.icon.start_menu_medium_tile	Start menu medium tile
+app.icon.start_menu_large_tile	Start menu large tile
+app.icon.start_menu_wide_tile	Start menu wide tile
+app.icon.successfully_generated_files_are_kept_fix	Successfully generated files are kept; fix the error and generate again, existing files will be overwritten.
+app.common.open_output_folder	Open output folder
+app.icon.supports_png_jpg_webp_and_gif	Supports PNG, JPG, WebP and GIF. Transparent areas are filled with your background color in iOS icons.
+app.icon.cannot_find_icns_source_icon_for	Cannot find an ICNS source icon for %s
+app.icon.cannot_read_this_image_try_another	Cannot read this image; try another PNG or JPG
+app.common.there_are	There are
+app.common.imagemagick_is_not_installed	ImageMagick is not installed
+app.common.imagemagick_not_found	ImageMagick not found
+app.common.imagemagick_not_found_2	ImageMagick not found: 
+app.icon.unknown_step	Unknown step
+app.icon.unknown_icon_container_format	Unknown icon container format: 
+app.common.format	Format
+app.icon.desktop_launcher	Desktop launcher
+app.icon.check_passed_imagemagick_is_checked_again	Check passed. ImageMagick is checked again before generation so it cannot fail halfway.
+app.icon.creating_folders_and_writing_icons	Creating folders and writing icons…
+app.common.canceling	Canceling…
+app.common.checking_imagemagick	Checking ImageMagick…
+app.icon.generating	Generating…
+app.icon.generating_files_already_written_are_kept	Generating; files already written are kept
+app.common.ms	ms
+app.common.no_files_were_written	No files were written
+app.icon.no_pngs_available_for_icns	No PNGs available for ICNS
+app.icon.no_files_were_generated_check_imagemagick	No files were generated; check ImageMagick and output folder permissions and try again.
+app.icon.source_image	Source image
+app.icon.source_image_is_missing_or_was	The source image is missing or was moved; choose it again
+app.icon.source_image_is_missing_or_was_2	The source image is missing or was moved; choose it again.
+app.icon.source_image_not_found	Source image not found: 
+app.icon.source_image_is_folder	The source image is a folder
+app.icon.short_side_is_below_1024_pixels	The short side is below 1024 pixels; the 1024 icon may look soft, so a larger source is better.
+app.common.generate	Generate
+app.icon.generating_2	Generating
+app.icon.imagemagick_source_image_and_output_folder	ImageMagick, the source image and the output folder are checked before generation.
+app.icon.generating_icons_uses_local_imagemagick_installation	Generating icons uses the local ImageMagick installation.
+app.icon.generation_failed	Generation failed
+app.icon.generation_failed_no_files_were_written	Generation failed: no files were written
+app.icon.generation_complete	Generation complete
+app.icon.generated	Generated: 
+app.icon.generation_canceled_successfully_written_files_stay	Generation canceled; successfully written files stay in the output folder and can be overwritten by generating again.
+app.icon.generation_log	Generation log
+app.common.time	Time
+app.icon.target_platforms	Target platforms
+app.common.s	s
+app.icon.use_rrggbb_for_background_color	Use #RRGGBB for the background color
+app.icon.adaptive_foreground_ic_launcher_foreground	Adaptive foreground ic_launcher_foreground
+app.icon.adaptive_icons_use_108dp_canvas_with	Adaptive icons use a 108dp canvas with 72dp visible and a 66dp safe zone; this tool insets the foreground by 1/6.
+app.icon.view	View
+app.common.note	Note
+app.icon.use_rgb_or_rrggbb	Use #RGB or #RRGGBB
+app.common.install_imagemagick_first_then_click_check	Install ImageMagick first, then click Check again.
+app.icon.choose_source_image_first	Choose a source image first
+app.icon.choose_at_least_one_platform	Choose at least one platform
+app.icon.choose_source_image	Choose a source image
+app.common.choose_output_folder	Choose an output folder
+app.common.output_folder	Output folder
+app.icon.output_settings	Output settings
+app.common.more_errors_see_log	%d more errors; see the log.
+app.common.no_image_selected_yet	No image selected yet
+app.common.choose_output_folder_2	Choose an output folder
+app.common.choose_image	Choose image
+app.icon.choose_source_image_2	Choose source image
+app.icon.selected_platforms_have_no_files_to	The selected platforms have no files to generate
+app.common.choose_output_folder_3	Choose output folder
+app.common.partially_complete	Partially complete
+app.icon.some_files_failed	Some files failed
+app.common.check_again	Check again
+app.icon.lock_screen_badge	Lock screen badge
+app.common.item	Item
+app.common.wrote_files	Wrote %d files
+app.common.files_failed_2	%d files failed
+app.icon.generated_files_failed	Generated %d files, %d failed
+app.icon.generated_files_in	Generated %d files in %s
+app.icon.icns_sizes_are_incomplete_and_built	The ICNS sizes are incomplete and the built-in writer failed too
+app.image.is_not_imagemagick	 is not ImageMagick
+app.image.gif_loops_forever_images_become_frames	The GIF loops forever. Images become frames in list order; when sizes differ, the first image sets the canvas.
+app.image.gif_animation	GIF animation
+app.common.imagemagick_tools	ImageMagick Tools…
+app.image.jpg_does_not_support_transparency_transparent	JPG does not support transparency; transparent areas become white. Quality only affects lossy formats such as JPG and WebP.
+app.common.png_or_jpg_transparent_background_works	PNG or JPG; a transparent background works best
+app.image.process_many_images_at_once_with	Process many images at once with one format, size and quality
+app.image.upload_one_image_to_generate_standard	Upload one image to generate the standard icons and folders each platform needs
+app.image.top	Top
+app.image.bottom	Bottom
+app.common.position	Position
+app.common.e_g_zchat	e.g. © zchat
+app.common.keep_original_format	Keep original format
+app.common.all_files_processed	All files processed
+app.common.process_again	Process again
+app.common.watermark	Watermark
+app.image.quality	Quality
+app.common.cancel_processing	Cancel processing
+app.image.only_images_larger_than_limit_are	Only images larger than the limit are shrunk, never enlarged. Leave width or height at 0 for no limit. Files are written as “name-batch”.
+app.image.select_several_images_at_once_composition	Select several images at once; composition uses the selection order.
+app.common.top_right	Top right
+app.common.bottom_right	Bottom right
+app.image.right	Right
+app.image.composite_image	Composite image
+app.image.composition	Composition
+app.image.composition_2	Composition
+app.image.composition_needs_at_least_two_images	Composition needs at least two images
+app.common.image_not_found	Image not found: 
+app.common.image_watermark	Image watermark
+app.image.convert_between_png_jpg_webp_gif	Convert between PNG, JPG, WebP, GIF, BMP, TIFF and PDF
+app.image.fill_and_crop	Fill and crop
+app.common.processing	Processing
+app.common.processing_failed	Processing failed
+app.common.processing_failed_no_files_were_written	Processing failed: no files were written
+app.common.processing_complete	Processing complete
+app.common.processed_files_failed	Processed %d files, %d failed
+app.common.processed_files_in	Processed %d files in %s
+app.common.processing_log	Processing log
+app.common.results_are_written_to_this_folder	Results are written to this folder; source files stay unchanged. Files with the same name are overwritten.
+app.common.font_size	Font size
+app.image.set_width_or_height_to_0	Set width or height to 0 to calculate it from the aspect ratio.
+app.common.width_px	Width (px)
+app.common.center	Center
+app.common.top_left	Top left
+app.common.bottom_left	Bottom left
+app.image.left	Left
+app.common.processing_canceled_files_already_written_are	Processing canceled; files already written are kept
+app.image.selected	%d selected
+app.image.images_output_folder_and_imagemagick_are	Images, the output folder and ImageMagick are checked first.
+app.common.start_processing	Start processing
+app.image.everything_runs_locally_through_imagemagick_no	Everything runs locally through ImageMagick; no image is uploaded. Source files are not modified; results go to the folder you choose.
+app.common.batch_processing	Batch processing
+app.common.batch_settings	Batch settings
+app.common.stretch	Stretch
+app.image.stitched_images_are_saved_as_png	Stitched images are saved as PNG; look for files ending in -merged in the output folder.
+app.image.stitching_and_gif_animation_follow_order	Stitching and GIF animation follow the order above; clear the list and add images again to change it.
+app.image.resize_or_crop_to_target_size	Resize or crop to a target size for thumbnails and different screens
+app.image.supports_png_jpg_webp_gif_bmp	Supports PNG, JPG, WebP, GIF, BMP, TIFF, SVG and PDF
+app.common.text_watermark	Text watermark
+app.common.text_color	Text color
+app.common.mode	Mode
+app.image.max_width	Max width
+app.image.max_height	Max height
+app.common.unknown_processing_type	Unknown processing type
+app.common.format_conversion	Format conversion
+app.image.format_conversion_resizing_cropping_batch_processing	Format conversion, resizing, cropping, batch processing, watermarks, composition and quality tuning, all on this device
+app.image.stitch_images_horizontally_or_vertically_or	Stitch images horizontally or vertically, or build a GIF animation
+app.image.horizontal_stitch	Horizontal stitch
+app.common.processing_2	Processing…
+app.image.processing_images	Processing images…
+app.common.processing_files_already_written_are_kept	Processing; files already written are kept
+app.image.frame_delay_ms	Frame delay (ms)
+app.common.watermark_image	Watermark image
+app.common.watermark_image_not_found	Watermark image not found
+app.common.watermark_text	Watermark text
+app.image.max_watermark_side	Max watermark side
+app.common.watermark_settings	Watermark settings
+app.image.watermark_is_centered_by_default_corners	The watermark is centered by default; corners and edges are available. Try one image before applying it in bulk.
+app.common.nothing_to_process	Nothing to process
+app.image.add_images	Add images
+app.image.add_text_or_image_watermark_with	Add a text or image watermark with position, size and opacity
+app.common.clear_2	Clear
+app.image.strip_metadata	Strip metadata
+app.image.strip_metadata_exif_icc_etc	Strip metadata (EXIF, ICC, etc.)
+app.image.target_format	Target format
+app.common.type	Type
+app.image.vertical_stitch	Vertical stitch
+app.common.results_are_in_output_folder_source	Results are in the output folder; source files are unchanged.
+app.image.resize_and_crop	Resize and crop
+app.image.resize_or_crop	Resize or crop
+app.image.resize_mode	Resize mode
+app.image.enter_width_or_height_to_resize	Enter a width or height to resize
+app.image.auto_level	Auto level
+app.image.auto_level_redistributes_tones_which_helps	Auto level redistributes tones, which helps flat-looking photos; stripping metadata reduces size and removes location data.
+app.common.crop	Crop
+app.image.crop_uses_chosen_position_as_its	Crop uses the chosen position as its anchor; the output is exactly the width and height above.
+app.image.crop_position	Crop position
+app.common.enter_width_and_height_to_crop	Enter a width and height to crop
+app.image.choose_images_first	Choose images first
+app.common.enter_watermark_text	Enter watermark text
+app.common.choose_watermark_image	Choose a watermark image
+app.image.adjust_quality_auto_level_and_strip	Adjust quality, auto level and strip metadata to reduce file size
+app.image.quality_settings	Quality settings
+app.image.conversion_settings	Conversion settings
+app.image.input_images	Input images
+app.common.output_format	Output format
+app.icon.back_to_capabilities	Back to capabilities
+app.common.more_images_not_shown	%d more images not shown
+app.image.no_images_selected_yet_click_add	No images selected yet; click Add images above to start.
+app.image.these_tools_use_imagemagick_installed_on	These tools use the ImageMagick installed on this device.
+app.image.fit_keep_aspect_ratio	Fit (keep aspect ratio)
+app.common.choose_capability	Choose a capability
+app.common.choose_watermark_image_2	Choose watermark image
+app.common.selection_contains_folder	The selection contains a folder
+app.common.some_files_failed	Some files failed
+app.image.color_and_quality	Color and quality
+app.common.height_px	Height (px)
+app.image.fill_and_crop_need_both_width	Fill and crop need both a width and a height
+app.common.capabilities	Capabilities
+app.ffmpeg.is_not_ffmpeg	 is not FFmpeg
+app.ffmpeg.n_0_25_to_4_speed_changes	0.25× to 4× speed changes with video and audio in sync
+app.ffmpeg.crf_quality	CRF quality
+app.ffmpeg.lower_crf_means_better_quality_and	Lower CRF means better quality and larger files; 23 suits most videos, 28 makes smaller files. Vertical and square presets pad the frame instead of stretching it.
+app.common.ffmpeg	FFmpeg
+app.common.ffmpeg_tools	FFmpeg Tools…
+app.ffmpeg.ffmpeg_is_ready	FFmpeg is ready
+app.ffmpeg.ffmpeg_did_not_write_file	FFmpeg did not write a file
+app.ffmpeg.gifs_loop_automatically_higher_frame_rate	GIFs loop automatically. A higher frame rate looks smoother and makes larger files; a larger width looks sharper. The high-quality palette builds a more accurate 256-color palette for gradients.
+app.ffmpeg.gif_settings	GIF settings
+app.common.imagemagick	ImageMagick
+app.ffmpeg.compress_extract_audio_or_capture_covers	Compress, extract audio, or capture covers in one pass, one output per file
+app.ffmpeg.use_this_subtitle	Use this subtitle
+app.ffmpeg.use_this_audio	Use this audio
+app.ffmpeg.for_example_2_means_2_speed	For example, 2 means 2× speed and 0.5 means half speed.
+app.ffmpeg.keep_source_resolution	Keep source resolution
+app.ffmpeg.speed_change	Speed change
+app.ffmpeg.speed_settings	Speed settings
+app.ffmpeg.speed_must_be_between_0_25	Speed must be between 0.25 and 4
+app.common.resolution	Resolution
+app.ffmpeg.trim_range	Trim range
+app.ffmpeg.compress_trim_merge_extract_audio_make	Compress, trim, merge, extract audio, make GIFs, add watermarks, subtitles, change speed, and batch process, all on this device
+app.ffmpeg.reduce_size_and_standardize_resolution_with	Reduce size and standardize resolution with vertical and horizontal presets
+app.ffmpeg.compress_video	Compress video
+app.ffmpeg.compression_settings	Compression settings
+app.ffmpeg.speed_changes_keep_video_and_audio	Speed changes keep video and audio in sync; atempo preserves pitch. Range: 0.25× to 4×.
+app.ffmpeg.you_can_select_multiple_files_merging	You can select multiple files; merging uses the selection order
+app.common.top_right_2	Top right
+app.ffmpeg.bottom_right	Bottom right
+app.ffmpeg.image_format	Image format
+app.ffmpeg.balanced	Balanced
+app.ffmpeg.flip_vertically	Flip vertically
+app.ffmpeg.subtitles	Subtitles
+app.ffmpeg.subtitles_and_music	Subtitles and music
+app.ffmpeg.subtitles_are_rendered_into_video_so	Subtitles are rendered into the video, so players do not need a separate subtitle file. Common formats such as SRT and ASS are supported.
+app.ffmpeg.subtitle_file	Subtitle file
+app.ffmpeg.subtitle_file_does_not_exist	The subtitle file does not exist
+app.ffmpeg.install_brew_install_ffmpeg	Install: brew install ffmpeg
+app.ffmpeg.install_sudo_apt_install_ffmpeg_or	Install: sudo apt install ffmpeg  or  sudo dnf install ffmpeg
+app.ffmpeg.install_winget_install_gyan_ffmpeg_or	Install: winget install Gyan.FFmpeg  or  choco install ffmpeg
+app.ffmpeg.top_left	Top left
+app.ffmpeg.bottom_left	Bottom left
+app.ffmpeg.recommended_settings_restored	Recommended settings restored
+app.ffmpeg.files_selected	%d files selected
+app.common.frame_rate	Frame rate
+app.ffmpeg.frame_rate_must_be_between_1	Frame rate must be between 1 and 60
+app.ffmpeg.common_canvases	Common canvases: 
+app.ffmpeg.input_files_output_folder_and_ffmpeg	Input files, the output folder, and FFmpeg are checked before starting.
+app.ffmpeg.start_time	Start time
+app.ffmpeg.start_time_format_is_invalid	The start time format is invalid
+app.ffmpeg.very_fast	Very fast
+app.common.fast	Fast
+app.ffmpeg.fast_trim	Fast trim
+app.ffmpeg.fast_trim_no_re_encoding	Fast trim (no re-encoding)
+app.ffmpeg.restore_recommended	Restore recommended
+app.ffmpeg.slow_smaller	Slow (smaller)
+app.ffmpeg.capture_single_cover_frame_or_export	Capture a single cover frame or export thumbnails at a fixed interval
+app.ffmpeg.cut_clips_and_remove_intros_or	Cut clips and remove intros or outros, with fast copy or precise re-encoding
+app.ffmpeg.turn_clip_into_looping_gif_with	Turn a clip into a looping GIF with adjustable frame rate, width, and quality
+app.ffmpeg.capture_cover	Capture cover
+app.ffmpeg.capture_time	Capture time
+app.ffmpeg.capture_time_format_is_invalid	The capture time format is invalid
+app.ffmpeg.capture_settings	Capture settings
+app.ffmpeg.all_processing_runs_locally_with_ffmpeg	All processing runs locally with FFmpeg and never uploads your videos. Source files are unchanged; results go to the output folder you choose.
+app.ffmpeg.batch_processing_produces_separate_result_for	Batch processing produces a separate result for each file, ideal for organizing a set of clips; output names get a purpose suffix automatically.
+app.ffmpeg.batch_processing_runs_file_by_file	Batch processing runs file by file; failures are recorded separately and do not affect the other files.
+app.ffmpeg.save_audio_from_video_as_mp3	Save the audio from a video as MP3, M4A, AAC, or WAV
+app.ffmpeg.merging_follows_order_above_use_arrows	Merging follows the order above; use the arrows to reorder. Direct stream copy requires every clip to use the same encoding parameters.
+app.ffmpeg.merge_videos	Merge videos
+app.ffmpeg.merge_settings	Merge settings
+app.ffmpeg.merge_multiple_clips_in_order_with	Merge multiple clips in order, with direct stream copy or uniform re-encoding
+app.ffmpeg.extract_audio	Extract audio
+app.ffmpeg.audio_extraction_removes_video_mp3_m4a	Audio extraction removes the video. MP3, M4A, and AAC are lossy; higher bitrates sound better. WAV is lossless but larger.
+app.ffmpeg.supports_common_formats_such_as_mp4	Supports common formats such as MP4, MOV, MKV, AVI, WebM, and FLV
+app.ffmpeg.supports_common_formats_such_as_mp4_2	Supports common formats such as MP4, MOV, MKV, MP3, M4A, and WAV
+app.ffmpeg.file_not_found	File not found: 
+app.ffmpeg.text_or_image_watermarks_with_position	Text or image watermarks with position, size, color, and opacity
+app.ffmpeg.text_watermarks_use_system_fonts_install	Text watermarks use system fonts; install a CJK font if Chinese appears as boxes. Use a transparent PNG for image watermarks. This re-encodes the video.
+app.ffmpeg.square_1080_1080	Square 1080×1080
+app.ffmpeg.rotate_180	Rotate 180°
+app.ffmpeg.rotation_and_flipping_re_encode_video	Rotation and flipping re-encode the video. A 90° rotation swaps width and height.
+app.ffmpeg.rotate_or_flip	Rotate or flip
+app.common.duration	Duration
+app.ffmpeg.duration_format_is_invalid	The duration format is invalid
+app.ffmpeg.duration_seconds	Duration (seconds)
+app.ffmpeg.time_accepts_seconds_mm_ss_or	Time accepts seconds, MM:SS, or HH:MM:SS; set either duration or end time. Fast trim is quicker but snaps the start to a keyframe; turn it off to re-encode for a more precise cut.
+app.ffmpeg.replace_background_music	Replace background music
+app.ffmpeg.ffmpeg_is_not_installed	FFmpeg is not installed
+app.ffmpeg.ffmpeg_not_found	FFmpeg not found
+app.ffmpeg.ffmpeg_not_found_2	FFmpeg not found: 
+app.ffmpeg.ffprobe_was_not_found_progress_percentages	ffprobe was not found. Progress percentages may be unavailable, but processing still works.
+app.ffmpeg.unknown_picture_adjustment_mode	Unknown picture adjustment mode
+app.ffmpeg.ultra_fast	Ultra fast
+app.ffmpeg.landscape_1920_1080	Landscape 1920×1080
+app.ffmpeg.aspect_fit	Aspect fit
+app.ffmpeg.aspect_fit_scales_video_down_proportionally	Aspect fit scales the video down proportionally, then pads it with black bars to fill the canvas, suitable for TikTok, Channels, and similar platforms.
+app.ffmpeg.aspect_fit_needs_both_width_and	Aspect fit needs both a width and a height
+app.ffmpeg.processing_video	Processing video…
+app.ffmpeg.detecting_ffmpeg	Detecting FFmpeg…
+app.ffmpeg.watermark_width	Watermark width
+app.ffmpeg.flip_horizontally	Flip horizontally
+app.ffmpeg.add_files	Add files
+app.ffmpeg.add_watermark	Add watermark
+app.ffmpeg.add_videos	Add videos
+app.ffmpeg.burn_srt_subtitles_or_replace_audio	Burn SRT subtitles or replace the audio with new background music
+app.ffmpeg.burn_subtitles	Burn subtitles
+app.ffmpeg.picture_adjustment	Picture adjustment
+app.ffmpeg.direct_stream_copy	Direct stream copy
+app.ffmpeg.direct_stream_copy_is_fastest_but	Direct stream copy is fastest, but all videos must share the same resolution, codec, and audio format. Turn it off to let FFmpeg re-encode everything uniformly.
+app.ffmpeg.direct_stream_copy_no_re_encoding	Direct stream copy (no re-encoding)
+app.ffmpeg.portrait_1080_1920	Portrait 1080×1920
+app.ffmpeg.end_time_must_be_later_than	The end time must be later than the start time
+app.ffmpeg.end_time_optional	End time (optional)
+app.ffmpeg.encoding_speed	Encoding speed
+app.ffmpeg.scale_crop_fit_vertical_or_horizontal	Scale, crop, fit vertical or horizontal canvases, rotate, and flip
+app.ffmpeg.background_music	Background music
+app.ffmpeg.background_music_does_not_exist	The background music does not exist
+app.ffmpeg.background_music_replaces_original_audio_and	Background music replaces the original audio and ends with the shorter track. The video is not re-encoded.
+app.ffmpeg.cropping_uses_top_left_corner_as	Cropping uses the top-left corner as the origin; adjust the X/Y start position. The output size is the width and height entered above.
+app.common.crop_picture	Crop picture
+app.common.video	Video
+app.ffmpeg.trim_video	Trim video
+app.ffmpeg.compress_video_2	Compress video
+app.ffmpeg.video_snapshot	Video snapshot
+app.ffmpeg.merge_videos_2	Merge videos
+app.ffmpeg.merging_needs_at_least_two_files	Merging needs at least two files
+app.ffmpeg.video_to_gif	Video to GIF
+app.ffmpeg.install_ffmpeg_first_then_click_check	Install FFmpeg first, then click Check again.
+app.ffmpeg.choose_video_or_audio_file_first	Choose a video or audio file first
+app.ffmpeg.enter_gif_width	Enter a GIF width
+app.ffmpeg.enter_duration_or_end_time	Enter a duration or an end time
+app.ffmpeg.choose_subtitle_file	Choose a subtitle file
+app.ffmpeg.choose_batch_mode	Choose a batch mode
+app.ffmpeg.choose_rotation_or_flip_mode	Choose a rotation or flip mode
+app.ffmpeg.choose_background_music_or_audio_file	Choose background music or an audio file
+app.ffmpeg.resize	Resize
+app.ffmpeg.resize_scales_to_width_and_height	Resize scales to the width and height entered; 0 keeps the aspect ratio. The picture is not padded.
+app.ffmpeg.resize_needs_width_or_height	Resize needs a width or a height
+app.ffmpeg.adjustment	Adjustment
+app.ffmpeg.start_x	Start X
+app.ffmpeg.start_y	Start Y
+app.ffmpeg.input_video	Input video
+app.ffmpeg.input_audio_or_video	Input audio or video
+app.ffmpeg.margin	Margin
+app.common.more_files_not_shown	%d more files not shown
+app.ffmpeg.no_files_selected_yet_click_button	No files selected yet; click the button above to start.
+app.ffmpeg.these_tools_use_ffmpeg_installed_on	These tools use the FFmpeg installed on this device.
+app.ffmpeg.n_90_counterclockwise	90° counterclockwise
+app.ffmpeg.choose_mp3_m4a_wav_or_other	Choose an MP3, M4A, WAV, or other audio file
+app.ffmpeg.choose_srt_subtitle_file	Choose an SRT subtitle file
+app.ffmpeg.choose_subtitle_file_2	Choose a subtitle file
+app.ffmpeg.choose_background_music	Choose background music
+app.ffmpeg.choose_videos	Choose videos
+app.ffmpeg.choose_audio_or_video	Choose audio or video
+app.ffmpeg.speed	Speed
+app.ffmpeg.when_interval_is_0_one_cover	When the interval is 0, one cover is captured at the specified time; when greater than 0, thumbnails are exported from the beginning at that interval.
+app.ffmpeg.interval_cannot_be_negative	The interval cannot be negative
+app.ffmpeg.interval_in_seconds_0_for_one	Interval in seconds (0 for one image)
+app.common.audio	Audio
+app.ffmpeg.audio_and_video	Audio and video
+app.ffmpeg.audio_format	Audio format
+app.ffmpeg.audio_bitrate	Audio bitrate
+app.ffmpeg.audio_settings	Audio settings
+app.ffmpeg.n_90_clockwise	90° clockwise
+app.ffmpeg.high_quality_palette	High-quality palette
+app.common.view_file_details	View file details
+app.common.file_details	File details
+app.file.media_details	Media details
+app.common.image_details	Image details
+app.file.reading_file_details	Reading file details…
+app.common.file_size	File size
+app.file.total_bitrate	Total bitrate
+app.file.video_codec	Video codec
+app.file.modified	Modified
+app.file.file_path	File path
+app.common.transparent	Transparent
+app.file.color_space	Color space
+app.file.color_channels	Color channels
+app.file.bit_depth	Bit depth
+app.common.bit	bit
+app.file.image_type	Image type
+app.file.print_resolution	Print resolution
+app.file.frames	Frames
+app.common.frames	frames
+app.common.quality	Quality
+app.file.no_audio_track	No audio track
+app.file.mono	Mono
+app.file.stereo	Stereo
+app.file.channels	channels
+app.file.h	h
+app.common.min	min
+app.common.yes	Yes
+app.common.no	No
+app.file.copy_path	Copy path
+app.file.path_copied	Path copied
+app.ffmpeg.ffprobe_was_not_found_so_video	ffprobe was not found, so video details are unavailable
+app.image.imagemagick_s_identify_command_was_not	ImageMagick's identify command was not found
+app.image.could_not_read_image_details	Could not read image details
+app.file.bilevel	Bilevel
+app.file.grayscale	Grayscale
+app.file.palette	Palette
+app.file.truecolor	TrueColor
+app.file.color_separation	Color separation
+app.common.optimized	Optimized
+app.file.with_alpha	with alpha
+app.common.unknown	Unknown
+app.file.video_details	Video details
+app.file.audio_details	Audio details
+app.common.english	English
